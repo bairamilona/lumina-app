@@ -194,6 +194,37 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .scan-btn{width:64px;height:64px;border-radius:50%;border:3px solid #fff;background:transparent;cursor:pointer;position:relative;display:inline-block}
 .scan-btn::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff}
 
+/* Scan result panel — closes the scan→Score loop */
+.ai-scan.result .ai-scan-vf{display:none}
+.ai-scan-result{display:none;flex:1;flex-direction:column;justify-content:center;padding:24px 24px 8px;color:#fff;overflow-y:auto}
+.ai-scan.result .ai-scan-result{display:flex}
+.scan-result-head{text-align:center;margin-bottom:20px}
+.scan-check{width:42px;height:42px;border-radius:50%;background:rgba(97,205,149,0.16);border:1px solid rgba(97,205,149,0.4);display:inline-flex;align-items:center;justify-content:center;color:var(--pos);margin-bottom:12px}
+.scan-result-head h3{font-size:18px;font-weight:600;letter-spacing:-0.2px}
+.scan-result-head p{font-size:12px;opacity:0.5;margin-top:4px}
+.scan-metric-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:13px}
+.scan-metric-row .label{color:rgba(255,255,255,0.7);text-transform:uppercase;font-size:10px;letter-spacing:1.2px;font-weight:500;flex:1}
+.scan-metric-row .vals{font-variant-numeric:tabular-nums;color:rgba(255,255,255,0.85);font-weight:500;width:78px;text-align:right}
+.scan-metric-row .vals .arrow{opacity:0.3;margin:0 6px}
+.scan-metric-row .delta{font-weight:700;font-variant-numeric:tabular-nums;width:42px;text-align:right;font-size:12px}
+.scan-metric-row .delta.pos{color:var(--pos)}.scan-metric-row .delta.neg{color:var(--neg)}.scan-metric-row .delta.zero{color:rgba(255,255,255,0.3)}
+.scan-metric-row.total{border-top:1px solid rgba(255,255,255,0.18);border-bottom:none;margin-top:10px;padding-top:14px}
+.scan-metric-row.total .label{color:#fff;font-weight:700;font-size:11px}
+.scan-metric-row.total .delta{font-size:17px;width:50px}
+.scan-result-summary{text-align:center;padding:24px 0 8px}
+.scan-result-summary .big{font-size:42px;font-weight:800;letter-spacing:-2px;color:var(--pos);line-height:1}
+.scan-result-summary .lbl{font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1.4px;font-weight:600;margin-top:8px}
+.scan-result-detail{font-size:13px;color:rgba(255,255,255,0.75);text-align:center;line-height:1.5;margin-top:4px}
+.scan-result-detail strong{color:#fff;font-weight:600}
+.scan-apply{display:none;width:100%;padding:16px;border-radius:var(--r-pill);border:none;background:#fff;color:var(--dark);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:-0.1px}
+.ai-scan.result .scan-apply{display:block}
+.ai-scan.result .scan-btn{display:none}
+
+/* Metric circle flash on scan apply */
+.mc{transition:transform 240ms,box-shadow 240ms}
+.mc.flash{animation:mcFlash 800ms ease-out}
+@keyframes mcFlash{0%{transform:scale(1)}45%{transform:scale(1.14);box-shadow:0 0 0 6px rgba(97,205,149,0.22),inset 0 0.5px 0 rgba(0,0,0,0.04)}100%{transform:scale(1)}}
+
 .toast{position:fixed;bottom:calc(90px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:#fff;padding:10px 20px;border-radius:var(--r-pill);font-size:13px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.25);transition:transform 300ms cubic-bezier(0.4,0,0.2,1);z-index:999}
 .toast.show{transform:translateX(-50%) translateY(0)}
 </style>
@@ -267,7 +298,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 </div>
 
 <div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
-<div class="ai-scan" id="aiScan"><div class="ai-scan-header"><div style="color:#fff;font-size:16px;font-weight:600" id="scanTitle">AI Scan</div><div style="color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer" onclick="closeScan()">Close</div></div><div class="ai-scan-vf"><div class="ai-scan-frame"><div style="position:absolute;top:-1px;right:-1px;width:28px;height:28px;border:3px solid var(--accent);border-width:3px 3px 0 0;border-radius:0 8px 0 0"></div><div style="position:absolute;bottom:-1px;left:-1px;width:28px;height:28px;border:3px solid var(--accent);border-width:0 0 3px 3px;border-radius:0 0 0 8px"></div><div style="color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding:20px" id="scanHint">Position in frame</div></div></div><div class="ai-scan-bottom"><div class="scan-btn" onclick="doScan()"></div></div></div>
+<div class="ai-scan" id="aiScan"><div class="ai-scan-header"><div style="color:#fff;font-size:16px;font-weight:600" id="scanTitle">AI Scan</div><div style="color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer" onclick="closeScan()">Close</div></div><div class="ai-scan-vf"><div class="ai-scan-frame"><div style="color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding:20px" id="scanHint">Position in frame</div></div></div><div class="ai-scan-result" id="scanResult"></div><div class="ai-scan-bottom"><div class="scan-btn" onclick="doScan()"></div><button class="scan-apply" id="scanApply" onclick="applyScan()">Apply to Score</button></div></div>
 
 <div class="toast" id="toast"></div>
 <script>
@@ -355,6 +386,7 @@ function renderEarned(animateLast){
     earnedStripEl.appendChild(c);
   });
   earnedTotalEl.textContent=earned.length+' of '+TOTAL_AVAILABLE;
+  if(animateLast){requestAnimationFrame(()=>{earnedStripEl.scrollTo({left:earnedStripEl.scrollWidth,behavior:'smooth'})});}
 }
 function renderNextMove(){
   const m=MOVE_QUEUE[moveIdx];
@@ -402,15 +434,185 @@ function closePlayer(){document.getElementById('vplayer').classList.remove('on')
 function togglePlay(){if(!curVid)return;playing=!playing;if(playing){playInt=setInterval(()=>{wd[curVid].p=Math.min(100,wd[curVid].p+2);document.getElementById('vpFill').style.width=wd[curVid].p+'%';if(wd[curVid].p>=100){clearInterval(playInt);playing=false;const k=curVid;commitCompletion(k);setTimeout(closePlayer,800)}},200)}else if(playInt)clearInterval(playInt)}
 function seekVideo(e){const r=e.currentTarget.getBoundingClientRect();wd[curVid].p=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));document.getElementById('vpFill').style.width=wd[curVid].p+'%'}
 
-// AI Scan
-function openScan(t){closeFab();const titles={face:'AI Face Scan',food:'AI Food Scan',ingr:'AI Ingredients'};const hints={face:'Position your face',food:'Point at food',ingr:'Scan product label'};document.getElementById('scanTitle').textContent=titles[t];document.getElementById('scanHint').textContent=hints[t];document.getElementById('aiScan').classList.add('on')}
-function closeScan(){document.getElementById('aiScan').classList.remove('on')}
-function doScan(){document.getElementById('scanHint').textContent='Analyzing...';setTimeout(()=>{document.getElementById('scanHint').innerHTML='<div style="text-align:center"><p style="font-size:14px;font-weight:600;color:#fff;margin-bottom:6px">Analysis Complete</p><p style="font-size:11px;color:rgba(255,255,255,0.6);line-height:1.5">Firm 68 · Glow 75 · Smooth 62 · Clear 80 · Define 58</p></div>'},2000)}
-
-// METRICS
-const mData=[{id:'face',label:'Face',val:71,isFace:true,issues:3},{id:'firm',label:'Firm',val:68,delta:'+0.5'},{id:'glow',label:'Glow',val:75,delta:'+1.0'},{id:'smooth',label:'Smooth',val:62,delta:'-0.5'},{id:'clear',label:'Clear',val:80,delta:'+0'},{id:'define',label:'Define',val:58,delta:'+1.5',isTarget:true}];
+// METRICS — live state, rerendered after each scan
+const metricsState={face:71,firm:68,glow:75,smooth:62,clear:80,define:58};
+const metricsDelta={face:null,firm:'+0.5',glow:'+1.0',smooth:'-0.5',clear:'+0',define:'+1.5'};
+const metricsConfig=[
+  {id:'face',label:'Face',isFace:true,issues:3},
+  {id:'firm',label:'Firm'},
+  {id:'glow',label:'Glow'},
+  {id:'smooth',label:'Smooth'},
+  {id:'clear',label:'Clear'},
+  {id:'define',label:'Define',isTarget:true}
+];
 const mr=document.getElementById('metricsRow');
-mData.forEach(m=>{const el=document.createElement('div');el.className='metric';el.onclick=()=>toast(m.label+' details');const cls=m.isFace?'mc face':m.isTarget?'mc target':'mc';const badge=m.issues?`<div class="mbadge">${m.issues}</div>`:'';let dh='';if(m.delta){const p=m.delta.startsWith('+')&&m.delta!=='+0';const n=m.delta.startsWith('-');dh=`<div class="md ${p?'pos':n?'neg':'zero'}">${m.delta}</div>`}el.innerHTML=`<div class="${cls}"><div class="v">${m.val}</div>${badge}</div><div class="ml">${m.label}</div>${dh}`;mr.appendChild(el)});
+function renderMetrics(){
+  mr.innerHTML='';
+  metricsConfig.forEach(m=>{
+    const val=metricsState[m.id], delta=metricsDelta[m.id];
+    const cls=m.isFace?'mc face':m.isTarget?'mc target':'mc';
+    const badge=m.issues?`<div class="mbadge">${m.issues}</div>`:'';
+    let dh='';
+    if(delta){const p=delta.startsWith('+')&&delta!=='+0';const n=delta.startsWith('-');dh=`<div class="md ${p?'pos':n?'neg':'zero'}">${delta}</div>`}
+    const el=document.createElement('div');
+    el.className='metric';
+    el.onclick=()=>toast(m.label+' '+val);
+    el.innerHTML=`<div class="${cls}" data-mc="${m.id}"><div class="v">${val}</div>${badge}</div><div class="ml">${m.label}</div>${dh}`;
+    mr.appendChild(el);
+  });
+}
+renderMetrics();
+function flashMetric(id){const el=mr.querySelector(`[data-mc="${id}"]`);if(el){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}}
+
+// FOOD SLOTS — live, fed by Food scan
+const foodSlots=[{label:'Apple',img:APPLE_IMG},null,null];
+function renderFoodSlots(){
+  const tile=document.querySelectorAll('.tile')[0];if(!tile)return;
+  const slotEls=tile.querySelectorAll('.tile-slot');
+  slotEls.forEach((el,i)=>{
+    const s=foodSlots[i];
+    el.innerHTML = s ? `<img src="${s.img}" alt="">` : '+';
+  });
+  const filled=foodSlots.filter(Boolean).length;
+  const footer=tile.querySelector('.tile-footer');
+  if(footer){
+    const reward=filled*0.5;
+    footer.innerHTML=`<span style="color:var(--muted)">${filled} meal${filled===1?'':'s'}</span><span style="font-weight:700;color:${reward>0?'var(--pos)':'var(--muted)'}">+${reward.toFixed(1)}</span>`;
+  }
+}
+
+// SKINCARE SLOTS — live, fed by Ingredients scan
+const skinSlots=[null,null,null];
+function renderSkinSlots(){
+  const tile=document.querySelectorAll('.tile')[1];if(!tile)return;
+  const slotEls=tile.querySelectorAll('.tile-slot');
+  slotEls.forEach((el,i)=>{
+    const s=skinSlots[i];
+    el.innerHTML = s ? `<div style="width:100%;height:100%;background:linear-gradient(135deg,#E0E7FF,#C7D2FE);display:flex;align-items:center;justify-content:center;padding:4px;font-size:8px;font-weight:700;color:#4338CA;text-align:center;line-height:1.15;overflow:hidden">${s.label}</div>` : '+';
+  });
+  const filled=skinSlots.filter(Boolean).length;
+  const footer=tile.querySelector('.tile-footer');
+  if(footer){
+    const reward=filled*0.5;
+    footer.innerHTML=`<span style="color:var(--muted)">${filled} product${filled===1?'':'s'}</span><span style="font-weight:700;color:${reward>0?'var(--pos)':'var(--muted)'}">+${reward.toFixed(1)}</span>`;
+  }
+}
+
+// AI Scan — analyze → result → apply (closes scan→Score loop)
+let pendingScan=null;
+const scanEl=document.getElementById('aiScan');
+const scanHintEl=document.getElementById('scanHint');
+const scanResultEl=document.getElementById('scanResult');
+const scanApplyEl=document.getElementById('scanApply');
+
+function openScan(t){
+  closeFab();
+  const titles={face:'AI Face Scan',food:'AI Food Scan',ingr:'AI Ingredients'};
+  const hints={face:'Position your face',food:'Point at food',ingr:'Scan product label'};
+  document.getElementById('scanTitle').textContent=titles[t];
+  scanHintEl.textContent=hints[t];
+  scanEl.dataset.type=t;
+  scanEl.classList.remove('result');
+  scanResultEl.innerHTML='';
+  pendingScan=null;
+  scanEl.classList.add('on');
+}
+function closeScan(){scanEl.classList.remove('on','result');pendingScan=null}
+
+function doScan(){
+  const type=scanEl.dataset.type;
+  scanHintEl.textContent='Analyzing...';
+  setTimeout(()=>{
+    const r=generateScanResult(type);
+    pendingScan=r;
+    renderScanResult(r);
+    scanEl.classList.add('result');
+  },1200);
+}
+
+function generateScanResult(type){
+  if(type==='face'){
+    const changes={firm:+2,glow:+2,smooth:+2,clear:0,define:+2};
+    const newVals={};Object.keys(changes).forEach(k=>{newVals[k]=Math.min(100,metricsState[k]+changes[k])});
+    const oldFace=metricsState.face;
+    const avgDelta=Object.values(changes).reduce((a,d)=>a+d,0)/Object.keys(changes).length;
+    const newFace=Math.min(100,oldFace+Math.round(avgDelta));
+    return {type:'face',changes,newVals,oldFace,newFace,scoreDelta:Math.max(1,newFace-oldFace)};
+  }
+  if(type==='food'){
+    return {type:'food',label:'Apple snack',verdict:'Clean choice',img:APPLE_IMG,scoreDelta:0.5,detail:'Hydrating · low glycemic · fits luteal phase'};
+  }
+  return {type:'ingr',label:'Niacinamide 5%',verdict:'Compatible',scoreDelta:0.5,detail:'Pairs well with your <strong>Vitamin C serum</strong>. Use AM after cleanse.'};
+}
+
+function renderScanResult(r){
+  if(r.type==='face'){
+    const rows=[
+      ['firm','Firm'],['glow','Glow'],['smooth','Smooth'],['clear','Clear'],['define','Define']
+    ].map(([k,lbl])=>{
+      const old=metricsState[k], nw=r.newVals[k], d=nw-old;
+      const cls=d>0?'pos':d<0?'neg':'zero', sign=d>0?'+':'';
+      return `<div class="scan-metric-row"><div class="label">${lbl}</div><div class="vals">${old}<span class="arrow">→</span>${nw}</div><div class="delta ${cls}">${sign}${d}</div></div>`;
+    }).join('');
+    const faceDelta=r.newFace-r.oldFace, fcls=faceDelta>0?'pos':faceDelta<0?'neg':'zero', fsign=faceDelta>0?'+':faceDelta<0?'':'';
+    scanResultEl.innerHTML=`
+      <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>Analysis complete</h3><p>5 metrics measured</p></div>
+      ${rows}
+      <div class="scan-metric-row total"><div class="label">Face Score</div><div class="vals">${r.oldFace}<span class="arrow">→</span>${r.newFace}</div><div class="delta ${fcls}">${fsign}${faceDelta}</div></div>`;
+    scanApplyEl.textContent=`Apply to Score · +${r.scoreDelta}`;
+  } else if(r.type==='food'){
+    scanResultEl.innerHTML=`
+      <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>${r.label}</h3><p>${r.verdict}</p></div>
+      <div class="scan-result-summary"><div class="big">+${r.scoreDelta.toFixed(1)}</div><div class="lbl">Score impact</div></div>
+      <div class="scan-result-detail">${r.detail}</div>`;
+    scanApplyEl.textContent='Add to today';
+  } else {
+    scanResultEl.innerHTML=`
+      <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>${r.label}</h3><p>${r.verdict}</p></div>
+      <div class="scan-result-summary"><div class="big">+${r.scoreDelta.toFixed(1)}</div><div class="lbl">Skincare match</div></div>
+      <div class="scan-result-detail">${r.detail}</div>`;
+    scanApplyEl.textContent='Add to routine';
+  }
+}
+
+function applyScan(){
+  const r=pendingScan;if(!r)return;
+  closeScan();
+  setTimeout(()=>{
+    if(r.type==='face'){
+      Object.keys(r.newVals).forEach(k=>{
+        const old=metricsState[k], nw=r.newVals[k], d=nw-old;
+        metricsState[k]=nw;
+        metricsDelta[k]= d===0?'+0':(d>0?'+':'')+d;
+      });
+      metricsState.face=r.newFace;
+      renderMetrics();
+      ['firm','glow','smooth','clear','define','face'].forEach((k,i)=>setTimeout(()=>flashMetric(k),i*70));
+      const prev=Math.round(scoreVal);
+      scoreVal+=r.scoreDelta;scoreDelta+=r.scoreDelta;
+      scoreDeltaEl.textContent='+'+scoreDelta.toFixed(1)+' today';
+      animateScore(prev,Math.round(scoreVal));
+      earned.push({action:'Face scan',delta:r.scoreDelta});renderEarned(true);
+      toast('Face Score +'+r.scoreDelta);
+    } else if(r.type==='food'){
+      const idx=foodSlots.findIndex(s=>!s);
+      if(idx>=0){foodSlots[idx]={label:r.label,img:r.img};renderFoodSlots();}
+      const prev=Math.round(scoreVal);scoreVal+=r.scoreDelta;scoreDelta+=r.scoreDelta;
+      scoreDeltaEl.textContent='+'+scoreDelta.toFixed(1)+' today';
+      animateScore(prev,Math.round(scoreVal));
+      earned.push({action:r.label,delta:r.scoreDelta});renderEarned(true);
+      toast('+'+r.scoreDelta.toFixed(1)+' Score');
+    } else {
+      const idx=skinSlots.findIndex(s=>!s);
+      if(idx>=0){skinSlots[idx]={label:r.label};renderSkinSlots();}
+      const prev=Math.round(scoreVal);scoreVal+=r.scoreDelta;scoreDelta+=r.scoreDelta;
+      scoreDeltaEl.textContent='+'+scoreDelta.toFixed(1)+' today';
+      animateScore(prev,Math.round(scoreVal));
+      earned.push({action:r.label,delta:r.scoreDelta});renderEarned(true);
+      toast('+'+r.scoreDelta.toFixed(1)+' Score');
+    }
+  },280);
+}
 
 // BG Echo
 setTimeout(()=>{bgE.style.backgroundImage=`url(${IMG['lymphatic-drainage']})`;bgE.classList.add('on')},50);
