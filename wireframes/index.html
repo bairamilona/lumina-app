@@ -51,16 +51,39 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .sl{font-size:11px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;font-weight:500;margin-top:4px}
 .sd{font-size:14px;font-weight:600;margin-top:10px}
 
-/* Tune-up */
+/* Score loop — closes the analyze→act→improve→see-result cycle */
+.score-loop{padding:0 20px 14px;display:flex;flex-direction:column;gap:10px}
+.loop-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 2px}
+.loop-eyebrow{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;font-weight:600}
+.loop-meta{font-size:10px;color:var(--muted);font-weight:500}
+.loop-meta .tu-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--pos);margin:0 5px 1px;vertical-align:middle}
+.earned-strip{display:flex;gap:6px;overflow-x:auto;margin:0 -20px;padding:2px 20px 4px}
+.earned-strip::-webkit-scrollbar{display:none}
+.earned-chip{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;padding:7px 12px 7px 10px;border-radius:var(--r-pill);background:rgba(97,205,149,0.10);border:1px solid rgba(97,205,149,0.18);font-size:12px;color:var(--text);font-weight:500;cursor:pointer;line-height:1}
+.earned-chip .ec-dot{width:5px;height:5px;border-radius:50%;background:var(--pos);flex-shrink:0;box-shadow:0 0 0 3px rgba(97,205,149,0.18)}
+.earned-chip .ec-delta{color:var(--pos);font-weight:700;font-size:11px;letter-spacing:-0.2px}
+.earned-chip.new{animation:chipPop 600ms cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes chipPop{0%{opacity:0;transform:scale(0.5) translateY(8px)}55%{opacity:1;transform:scale(1.12) translateY(0)}100%{transform:scale(1)}}
 
+.next-move{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;background:rgba(255,255,255,0.7);backdrop-filter:blur(14px);border-radius:var(--r-xl);border:1px solid rgba(255,255,255,0.6);box-shadow:0 1px 0 rgba(255,255,255,0.4),0 8px 24px rgba(0,0,0,0.05),inset 0 0.5px 0 rgba(0,0,0,0.02);cursor:pointer;position:relative;overflow:hidden;transition:transform 200ms}
+.next-move:active{transform:scale(0.985)}
+.next-move::after{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 100% 50%,rgba(192,152,237,0.10),transparent 55%);pointer-events:none}
+.nm-thumb{width:46px;height:46px;border-radius:14px;overflow:hidden;flex-shrink:0;position:relative}
+.nm-thumb img{width:100%;height:100%;object-fit:cover}
+.nm-info{flex:1;min-width:0;position:relative;z-index:1}
+.nm-eyebrow{font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
+.nm-title{font-size:15px;font-weight:700;letter-spacing:-0.3px;line-height:1.2;margin-top:2px;color:var(--text)}
+.nm-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.nm-delta{display:flex;align-items:center;gap:6px;color:var(--pos);font-weight:800;flex-shrink:0;position:relative;z-index:1}
+.nm-plus{font-size:18px;letter-spacing:-0.5px;line-height:1}
+.next-move.done .nm-thumb{background:rgba(97,205,149,0.15);display:flex;align-items:center;justify-content:center}
+.next-move.done .nm-eyebrow{color:var(--pos)}
+.score-hero .sn{transition:color 240ms}
+.sn.bump{color:var(--pos)}
 
 .snav{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--r-pill);background:rgba(255,255,255,0.5);backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.04);font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0;height:30px;transition:all 200ms}
 .snav.on{background:rgba(255,255,255,0.85);border-color:rgba(0,0,0,0.08);color:var(--text);font-weight:600}
 .snav-icon{width:30px;padding:0;justify-content:center}
-.tuneup-side{width:60px;padding:14px 10px;background:rgba(255,255,255,0.45);backdrop-filter:blur(12px);border-radius:var(--r-lg);border:1px solid rgba(255,255,255,0.5);box-shadow:0 0.5px 0 rgba(255,255,255,0.3),inset 0 0.5px 0 rgba(0,0,0,0.02);display:flex;flex-direction:column;align-items:center;cursor:pointer;color:var(--sec);flex-shrink:0;position:relative}
-.tuneup{margin:0 20px 10px;padding:10px 14px;background:var(--card);border-radius:var(--r-xl);border:1px solid rgba(0,0,0,0.04);display:flex;align-items:center;gap:10px;cursor:pointer}
-.tu-ico{width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.03);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;color:var(--sec)}
-.tu-dot{position:absolute;top:0;right:0;width:7px;height:7px;border-radius:50%;background:var(--pos);border:2px solid var(--card)}
 
 /* Context widgets */
 .ctx-row{display:flex;gap:8px;padding:0 20px;margin-bottom:12px}
@@ -186,18 +209,19 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
     <div id="s-score" class="scr vis">
       <div class="hdr"><div class="logo">Lumina <span>Club</span></div><div class="av"></div></div>
       <div class="metrics" id="metricsRow"></div>
-      <div style="display:flex;align-items:center;gap:12px;padding:6px 20px 14px">
-        <div class="score-hero" style="padding:0;flex:1;display:flex;flex-direction:column;align-items:center">
-          <div class="score-ring"><div class="glow"></div><div class="track"></div><div class="center"><div class="sl">Score</div><div class="sn">73</div></div></div>
-          <div class="sd" style="color:var(--pos)">+1.5 today</div>
-        </div>
-        <div class="tuneup-side" onclick="toast('Tune-up report')">
-          <div style="position:relative;margin-bottom:6px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 2v4M4 6l4 2 4-2"/><circle cx="8" cy="11" r="3"/></svg><div class="tu-dot" style="top:-2px;right:-4px"></div></div>
-          <div style="font-size:11px;font-weight:600;line-height:1.2">Tune-up</div>
-          <div style="font-size:9px;color:var(--muted);margin-top:2px">4h</div>
-        </div>
+      <div class="score-hero" style="padding:6px 20px 8px;display:flex;flex-direction:column;align-items:center">
+        <div class="score-ring"><div class="glow"></div><div class="track"></div><div class="center"><div class="sl">Score</div><div class="sn" id="scoreNum">73</div></div></div>
+        <div class="sd" id="scoreDelta" style="color:var(--pos)">+1.5 today</div>
       </div>
-      <div class="ctx-row" id="ctxRow" style="margin-bottom:14px"></div>
+      <div class="score-loop">
+        <div class="loop-head">
+          <span class="loop-eyebrow">Today so far</span>
+          <span class="loop-meta"><span id="earnedTotal">3 of 6</span><span class="tu-pip"></span>Tune-up in 4h</span>
+        </div>
+        <div class="earned-strip" id="earnedStrip"></div>
+        <div class="next-move" id="nextMove"></div>
+      </div>
+      <div class="ctx-row" id="ctxRow" style="margin:6px 0 14px"></div>
       <div style="padding:0 20px 14px;display:flex;gap:6px;overflow-x:auto" id="scoreSubNav">
         <div class="snav on" data-s="routine" onclick="switchSub(this)"><div style="width:20px;height:20px;border-radius:50%;overflow:hidden;border:1px solid rgba(0,0,0,0.06);flex-shrink:0"><img src="" id="contThumb" style="width:100%;height:100%;object-fit:cover"></div><span>Continue</span></div>
         <div class="snav" data-s="new" onclick="switchSub(this)"><span>New</span><div style="width:16px;height:16px;border-radius:50%;background:var(--pos);display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0">3</div></div>
@@ -298,12 +322,84 @@ document.getElementById('fi1').innerHTML=FAB_ICONS.face.replace(/currentColor/g,
 document.getElementById('fi2').innerHTML=FAB_ICONS.food.replace(/currentColor/g,'var(--fab-food)');
 document.getElementById('fi3').innerHTML=FAB_ICONS.ingr.replace(/currentColor/g,'var(--fab-ingr)');
 
+// Score loop state — single source of truth for the analyze→act→improve→see-result cycle
+let scoreVal=73, scoreDelta=1.5;
+const TOTAL_AVAILABLE=6;
+const earned=[
+  {action:'Morning lymph',delta:0.5},
+  {action:'Apple snack',delta:0.5},
+  {action:'Sleep 7.2h',delta:0.5}
+];
+const MOVE_QUEUE=[
+  {key:'cheekbone-lift',title:'Buccal massage',meta:'10 min · Step 2',delta:1.0},
+  {key:'forehead-smoothing',title:'Cold splash',meta:'30s · Step 3',delta:0.5}
+];
+let moveIdx=0;
+const VIDEO_REWARD={'neck-stretch':0.5,'cheekbone-lift':1.0,'forehead-smoothing':0.5,'morning-wakeup':0.7,'pre-event':0.8,'post-flight':0.6,'post-party':0.6,'post-workout':0.7,'pre-photoshoot':1.0,'headache-ease':0.4,'sinus-clear':0.4,'lymphatic-drainage':0.8,'jawline-sculpt':0.9,'buccal-massage':1.0};
+const VIDEO_LABEL={'neck-stretch':'Neck stretch','cheekbone-lift':'Buccal massage','forehead-smoothing':'Cold splash','morning-wakeup':'Morning wake-up','pre-event':'Pre-event glow','post-flight':'Post-flight','post-party':'Post-party','post-workout':'Post-workout','pre-photoshoot':'Pre-photoshoot','headache-ease':'Headache ease','sinus-clear':'Sinus clear','lymphatic-drainage':'Lymphatic','jawline-sculpt':'Jawline sculpt','buccal-massage':'Buccal massage'};
+
+const earnedStripEl=document.getElementById('earnedStrip');
+const earnedTotalEl=document.getElementById('earnedTotal');
+const nextMoveEl=document.getElementById('nextMove');
+const scoreNumEl=document.getElementById('scoreNum');
+const scoreDeltaEl=document.getElementById('scoreDelta');
+
+function renderEarned(animateLast){
+  earnedStripEl.innerHTML='';
+  earned.forEach((e,i)=>{
+    const last=i===earned.length-1;
+    const c=document.createElement('div');
+    c.className='earned-chip'+(animateLast&&last?' new':'');
+    c.onclick=()=>toast(e.action+' · +'+e.delta.toFixed(1));
+    c.innerHTML=`<span class="ec-dot"></span><span>${e.action}</span><span class="ec-delta">+${e.delta.toFixed(1)}</span>`;
+    earnedStripEl.appendChild(c);
+  });
+  earnedTotalEl.textContent=earned.length+' of '+TOTAL_AVAILABLE;
+}
+function renderNextMove(){
+  const m=MOVE_QUEUE[moveIdx];
+  if(!m){
+    nextMoveEl.classList.add('done');
+    nextMoveEl.innerHTML=`<div class="nm-thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--pos)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><div class="nm-info"><div class="nm-eyebrow">Today complete</div><div class="nm-title">+${scoreDelta.toFixed(1)} earned</div><div class="nm-meta">See you tomorrow at 9 am</div></div>`;
+    nextMoveEl.onclick=()=>toast('Tomorrow at 9 am');
+    return;
+  }
+  nextMoveEl.classList.remove('done');
+  nextMoveEl.innerHTML=`<div class="nm-thumb"><img src="${IMG[m.key]}" alt=""></div><div class="nm-info"><div class="nm-eyebrow">Next move</div><div class="nm-title">${m.title}</div><div class="nm-meta">${m.meta}</div></div><div class="nm-delta"><div class="nm-plus">+${m.delta.toFixed(1)}</div><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></div>`;
+  nextMoveEl.onclick=()=>openPlayer(m.key);
+}
+function animateScore(from,to){
+  const dur=700,start=performance.now();
+  function tick(t){
+    const p=Math.min(1,(t-start)/dur);
+    const eased=1-Math.pow(1-p,3);
+    scoreNumEl.textContent=Math.round(from+(to-from)*eased);
+    if(p<1)requestAnimationFrame(tick);
+  }
+  scoreNumEl.classList.add('bump');
+  setTimeout(()=>scoreNumEl.classList.remove('bump'),900);
+  requestAnimationFrame(tick);
+}
+function commitCompletion(key){
+  const r=VIDEO_REWARD[key]||0.5;
+  const label=VIDEO_LABEL[key]||'Practice';
+  earned.push({action:label,delta:r});
+  const prev=Math.round(scoreVal);
+  scoreVal+=r;scoreDelta+=r;
+  scoreDeltaEl.textContent='+'+scoreDelta.toFixed(1)+' today';
+  animateScore(prev,Math.round(scoreVal));
+  renderEarned(true);
+  if(MOVE_QUEUE[moveIdx]&&MOVE_QUEUE[moveIdx].key===key){moveIdx++;setTimeout(renderNextMove,500);}
+  toast('+'+r.toFixed(1)+' Score');
+}
+renderEarned();renderNextMove();
+
 // Video player
 let curVid=null,playing=false,playInt=null;
 const wd={};Object.keys(IMG).forEach(k=>{wd[k]={p:0}});
 function openPlayer(k){curVid=k;document.getElementById('vpImg').src=IMG[k];document.getElementById('vpFill').style.width=wd[k].p+'%';document.getElementById('vplayer').classList.add('on');playing=false}
 function closePlayer(){document.getElementById('vplayer').classList.remove('on');if(playInt)clearInterval(playInt);playing=false}
-function togglePlay(){if(!curVid)return;playing=!playing;if(playing){playInt=setInterval(()=>{wd[curVid].p=Math.min(100,wd[curVid].p+2);document.getElementById('vpFill').style.width=wd[curVid].p+'%';if(wd[curVid].p>=100){clearInterval(playInt);playing=false;toast('Completed! +3 Score');setTimeout(closePlayer,1000)}},200)}else if(playInt)clearInterval(playInt)}
+function togglePlay(){if(!curVid)return;playing=!playing;if(playing){playInt=setInterval(()=>{wd[curVid].p=Math.min(100,wd[curVid].p+2);document.getElementById('vpFill').style.width=wd[curVid].p+'%';if(wd[curVid].p>=100){clearInterval(playInt);playing=false;const k=curVid;commitCompletion(k);setTimeout(closePlayer,800)}},200)}else if(playInt)clearInterval(playInt)}
 function seekVideo(e){const r=e.currentTarget.getBoundingClientRect();wd[curVid].p=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));document.getElementById('vpFill').style.width=wd[curVid].p+'%'}
 
 // AI Scan
