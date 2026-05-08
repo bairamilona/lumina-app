@@ -133,14 +133,15 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .lock-ov svg{opacity:0.6;margin-bottom:4px}
 .lock-ov span{font-size:10px;opacity:0.5}
 
-/* Theory pcard — copy-prompt placeholder until a real cover is generated */
-.pcard.theory .theory-cover{background:linear-gradient(160deg,#efece5 0%,#e6e1d6 100%);display:flex;flex-direction:column;padding:14px 12px 50px;color:rgba(0,0,0,0.55);overflow:hidden;border:1px solid rgba(0,0,0,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),inset 0 -1px 0 rgba(0,0,0,0.04)}
+/* Theory pcard — copy-prompt placeholder until a real cover is generated. Cool neutral palette, book hint */
+.pcard.theory .theory-cover{background:linear-gradient(160deg,#eef0f5 0%,#dde2eb 100%);display:flex;flex-direction:column;padding:14px 12px 50px;color:rgba(0,0,0,0.55);overflow:hidden;border:1px solid rgba(0,0,0,0.07);box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),inset 0 -1px 0 rgba(0,0,0,0.04)}
 .theory-cover-tag{font-size:11px;font-weight:600;color:rgba(0,0,0,0.45);letter-spacing:0.2px;text-shadow:0 1px 0 rgba(255,255,255,0.6);margin-bottom:8px;display:flex;align-items:center;gap:5px}
 .theory-cover-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,0.35)}
 .theory-cover-text{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.4;color:rgba(0,0,0,0.62);text-shadow:0 1px 0 rgba(255,255,255,0.6);overflow:hidden;display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;flex:1}
-.theory-copy{position:absolute;bottom:10px;left:12px;right:12px;padding:8px 12px;border-radius:var(--r-pill);background:var(--dark);color:#fff;border:none;font:600 13px var(--font);cursor:pointer;letter-spacing:-0.1px}
+.theory-copy{position:absolute;bottom:10px;left:12px;right:12px;padding:8px 12px;border-radius:var(--r-pill);background:var(--dark);color:#fff;border:none;font:600 13px var(--font);cursor:pointer;letter-spacing:-0.1px;z-index:3}
 .theory-copy.copied{background:var(--text)}
 .pcard.theory .pcard-dur{background:rgba(0,0,0,0.10);backdrop-filter:none;color:rgba(0,0,0,0.55)}
+.pcard.theory .pcard-play{display:flex;background:rgba(255,255,255,0.85);color:var(--text);border-color:rgba(0,0,0,0.06);width:38px;height:38px;backdrop-filter:blur(6px);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
 
 /* Theory page — full-screen scrollable program info */
 .theory-modal{position:fixed;inset:0;z-index:45;background:#fff;display:none;flex-direction:column}
@@ -157,11 +158,43 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .theory-body ul li:last-child{border-bottom:none}
 .theory-body ul li b{font-weight:700;color:var(--text)}
 .theory-body ul li span{color:var(--muted);font-size:13px;flex-shrink:0}
-.theory-body .img-prompt{margin:14px 0 18px;padding:14px 14px 56px;background:linear-gradient(160deg,#efece5 0%,#e6e1d6 100%);border:1px solid rgba(0,0,0,0.08);border-radius:var(--r-xl);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),inset 0 -1px 0 rgba(0,0,0,0.04);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;color:rgba(0,0,0,0.62);text-shadow:0 1px 0 rgba(255,255,255,0.6);position:relative;min-height:140px}
+.theory-body .img-prompt{margin:14px 0 18px;padding:14px 14px 56px;background:linear-gradient(160deg,#eef0f5 0%,#dde2eb 100%);border:1px solid rgba(0,0,0,0.07);border-radius:var(--r-xl);box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),inset 0 -1px 0 rgba(0,0,0,0.04);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;color:rgba(0,0,0,0.62);text-shadow:0 1px 0 rgba(255,255,255,0.6);position:relative;min-height:140px}
 .theory-body .img-prompt .img-prompt-tag{font-family:var(--font);font-size:11px;font-weight:600;color:rgba(0,0,0,0.45);margin-bottom:8px;letter-spacing:0.2px;display:flex;align-items:center;gap:5px}
 .theory-body .img-prompt .img-prompt-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:rgba(0,0,0,0.35)}
 .theory-body .img-prompt .img-prompt-copy{position:absolute;bottom:12px;left:14px;right:14px;padding:9px 12px;border-radius:var(--r-pill);background:var(--dark);color:#fff;border:none;font:600 13px var(--font);cursor:pointer;letter-spacing:-0.1px}
 .theory-body .img-prompt .img-prompt-copy.copied{background:var(--text)}
+
+/* Program info modal — what the program consists of (steps + theory list) */
+.program-modal{position:fixed;inset:0;z-index:46;background:#fff;display:none;flex-direction:column}
+.program-modal.on{display:flex}
+.program-head{padding:calc(env(safe-area-inset-top,20px) + 14px) 22px 16px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid rgba(0,0,0,0.06)}
+.program-head h1{font-size:24px;font-weight:800;letter-spacing:-0.6px;line-height:1.1}
+.program-head p{font-size:14px;color:var(--muted);margin-top:5px;font-weight:500;letter-spacing:-0.1px}
+.program-close{font-size:14px;color:var(--muted);cursor:pointer;font-weight:500;flex-shrink:0;padding-top:6px}
+.program-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 20px calc(40px + var(--safe-b))}
+.program-progress{margin:0 0 18px;padding:14px 16px;border-radius:var(--r-xl);background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.05)}
+.program-progress-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.program-progress-row .pp-day{font-size:15px;font-weight:700;letter-spacing:-0.2px}
+.program-progress-row .pp-total{font-size:13px;color:var(--muted);font-weight:500}
+.program-progress-bar{height:5px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden}
+.program-progress-bar .pp-fill{height:100%;background:var(--text);border-radius:3px}
+
+.program-list{display:flex;flex-direction:column;gap:10px}
+.program-row{display:flex;align-items:center;gap:14px;padding:10px;border-radius:var(--r-xl);background:#fff;border:1px solid rgba(0,0,0,0.07);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),0 2px 6px rgba(0,0,0,0.03);cursor:pointer;transition:transform 200ms,background 200ms}
+.program-row:active{transform:scale(0.985)}
+.program-row.done{opacity:0.62}
+.program-row.now{border-color:rgba(192,152,237,0.4);background:rgba(192,152,237,0.04)}
+.program-row.locked{opacity:0.45;cursor:default}
+.program-thumb{width:62px;height:80px;border-radius:14px;overflow:hidden;flex-shrink:0;position:relative}
+.program-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.program-thumb.book{background:linear-gradient(160deg,#eef0f5,#dde2eb);display:flex;align-items:center;justify-content:center;color:var(--sec);border:1px solid rgba(0,0,0,0.06)}
+.program-row-info{flex:1;min-width:0}
+.program-row-title{font-size:16px;font-weight:700;letter-spacing:-0.2px;line-height:1.15;color:var(--text)}
+.program-row-meta{font-size:13px;color:var(--muted);font-weight:500;margin-top:4px;letter-spacing:-0.1px}
+.program-row.done .program-row-meta b{color:var(--text);font-weight:700}
+.program-row.now .program-row-meta b{color:var(--accent);font-weight:700}
+.program-row-arrow{color:var(--light);flex-shrink:0;margin-left:4px}
+.program-row.locked .program-row-arrow{display:none}
 
 /* Food/Skincare tiles */
 .tile-row{display:flex;gap:10px;padding:0 20px;margin-bottom:16px}
@@ -312,7 +345,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
           <span style="font-size:22px;font-weight:800;letter-spacing:-0.5px">Today routine</span>
           <span style="font-size:14px;color:var(--muted);font-weight:500;letter-spacing:-0.1px">Lymph priority</span>
         </div>
-        <div style="width:26px;height:26px;border-radius:50%;border:1px solid rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--sec);cursor:pointer;font-weight:500;flex-shrink:0" onclick="theoryOpen()">i</div>
+        <div style="width:26px;height:26px;border-radius:50%;border:1px solid rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--sec);cursor:pointer;font-weight:500;flex-shrink:0" onclick="programOpen()">i</div>
       </div>
       <div class="sr" id="practiceRow" style="margin-bottom:16px"></div>
     </div>
@@ -352,6 +385,23 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 <div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
 <div class="ai-scan" id="aiScan"><div class="ai-scan-header"><div style="color:#fff;font-size:16px;font-weight:600" id="scanTitle">AI Scan</div><div style="color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer" onclick="closeScan()">Close</div></div><div class="ai-scan-vf"><div class="ai-scan-frame"><div style="color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding:20px" id="scanHint">Position in frame</div></div></div><div class="ai-scan-result" id="scanResult"></div><div class="ai-scan-bottom"><div class="scan-btn" onclick="doScan()"></div><button class="scan-apply" id="scanApply" onclick="applyScan()">Apply to Score</button></div></div>
 
+<div class="program-modal" id="programModal">
+  <div class="program-head">
+    <div>
+      <h1>Lymph priority</h1>
+      <p>7-day program · 3 steps + theory daily</p>
+    </div>
+    <div class="program-close" onclick="programClose()">Close</div>
+  </div>
+  <div class="program-body">
+    <div class="program-progress">
+      <div class="program-progress-row"><span class="pp-day">Day 1 of 7</span><span class="pp-total">1 of 3 steps done</span></div>
+      <div class="program-progress-bar"><div class="pp-fill" style="width:33%"></div></div>
+    </div>
+    <div class="program-list" id="programList"></div>
+  </div>
+</div>
+
 <div class="theory-modal" id="theoryModal">
   <div class="theory-head">
     <h1>Lymph priority</h1>
@@ -360,10 +410,10 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
   <div class="theory-body">
     <h2>Why lymphatic drainage</h2>
     <p>Your lymphatic system clears waste, fluid, and inflammation through one-way vessels that run just under the skin. Unlike blood, lymph has no pump — it relies on movement, breath, and gentle external pressure. When it stagnates, the face holds puffiness, dullness, and tension along the jaw and around the eyes.</p>
-    <div class="img-prompt"><div class="img-prompt-tag">Cover prompt — section 1</div><span class="img-prompt-text">Diagrammatic illustration of facial lymphatic vessels and nodes overlaid on a calm portrait, soft beige and cream palette, editorial wellness aesthetic, clean line art, vertical composition, no text</span><button class="img-prompt-copy" type="button">Copy</button></div>
+    <div class="img-prompt"><div class="img-prompt-tag">Cover prompt — section 1</div><span class="img-prompt-text">Technical anatomical diagram of facial lymphatic vessels and nodes, isometric 3D render on a clean white background, precise vector linework with subtle violet and blue gradient highlights on lymph nodes, soft directional light, scientific medical illustration style, vertical 4:5, no text</span><button class="img-prompt-copy" type="button">Copy</button></div>
     <h2>Why prioritize in luteal phase</h2>
     <p>Progesterone rises in the back half of your cycle. It softens vessel walls, increases water retention, and slows lymph flow. The same skincare and habits that worked yesterday can leave the face feeling heavier and less defined now. A short daily lymph routine corrects for this — without overcorrecting with caffeine or restriction.</p>
-    <div class="img-prompt"><div class="img-prompt-tag">Cover prompt — section 2</div><span class="img-prompt-text">Soft editorial photograph showing morning light through a sheer curtain, calendar with a marked cycle phase on a wooden surface, beige tones, holistic wellness aesthetic, vertical 4:5, no text</span><button class="img-prompt-copy" type="button">Copy</button></div>
+    <div class="img-prompt"><div class="img-prompt-tag">Cover prompt — section 2</div><span class="img-prompt-text">Schematic infographic of a 28-day cycle with luteal phase highlighted, hormone curves overlaid as clean vector lines, white background, violet and blue accent palette, technical scientific aesthetic, depth shading, vertical 4:5, no text</span><button class="img-prompt-copy" type="button">Copy</button></div>
     <h2>How the program works</h2>
     <p>Three short steps, every day for seven days. Each step is sequenced — the body opens lymph pathways before sculpting, then sets the result with cold. Total time: under 18 minutes. Recovery time between steps lets the system respond.</p>
     <ul>
@@ -501,9 +551,42 @@ function commitTuneUp(){
   setTimeout(()=>openScan('face'),420);
 }
 
-// Theory page (program info) — opened by the i button in Today routine header AND by the Theory pcard
+// Theory page — educational article opened by the Theory pcard
 function theoryOpen(){document.getElementById('theoryModal').classList.add('on')}
 function theoryClose(){document.getElementById('theoryModal').classList.remove('on')}
+
+// Program info — list of what the program consists of, opened by the i button next to Today routine
+const PROGRAM_ITEMS=[
+  {kind:'theory',title:'Lymph priority intro',meta:'Theory · 3 min read',status:'available'},
+  {kind:'video',key:'neck-stretch',title:'Morning lymph',meta:'Step 1 · 7 min · <b>Done</b>',status:'done'},
+  {kind:'video',key:'cheekbone-lift',title:'Buccal massage',meta:'Step 2 · 10 min · <b>Now</b>',status:'now'},
+  {kind:'video',key:'forehead-smoothing',title:'Cold splash',meta:'Step 3 · 30 sec · Locked',status:'locked'}
+];
+function renderProgramList(){
+  const list=document.getElementById('programList');if(!list)return;
+  list.innerHTML='';
+  PROGRAM_ITEMS.forEach(it=>{
+    const row=document.createElement('div');
+    row.className='program-row '+it.status;
+    let thumb='';
+    if(it.kind==='theory'){
+      thumb=`<div class="program-thumb"><img src="../images/krea-generated/theory.png" alt=""></div>`;
+    } else {
+      thumb=`<div class="program-thumb"><img src="${IMG[it.key]}" alt=""></div>`;
+    }
+    row.innerHTML=`${thumb}<div class="program-row-info"><div class="program-row-title">${it.title}</div><div class="program-row-meta">${it.meta}</div></div><svg class="program-row-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>`;
+    if(it.status!=='locked'){
+      row.onclick=()=>{
+        programClose();
+        if(it.kind==='theory') setTimeout(theoryOpen,180);
+        else setTimeout(()=>openPlayer(it.key),180);
+      };
+    }
+    list.appendChild(row);
+  });
+}
+function programOpen(){renderProgramList();document.getElementById('programModal').classList.add('on')}
+function programClose(){document.getElementById('programModal').classList.remove('on')}
 function copyPrompt(text,btn){
   // Fire visual feedback immediately, then attempt clipboard write in background
   flashCopied(btn);
@@ -809,7 +892,7 @@ const ctxRow=document.getElementById('ctxRow');
 {const _fs=document.getElementById('foodSlot1');if(_fs)_fs.innerHTML=`<img src="${APPLE_IMG}" alt="">`;}
 
 // Practice cards (Theory step prepended)
-const THEORY_PROMPT=`Editorial photograph, soft beige and cream palette, calm woman practicing facial self-care at a window, natural morning light, clean minimalist composition, 35mm film grain, holistic wellness aesthetic, vertical 4:5, no text`;
+const THEORY_PROMPT=`Schematic 3D model of facial lymphatic system viewed from the front, white studio background, gradient violet-to-blue highlights on lymph nodes and pathways, soft volumetric lighting, precise vector linework overlay, scientific medical illustration, isometric depth, vertical 4:5, no text`;
 const pr=document.getElementById('practiceRow');
 [{isTheory:true,step:'Theory',t:'Lymph priority intro',dur:'3m read'},
 {key:'neck-stretch',step:'Step 1',t:'Morning lymph',dur:'7m',status:'done',prog:100,timeLeft:''},
@@ -818,9 +901,8 @@ const pr=document.getElementById('practiceRow');
 ].forEach(c=>{
   if(c.isTheory){
     const d=document.createElement('div');d.className='pcard theory';
-    d.innerHTML=`<div class="pcard-img theory-cover"><div class="theory-cover-tag">Cover prompt</div><div class="theory-cover-text">${THEORY_PROMPT}</div><button class="theory-copy" type="button">Copy</button><div class="pcard-dur">${c.dur}</div></div><div class="pcard-info"><div class="pcard-step">${c.step}</div><div class="pcard-title">${c.t}</div></div>`;
+    d.innerHTML=`<div class="pcard-img"><img src="../images/krea-generated/theory.png" alt=""><div class="grad"></div><div class="pcard-dur">${c.dur}</div><div class="pcard-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h6.5v18H6a2 2 0 01-2-2V5z"/><path d="M20 5a2 2 0 00-2-2h-5.5v18H18a2 2 0 002-2V5z"/></svg></div></div><div class="pcard-info"><div class="pcard-step">${c.step}</div><div class="pcard-title">${c.t}</div></div>`;
     d.onclick=()=>theoryOpen();
-    d.querySelector('.theory-copy').onclick=function(e){e.stopPropagation();copyPrompt(THEORY_PROMPT,this)};
     pr.appendChild(d);
     return;
   }
