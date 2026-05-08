@@ -9,7 +9,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#F7FAFC;--card:#FFF;--dark:#0f0f0f;--text:#0a0a0a;--sec:#3d4654;--muted:#8a919d;--light:#CBD5E0;--border:#E2E8F0;--accent:#C098ED;--asoft:rgba(192,152,237,0.12);--pos:#61CD95;--psoft:rgba(97,205,149,0.08);--neg:#E8836B;--r-xl:24px;--r-xxl:32px;--r-lg:16px;--r-pill:999px;--font:'DM Sans',system-ui,sans-serif;--fab-face:#F2A0B0;--fab-food:#F0D678;--fab-ingr:#8BB8E0;--safe-b:env(safe-area-inset-bottom,0px)}
+:root{--bg:#F7FAFC;--card:#FFF;--dark:#0f0f0f;--text:#0a0a0a;--sec:#3d4654;--muted:#8a919d;--light:#CBD5E0;--border:#E2E8F0;--accent:#C098ED;--asoft:rgba(192,152,237,0.12);--pos:#61CD95;--psoft:rgba(97,205,149,0.08);--neg:#E8836B;--r-xl:24px;--r-xxl:32px;--r-lg:16px;--r-pill:999px;--font:'DM Sans',system-ui,sans-serif;--fab-face:#F2A0B0;--fab-food:#F0D678;--fab-ingr:#8BB8E0;--safe-b:env(safe-area-inset-bottom,0px);--t-instant:100ms;--t-fast:160ms;--t-modal:220ms;--t-page:280ms;--t-success:380ms;--t-hover:140ms;--ease-out:cubic-bezier(0.2,0.8,0.2,1);--ease-soft:cubic-bezier(0.32,0.72,0.32,1);--ease-emphatic:cubic-bezier(0.34,1.2,0.64,1)}
 html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:100%;overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 
 /* Native app — no phone mockup */
@@ -144,8 +144,8 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .pcard.theory .pcard-play{display:flex;background:rgba(255,255,255,0.85);color:var(--text);border-color:rgba(0,0,0,0.06);width:38px;height:38px;backdrop-filter:blur(6px);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
 
 /* Theory page — full-screen scrollable program info */
-.theory-modal{position:fixed;inset:0;z-index:45;background:#fff;display:none;flex-direction:column}
-.theory-modal.on{display:flex}
+.theory-modal{position:fixed;inset:0;z-index:45;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
+.theory-modal.on{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s}
 .theory-head{display:flex;justify-content:space-between;align-items:center;padding:calc(env(safe-area-inset-top,20px) + 14px) 20px 14px;border-bottom:1px solid rgba(0,0,0,0.06)}
 .theory-head h1{font-size:17px;font-weight:700;letter-spacing:-0.3px}
 .theory-head .theory-close{font-size:14px;color:var(--muted);cursor:pointer;font-weight:500}
@@ -165,8 +165,8 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .theory-body .img-prompt .img-prompt-copy.copied{background:var(--text)}
 
 /* Program info modal — what the program consists of (steps + theory list) */
-.program-modal{position:fixed;inset:0;z-index:46;background:#fff;display:none;flex-direction:column}
-.program-modal.on{display:flex}
+.program-modal{position:fixed;inset:0;z-index:46;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
+.program-modal.on{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s}
 .program-head{padding:calc(env(safe-area-inset-top,20px) + 14px) 22px 16px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid rgba(0,0,0,0.06)}
 .program-head h1{font-size:24px;font-weight:800;letter-spacing:-0.6px;line-height:1.1}
 .program-head p{font-size:14px;color:var(--muted);margin-top:5px;font-weight:500;letter-spacing:-0.1px}
@@ -256,8 +256,8 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .fab-scrim.show{background:rgba(0,0,0,0.12);pointer-events:auto}
 
 /* Fullscreen player */
-.vplayer{position:fixed;inset:0;z-index:40;background:#000;display:none;flex-direction:column}
-.vplayer.on{display:flex}
+.vplayer{position:fixed;inset:0;z-index:40;background:#000;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
+.vplayer.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity var(--t-modal) var(--ease-out),visibility 0s}
 .vplayer img{width:100%;flex:1;object-fit:cover}
 .vplayer-controls{position:absolute;bottom:0;left:0;right:0;padding:20px 20px calc(20px + var(--safe-b));background:linear-gradient(transparent,rgba(0,0,0,0.7))}
 .vplayer-bar{width:100%;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin-bottom:12px;cursor:pointer}
@@ -266,8 +266,8 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .vplayer-close{position:absolute;top:calc(env(safe-area-inset-top,20px) + 12px);left:20px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;color:#fff;font-size:18px}
 
 /* AI Scan */
-.ai-scan{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;background:#0a0a0a}
-.ai-scan.on{display:flex}
+.ai-scan{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:#0a0a0a;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
+.ai-scan.on{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s}
 .ai-scan-header{padding:calc(env(safe-area-inset-top,20px) + 12px) 20px 16px;display:flex;justify-content:space-between;align-items:center}
 .ai-scan-vf{flex:1;display:flex;align-items:center;justify-content:center}
 .ai-scan-frame{width:240px;height:240px;border:2px solid rgba(255,255,255,0.2);border-radius:var(--r-xxl);position:relative;display:flex;align-items:center;justify-content:center}
@@ -309,8 +309,59 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .mc.flash{animation:mcFlash 800ms ease-out}
 @keyframes mcFlash{0%{transform:scale(1)}45%{transform:scale(1.14);box-shadow:0 0 0 6px rgba(15,15,15,0.10),inset 0 0.5px 0 rgba(0,0,0,0.04)}100%{transform:scale(1)}}
 
-.toast{position:fixed;bottom:calc(90px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:#fff;padding:10px 20px;border-radius:var(--r-pill);font-size:13px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.25);transition:transform 300ms cubic-bezier(0.4,0,0.2,1);z-index:999}
-.toast.show{transform:translateX(-50%) translateY(0)}
+.toast{position:fixed;bottom:calc(90px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(80px);background:var(--dark);color:#fff;padding:10px 20px;border-radius:var(--r-pill);font-size:13px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.25);transition:transform var(--t-modal) var(--ease-out),opacity var(--t-modal) var(--ease-out);z-index:999;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ========== Motion polish layer ========== */
+
+/* Page transition — fires when .vis is added on tab switch */
+.scr.vis{animation:pageIn var(--t-page) var(--ease-out)}
+@keyframes pageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Image fade-in for covers and thumbs (load + first paint) */
+.pcard-img img,.vcard img,.program-thumb img,.nm-thumb img{animation:imgIn var(--t-fast) var(--ease-out) both}
+@keyframes imgIn{from{opacity:0}to{opacity:1}}
+
+/* Tactile press feedback — subtle compress on tap */
+.pcard,.vcard,.tile,.ctx,.snav,.chip,.dy,.metric,.bnav-btn,.fab-ico,.fab-main,.av,.path-info,.htag{transition:transform var(--t-fast) var(--ease-out),box-shadow var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out),border-color var(--t-fast) var(--ease-out)}
+.pcard:active,.vcard:active,.tile:active,.ctx:active,.snav:active,.chip:active,.dy:active,.metric:active,.program-row:active,.next-move:active,.earned-chip:active,.path-step:active,.cd:active{transform:scale(0.985)}
+.bnav-btn:active,.fab-ico:active{transform:scale(0.94)}
+
+/* Text-button press dim */
+.theory-close:active,.program-close:active,.vplayer-close:active,.ai-scan-header div:last-child:active{opacity:0.55;transition:opacity var(--t-instant) var(--ease-out)}
+
+/* Action-button (Copy / Apply / shutter) press */
+.theory-copy,.img-prompt-copy,.scan-apply{transition:transform var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out)}
+.theory-copy:active,.img-prompt-copy:active,.scan-apply:active{transform:scale(0.97)}
+.scan-btn{transition:transform var(--t-fast) var(--ease-out)}
+.scan-btn:active{transform:scale(0.92)}
+
+/* Hover lifts on devices that actually hover (desktop) — no thumb-flicker on touch */
+@media (hover:hover) and (pointer:fine){
+  .pcard,.vcard,.tile,.ctx,.next-move,.program-row,.cd{transition:transform var(--t-hover) var(--ease-out),box-shadow var(--t-hover) var(--ease-out),background var(--t-hover) var(--ease-out),border-color var(--t-hover) var(--ease-out)}
+  .pcard:hover,.vcard:hover,.tile:hover,.cd:hover{transform:translateY(-2px)}
+  .next-move:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,0.4),0 12px 28px rgba(0,0,0,0.07),inset 0 0.5px 0 rgba(0,0,0,0.02)}
+  .program-row:hover{background:rgba(0,0,0,0.02)}
+  .ctx:hover{background:rgba(255,255,255,0.6)}
+  .snav:hover,.chip:hover,.dy:hover{border-color:rgba(0,0,0,0.16)}
+  .metric:hover .mc{box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),inset 0 -0.5px 0 rgba(0,0,0,0.05),0 0.5px 0 rgba(255,255,255,0.5),0 4px 12px rgba(0,0,0,0.05)}
+  .theory-close:hover,.program-close:hover{color:var(--text)}
+}
+
+/* Focus-visible rings for keyboard users — subtle accent halo */
+.pcard:focus-visible,.vcard:focus-visible,.tile:focus-visible,.ctx:focus-visible,.snav:focus-visible,.chip:focus-visible,.dy:focus-visible,.metric:focus-visible,.bnav-btn:focus-visible,.fab-main:focus-visible,.fab-ico:focus-visible,.next-move:focus-visible,.program-row:focus-visible,.earned-chip:focus-visible,.theory-copy:focus-visible,.img-prompt-copy:focus-visible,.scan-apply:focus-visible,.path-step:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Reduced-motion fallback — keep opacity transitions, kill movement */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  .toast,.theory-modal,.program-modal,.ai-scan,.vplayer{transition:opacity 120ms linear, visibility 0s !important;transform:none !important}
+  .scr.vis{animation:none !important}
+}
 </style>
 </head>
 <body>
