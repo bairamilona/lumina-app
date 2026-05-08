@@ -31,51 +31,67 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 
 /* Metrics ribbon — Zander style: clean, generous spacing, muted chrome */
 .metrics{display:flex;gap:10px;overflow-x:auto;padding:8px 20px 14px;justify-content:center}.metrics::-webkit-scrollbar{display:none}
-.metric{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;cursor:pointer}
-.mc{width:54px;height:54px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);box-shadow:0 0.5px 0 rgba(255,255,255,0.4),inset 0 0.5px 0 rgba(0,0,0,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all 200ms}
-.mc.face{width:64px;height:64px;border-width:1.5px;border-color:rgba(0,0,0,0.1);box-shadow:0 0.5px 0 rgba(255,255,255,0.4),inset 0 0.5px 0 rgba(0,0,0,0.06)}
+.metric{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;cursor:pointer}
+.mc{width:58px;height:58px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);box-shadow:0 0.5px 0 rgba(255,255,255,0.4),inset 0 0.5px 0 rgba(0,0,0,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all 200ms}
+.mc.face{width:68px;height:68px;border-width:1.5px;border-color:rgba(0,0,0,0.1);box-shadow:0 0.5px 0 rgba(255,255,255,0.4),inset 0 0.5px 0 rgba(0,0,0,0.06)}
 .mc.target{background:rgba(192,152,237,0.06);border-color:rgba(192,152,237,0.2);border-width:1px}
-.mc .v{font-size:17px;font-weight:700;line-height:1}.mc.face .v{font-size:21px;font-weight:800}
+.mc .v{font-size:19px;font-weight:700;line-height:1}.mc.face .v{font-size:23px;font-weight:800}
 .mc .ico{width:10px;height:10px;margin-bottom:-1px;color:var(--muted)}
-.ml{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:500}
-.md{font-size:10px;font-weight:600}.md.pos{color:var(--pos)}.md.neg{color:var(--neg)}.md.zero{color:var(--muted)}
+.ml{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:-0.1px}
+.md{font-size:12px;font-weight:600;letter-spacing:-0.1px}.md.pos{color:var(--pos)}.md.neg{color:var(--neg)}.md.zero{color:var(--muted)}
 .mbadge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;border-radius:50%;background:var(--neg);color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
 
-/* Score hero — engraved ring */
-.score-hero{display:flex;flex-direction:column;align-items:center;padding:6px 20px 14px}
+/* Score hero — engraved ring + Tune-up vertical slider */
+.hero-row{display:flex;align-items:center;gap:14px;padding:6px 20px 14px}
+.score-hero{flex:1;display:flex;flex-direction:column;align-items:center}
 .score-ring{position:relative;width:190px;height:190px}
 .score-ring .glow{position:absolute;inset:-1px;border-radius:50%;background:conic-gradient(from 220deg,rgba(15,15,15,0.12),rgba(60,60,70,0.08) 60%,rgba(200,200,210,0.02));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px),#000,transparent 100%);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px),#000,transparent 100%);opacity:0.3;filter:blur(1px)}
 .score-ring .track{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 220deg,rgba(15,15,15,0.45),rgba(60,60,70,0.25) 60%,rgba(200,200,210,0.06));mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px),#000 calc(100% - 0.5px),transparent 100%);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px),#000 calc(100% - 0.5px),transparent 100%);filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.4)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.15))}
 .score-ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .sn{font-size:72px;font-weight:800;letter-spacing:-4px;line-height:0.85}
-.sl{font-size:11px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;font-weight:500;margin-top:4px}
-.sd{font-size:14px;font-weight:600;margin-top:10px}
+.sl{font-size:13px;color:var(--muted);font-weight:500;margin-top:4px;letter-spacing:-0.1px}
+.sd{font-size:15px;font-weight:600;margin-top:10px}
+
+/* Tune-up slider — vertical glass pill, engraved, swipe to commit */
+.tune-slider{position:relative;width:64px;height:190px;border-radius:34px;background:rgba(255,255,255,0.45);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.55);box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.7),inset 0 -1px 0 rgba(0,0,0,0.05),inset 0 0 0 1px rgba(0,0,0,0.04),0 4px 14px rgba(0,0,0,0.04);flex-shrink:0;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+.ts-track{position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none}
+.ts-track::after{content:'';position:absolute;left:50%;top:108px;bottom:42px;width:1px;margin-left:-0.5px;background-image:repeating-linear-gradient(to bottom,rgba(15,15,15,0.10) 0 1px,transparent 1px 7px);border-radius:1px}
+.ts-label{position:absolute;top:74px;left:0;right:0;text-align:center;font-size:13px;font-weight:600;letter-spacing:-0.1px;color:rgba(15,15,15,0.32);text-shadow:0 1px 0 rgba(255,255,255,0.7);z-index:1;pointer-events:none;transition:opacity 320ms ease}
+.tune-slider.dragging .ts-label{opacity:0}
+.tune-slider.done .ts-label{opacity:0}
+.ts-eta{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:12px;font-weight:500;color:rgba(15,15,15,0.32);text-shadow:0 1px 0 rgba(255,255,255,0.7);z-index:1;pointer-events:none;transition:opacity 320ms}
+.tune-slider.dragging .ts-eta{opacity:0}
+.tune-slider.done .ts-eta{opacity:0}
+.ts-fill{position:absolute;left:0;right:0;top:0;height:0;background:linear-gradient(to bottom,rgba(192,152,237,0.20),rgba(97,205,149,0.28));z-index:0;border-radius:inherit;pointer-events:none;transition:height 280ms cubic-bezier(0.4,0,0.2,1)}
+.tune-slider.dragging .ts-fill{transition:none}
+.tune-slider.done .ts-fill{background:linear-gradient(to bottom,rgba(97,205,149,0.18),rgba(97,205,149,0.30))}
+.ts-thumb{position:absolute;left:4px;top:4px;width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,0.92);border:1px solid rgba(0,0,0,0.06);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 -1px 0 rgba(0,0,0,0.04),0 6px 14px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;color:var(--text);cursor:grab;z-index:2;transition:top 380ms cubic-bezier(0.34,1.56,0.64,1),transform 220ms ease,background 320ms,box-shadow 220ms}
+.ts-thumb svg{transition:transform 320ms ease}
+.tune-slider.dragging .ts-thumb{cursor:grabbing;transform:scale(1.04);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 -1px 0 rgba(0,0,0,0.04),0 14px 28px rgba(0,0,0,0.12);transition:transform 220ms,box-shadow 220ms}
+.tune-slider.done .ts-thumb{background:var(--pos);border-color:var(--pos);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.3),0 6px 18px rgba(97,205,149,0.35)}
+.tune-slider.done .ts-thumb svg{transform:rotate(-90deg) scale(0)}
 
 /* Score loop — closes the analyze→act→improve→see-result cycle */
-.score-loop{padding:0 20px 14px;display:flex;flex-direction:column;gap:10px}
-.loop-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 2px}
-.loop-eyebrow{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;font-weight:600}
-.loop-meta{font-size:10px;color:var(--muted);font-weight:500}
-.loop-meta .tu-pip{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--pos);margin:0 5px 1px;vertical-align:middle}
-.earned-strip{display:flex;gap:6px;overflow-x:auto;margin:0 -20px;padding:2px 20px 4px}
+.score-loop{padding:0 20px 16px;display:flex;flex-direction:column;gap:12px}
+.earned-strip{display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:2px 20px 4px}
 .earned-strip::-webkit-scrollbar{display:none}
-.earned-chip{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;padding:7px 12px 7px 10px;border-radius:var(--r-pill);background:rgba(97,205,149,0.10);border:1px solid rgba(97,205,149,0.18);font-size:12px;color:var(--text);font-weight:500;cursor:pointer;line-height:1}
-.earned-chip .ec-dot{width:5px;height:5px;border-radius:50%;background:var(--pos);flex-shrink:0;box-shadow:0 0 0 3px rgba(97,205,149,0.18)}
-.earned-chip .ec-delta{color:var(--pos);font-weight:700;font-size:11px;letter-spacing:-0.2px}
+.earned-chip{flex-shrink:0;display:inline-flex;align-items:center;gap:8px;padding:9px 14px 9px 12px;border-radius:var(--r-pill);background:rgba(97,205,149,0.10);border:1px solid rgba(97,205,149,0.18);font-size:14px;color:var(--text);font-weight:500;cursor:pointer;line-height:1;letter-spacing:-0.1px}
+.earned-chip .ec-dot{width:6px;height:6px;border-radius:50%;background:var(--pos);flex-shrink:0;box-shadow:0 0 0 3px rgba(97,205,149,0.18)}
+.earned-chip .ec-delta{color:var(--pos);font-weight:700;font-size:13px;letter-spacing:-0.2px}
 .earned-chip.new{animation:chipPop 600ms cubic-bezier(0.34,1.56,0.64,1)}
 @keyframes chipPop{0%{opacity:0;transform:scale(0.5) translateY(8px)}55%{opacity:1;transform:scale(1.12) translateY(0)}100%{transform:scale(1)}}
 
-.next-move{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;background:rgba(255,255,255,0.7);backdrop-filter:blur(14px);border-radius:var(--r-xl);border:1px solid rgba(255,255,255,0.6);box-shadow:0 1px 0 rgba(255,255,255,0.4),0 8px 24px rgba(0,0,0,0.05),inset 0 0.5px 0 rgba(0,0,0,0.02);cursor:pointer;position:relative;overflow:hidden;transition:transform 200ms}
+.next-move{display:flex;align-items:center;gap:12px;padding:12px 16px 12px 12px;background:rgba(255,255,255,0.7);backdrop-filter:blur(14px);border-radius:var(--r-xl);border:1px solid rgba(255,255,255,0.6);box-shadow:0 1px 0 rgba(255,255,255,0.4),0 8px 24px rgba(0,0,0,0.05),inset 0 0.5px 0 rgba(0,0,0,0.02);cursor:pointer;position:relative;overflow:hidden;transition:transform 200ms}
 .next-move:active{transform:scale(0.985)}
 .next-move::after{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 100% 50%,rgba(192,152,237,0.10),transparent 55%);pointer-events:none}
-.nm-thumb{width:46px;height:46px;border-radius:14px;overflow:hidden;flex-shrink:0;position:relative}
+.nm-thumb{width:52px;height:52px;border-radius:14px;overflow:hidden;flex-shrink:0;position:relative}
 .nm-thumb img{width:100%;height:100%;object-fit:cover}
 .nm-info{flex:1;min-width:0;position:relative;z-index:1}
-.nm-eyebrow{font-size:9px;color:var(--accent);text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
-.nm-title{font-size:15px;font-weight:700;letter-spacing:-0.3px;line-height:1.2;margin-top:2px;color:var(--text)}
-.nm-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.nm-eyebrow{font-size:13px;font-weight:500;color:var(--accent);letter-spacing:-0.1px;margin-bottom:1px}
+.nm-title{font-size:17px;font-weight:700;letter-spacing:-0.3px;line-height:1.15;color:var(--text)}
+.nm-meta{font-size:13px;color:var(--muted);margin-top:3px;letter-spacing:-0.1px;font-weight:500}
 .nm-delta{display:flex;align-items:center;gap:6px;color:var(--pos);font-weight:800;flex-shrink:0;position:relative;z-index:1}
-.nm-plus{font-size:18px;letter-spacing:-0.5px;line-height:1}
+.nm-plus{font-size:20px;letter-spacing:-0.5px;line-height:1}
 .next-move.done .nm-thumb{background:rgba(97,205,149,0.15);display:flex;align-items:center;justify-content:center}
 .next-move.done .nm-eyebrow{color:var(--pos)}
 .score-hero .sn{transition:color 240ms}
@@ -86,11 +102,11 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .snav-icon{width:30px;padding:0;justify-content:center}
 
 /* Context widgets */
-.ctx-row{display:flex;gap:8px;padding:0 20px;margin-bottom:12px}
-.ctx{flex:1;background:rgba(255,255,255,0.45);backdrop-filter:blur(12px);border-radius:var(--r-lg);padding:10px 8px;border:1px solid rgba(255,255,255,0.5);box-shadow:0 0.5px 0 rgba(255,255,255,0.3),inset 0 0.5px 0 rgba(0,0,0,0.02);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
-.ctx-ico{width:20px;height:20px;color:var(--sec);margin-bottom:1px}
-.ctx-val{font-size:15px;font-weight:700;line-height:1}
-.ctx-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:500}
+.ctx-row{display:flex;gap:8px;padding:0 20px;margin-bottom:14px}
+.ctx{flex:1;background:rgba(255,255,255,0.45);backdrop-filter:blur(12px);border-radius:var(--r-lg);padding:12px 8px;border:1px solid rgba(255,255,255,0.5);box-shadow:0 0.5px 0 rgba(255,255,255,0.3),inset 0 0.5px 0 rgba(0,0,0,0.02);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.ctx-ico{width:22px;height:22px;color:var(--sec);margin-bottom:2px}
+.ctx-val{font-size:16px;font-weight:700;line-height:1;letter-spacing:-0.2px}
+.ctx-lbl{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:-0.1px}
 
 /* Practice cards */
 .pcard{width:150px;flex-shrink:0;cursor:pointer}
@@ -240,15 +256,22 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
     <div id="s-score" class="scr vis">
       <div class="hdr"><div class="logo">Lumina <span>Club</span></div><div class="av"></div></div>
       <div class="metrics" id="metricsRow"></div>
-      <div class="score-hero" style="padding:6px 20px 8px;display:flex;flex-direction:column;align-items:center">
-        <div class="score-ring"><div class="glow"></div><div class="track"></div><div class="center"><div class="sl">Score</div><div class="sn" id="scoreNum">73</div></div></div>
-        <div class="sd" id="scoreDelta" style="color:var(--pos)">+1.5 today</div>
+      <div class="hero-row">
+        <div class="score-hero">
+          <div class="score-ring"><div class="glow"></div><div class="track"></div><div class="center"><div class="sl">Score</div><div class="sn" id="scoreNum">73</div></div></div>
+          <div class="sd" id="scoreDelta" style="color:var(--pos)">+1.5 today</div>
+        </div>
+        <div class="tune-slider" id="tuneSlider">
+          <div class="ts-track"></div>
+          <div class="ts-fill" id="tsFill"></div>
+          <div class="ts-label">Tune up</div>
+          <div class="ts-eta" id="tsEta">in 4h</div>
+          <div class="ts-thumb" id="tsThumb">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5 5 5-5"/></svg>
+          </div>
+        </div>
       </div>
       <div class="score-loop">
-        <div class="loop-head">
-          <span class="loop-eyebrow">Today so far</span>
-          <span class="loop-meta"><span id="earnedTotal">3 of 6</span><span class="tu-pip"></span>Tune-up in 4h</span>
-        </div>
         <div class="earned-strip" id="earnedStrip"></div>
         <div class="next-move" id="nextMove"></div>
       </div>
@@ -262,10 +285,6 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
       <div style="padding:0 20px 8px;display:flex;justify-content:space-between;align-items:center"><div style="font-size:22px;font-weight:800;letter-spacing:-0.5px">Today routine</div><div style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);cursor:pointer" onclick="toast('Program info')">i</div></div>
       <div style="padding:0 20px 14px"><div style="display:flex;align-items:center;gap:8px;padding:14px 16px;background:rgba(255,255,255,0.5);backdrop-filter:blur(12px);border-radius:var(--r-xl);border:1px solid rgba(255,255,255,0.5);box-shadow:0 0.5px 0 rgba(255,255,255,0.3),inset 0 0.5px 0 rgba(0,0,0,0.02);cursor:pointer" onclick="toast('Plan details')"><div style="position:relative"><svg width="14" height="14" viewBox="0 0 14 14" fill="var(--accent)"><path d="M7 0l2 4.5 4.5.5-3.5 3 1 4.5L7 10.5 3 12.5l1-4.5L.5 5l4.5-.5L7 0z"/></svg><div style="width:6px;height:6px;border-radius:50%;background:var(--pos);position:absolute;top:-2px;right:-2px;border:1.5px solid var(--card)"></div></div><div style="flex:1"><div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:500">Today's Plan</div><div style="font-size:13px;font-weight:500;color:var(--sec);margin-top:1px">Lymph priority · luteal phase</div></div><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--light)" stroke-width="1.5" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></div></div>
       <div class="sr" id="practiceRow" style="margin-bottom:16px"></div>
-      <div class="tile-row">
-        <div class="tile" onclick="toast('Food details')"><div class="tile-plan"><div class="tile-plan-dot"></div><div class="tile-plan-text">3 · try this</div></div><div class="tile-head"><svg class="tile-head-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M5 6v12a2 2 0 002 2h10a2 2 0 002-2V6"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg><div class="tile-head-lbl">Food</div></div><div class="tile-slots"><div class="tile-slot" id="foodSlot1"></div><div class="tile-slot">+</div><div class="tile-slot">+</div></div><div class="tile-footer"><span style="color:var(--muted)">1 meal</span><span style="font-weight:700;color:var(--pos)">+0.5</span></div></div>
-        <div class="tile" onclick="toast('Skincare details')"><div class="tile-plan"><div class="tile-plan-dot"></div><div class="tile-plan-text">2 · for you</div></div><div class="tile-head"><svg class="tile-head-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 2C8 2 5 5 5 9v6c0 2 1 3 3 4h8c2-1 3-2 3-4V9c0-4-3-7-7-7z"/><path d="M9 22h6"/></svg><div class="tile-head-lbl">Skincare</div></div><div class="tile-slots"><div class="tile-slot">+</div><div class="tile-slot">+</div><div class="tile-slot">+</div></div><div class="tile-footer"><span style="color:var(--muted)">0 products</span><span style="font-weight:700;color:var(--muted)">+0</span></div></div>
-      </div>
     </div>
 
     <!-- CHALLENGE -->
@@ -353,6 +372,58 @@ document.getElementById('fi1').innerHTML=FAB_ICONS.face.replace(/currentColor/g,
 document.getElementById('fi2').innerHTML=FAB_ICONS.food.replace(/currentColor/g,'var(--fab-food)');
 document.getElementById('fi3').innerHTML=FAB_ICONS.ingr.replace(/currentColor/g,'var(--fab-ingr)');
 
+// Tune-up slider — vertical glass pill, swipe-to-commit. Smooth thumb drag, snap-back if released early, settle to bottom + commit when threshold crossed.
+(function(){
+  const slider=document.getElementById('tuneSlider');
+  const thumb=document.getElementById('tsThumb');
+  const fill=document.getElementById('tsFill');
+  if(!slider||!thumb||!fill) return;
+  const TOP=4, BOT_INSET=4;
+  function maxTop(){return slider.offsetHeight - thumb.offsetHeight - BOT_INSET}
+  let dragging=false, startY=0, startTop=TOP, committed=false;
+  function setTop(px){thumb.style.top=px+'px';fill.style.height=(px+thumb.offsetHeight/2)+'px'}
+  setTop(TOP);
+  function onDown(e){
+    if(committed) return;
+    dragging=true;
+    startY=e.clientY;
+    startTop=parseFloat(thumb.style.top)||TOP;
+    slider.classList.add('dragging');
+    thumb.setPointerCapture(e.pointerId);
+  }
+  function onMove(e){
+    if(!dragging) return;
+    const m=maxTop();
+    let next=startTop+(e.clientY-startY);
+    next=Math.max(TOP,Math.min(m,next));
+    setTop(next);
+  }
+  function onUp(){
+    if(!dragging) return;
+    dragging=false;
+    slider.classList.remove('dragging');
+    const m=maxTop();
+    const cur=parseFloat(thumb.style.top)||TOP;
+    const frac=(cur-TOP)/(m-TOP);
+    if(frac>0.82){
+      setTop(m);
+      committed=true;
+      slider.classList.add('done');
+      setTimeout(commitTuneUp,260);
+    } else {
+      setTop(TOP);
+    }
+  }
+  thumb.addEventListener('pointerdown',onDown);
+  thumb.addEventListener('pointermove',onMove);
+  thumb.addEventListener('pointerup',onUp);
+  thumb.addEventListener('pointercancel',onUp);
+})();
+function commitTuneUp(){
+  toast('Tune-up — recalibrating');
+  setTimeout(()=>openScan('face'),420);
+}
+
 // Score loop state — single source of truth for the analyze→act→improve→see-result cycle
 let scoreVal=73, scoreDelta=1.5;
 const TOTAL_AVAILABLE=6;
@@ -370,7 +441,7 @@ const VIDEO_REWARD={'neck-stretch':0.5,'cheekbone-lift':1.0,'forehead-smoothing'
 const VIDEO_LABEL={'neck-stretch':'Neck stretch','cheekbone-lift':'Buccal massage','forehead-smoothing':'Cold splash','morning-wakeup':'Morning wake-up','pre-event':'Pre-event glow','post-flight':'Post-flight','post-party':'Post-party','post-workout':'Post-workout','pre-photoshoot':'Pre-photoshoot','headache-ease':'Headache ease','sinus-clear':'Sinus clear','lymphatic-drainage':'Lymphatic','jawline-sculpt':'Jawline sculpt','buccal-massage':'Buccal massage'};
 
 const earnedStripEl=document.getElementById('earnedStrip');
-const earnedTotalEl=document.getElementById('earnedTotal');
+const earnedTotalEl=document.getElementById('earnedTotal'); // null when loop-head removed
 const nextMoveEl=document.getElementById('nextMove');
 const scoreNumEl=document.getElementById('scoreNum');
 const scoreDeltaEl=document.getElementById('scoreDelta');
@@ -385,7 +456,7 @@ function renderEarned(animateLast){
     c.innerHTML=`<span class="ec-dot"></span><span>${e.action}</span><span class="ec-delta">+${e.delta.toFixed(1)}</span>`;
     earnedStripEl.appendChild(c);
   });
-  earnedTotalEl.textContent=earned.length+' of '+TOTAL_AVAILABLE;
+  if(earnedTotalEl) earnedTotalEl.textContent=earned.length+' of '+TOTAL_AVAILABLE;
   if(animateLast){requestAnimationFrame(()=>{earnedStripEl.scrollTo({left:earnedStripEl.scrollWidth,behavior:'smooth'})});}
 }
 function renderNextMove(){
@@ -626,7 +697,7 @@ const ctxRow=document.getElementById('ctxRow');
 });
 
 // Food slot
-document.getElementById('foodSlot1').innerHTML=`<img src="${APPLE_IMG}" alt="">`;
+{const _fs=document.getElementById('foodSlot1');if(_fs)_fs.innerHTML=`<img src="${APPLE_IMG}" alt="">`;}
 
 // Practice cards
 const pr=document.getElementById('practiceRow');
