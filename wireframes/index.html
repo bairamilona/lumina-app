@@ -32,9 +32,9 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 /* Metrics ribbon — confident horizontal row above the hero */
 .metrics{display:flex;gap:10px;overflow-x:auto;padding:8px 20px 14px;justify-content:center}.metrics::-webkit-scrollbar{display:none}
 .metric{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;cursor:pointer}
-.mc{width:58px;height:58px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);background:linear-gradient(to bottom,rgba(255,255,255,0.6),rgba(255,255,255,0.4));box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),inset 0 -0.5px 0 rgba(0,0,0,0.04),0 0.5px 0 rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;position:relative;transition:all 200ms;backdrop-filter:blur(10px)}
-.mc.face{width:68px;height:68px;border-width:1.5px;border-color:rgba(0,0,0,0.1)}
-.mc.target{background:linear-gradient(to bottom,rgba(192,152,237,0.10),rgba(192,152,237,0.04));border-color:rgba(192,152,237,0.32);border-width:1px}
+.mc{width:58px;height:58px;border-radius:50%;border:1px solid rgba(0,0,0,0.10);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),inset 0 -0.5px 0 rgba(0,0,0,0.05),0 0.5px 0 rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;position:relative;transition:all 200ms}
+.mc.face{width:68px;height:68px;border-width:1.5px;border-color:rgba(0,0,0,0.14)}
+.mc.target{border-color:rgba(192,152,237,0.40);border-width:1px}
 .mc .v{font-size:19px;font-weight:700;line-height:1;color:var(--text);text-shadow:0 1px 0 rgba(255,255,255,0.5)}.mc.face .v{font-size:23px;font-weight:800}
 .mc .ico{width:10px;height:10px;margin-bottom:-1px;color:var(--muted)}
 .ml{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:-0.1px}
@@ -178,7 +178,9 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .fab-lbl{padding:7px 14px;border-radius:var(--r-pill);background:rgba(15,15,15,0.88);backdrop-filter:blur(12px);color:#fff;font-size:13px;font-weight:500;white-space:nowrap;border:1px solid rgba(255,255,255,0.04)}
 .fab-ico{width:46px;height:46px;border-radius:50%;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 200ms;border:1px solid rgba(255,255,255,0.06)}
 .fab-ico:hover{transform:scale(1.1)}
-.fab-main{width:56px;height:56px;border-radius:50%;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;box-shadow:0 6px 28px rgba(0,0,0,0.3);transition:transform 350ms cubic-bezier(0.34,1.56,0.64,1),background 200ms;border:1px solid rgba(255,255,255,0.06);position:relative;z-index:2;color:#fff;font-size:16px;font-weight:800}
+.fab-main{width:56px;height:56px;border-radius:50%;background:var(--dark);display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;box-shadow:0 6px 28px rgba(0,0,0,0.3);transition:transform 350ms cubic-bezier(0.34,1.56,0.64,1),background 200ms;border:1px solid rgba(255,255,255,0.06);position:relative;z-index:2;color:#fff}
+.fab-cam{display:block}
+.fab-badge{position:absolute;top:-3px;right:-3px;background:#fff;color:var(--text);font-size:9px;font-weight:800;letter-spacing:-0.1px;padding:3px 6px;border-radius:8px;line-height:1;font-family:var(--font);box-shadow:0 2px 6px rgba(0,0,0,0.18);border:1px solid rgba(0,0,0,0.04)}
 .fab-main:hover{transform:scale(1.06)}
 .fab-main.open{background:#2D3748}
 .fab-main::after{content:'';position:absolute;inset:-6px;border-radius:50%;background:radial-gradient(circle,rgba(192,152,237,0.25),transparent 70%);opacity:0;transition:opacity 300ms;pointer-events:none}
@@ -264,16 +266,6 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
           <div class="score-ring"><div class="glow"></div><div class="track"></div><div class="center"><div class="sl">Score</div><div class="sn" id="scoreNum">73</div></div></div>
           <div class="sd" id="scoreDelta">+1.5 today</div>
         </div>
-        <div class="tune-slider" id="tuneSlider">
-          <div class="ts-track"></div>
-          <div class="ts-fill" id="tsFill"></div>
-          <div class="ts-label">Tune up</div>
-          <div class="ts-eta" id="tsEta">in 4h</div>
-          <div class="ts-thumb" id="tsThumb">
-            <svg class="ts-chevron" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg>
-            <svg class="ts-check" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg>
-          </div>
-        </div>
       </div>
       <div class="score-loop">
         <div class="earned-strip" id="earnedStrip"></div>
@@ -317,7 +309,10 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
   <div class="fab-sub" id="fs1"><span class="fab-lbl">AI Face Scan</span><div class="fab-ico" onclick="openScan('face')" id="fi1"></div></div>
   <div class="fab-sub" id="fs2"><span class="fab-lbl">AI Food Scan</span><div class="fab-ico" onclick="openScan('food')" id="fi2"></div></div>
   <div class="fab-sub" id="fs3"><span class="fab-lbl">AI Ingredients</span><div class="fab-ico" onclick="openScan('ingr')" id="fi3"></div></div>
-  <div class="fab-main" id="fabBtn" onclick="toggleFab()">AI</div>
+  <div class="fab-main" id="fabBtn" onclick="toggleFab()">
+    <svg class="fab-cam" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 012-2h2.5l1.5-2h6l1.5 2H19a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/><circle cx="12" cy="13" r="3.5"/></svg>
+    <span class="fab-badge">AI</span>
+  </div>
 </div>
 
 <div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
