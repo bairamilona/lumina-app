@@ -29,22 +29,27 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .hdr .logo{font-size:20px;font-weight:700;letter-spacing:-0.5px}.hdr .logo span{font-weight:300}
 .av{width:34px;height:34px;border-radius:var(--r-pill);background:rgba(0,0,0,0.06)}
 
-/* Metrics ribbon — Zander style: clean, generous spacing, muted chrome */
-.metrics{display:flex;gap:10px;overflow-x:auto;padding:8px 20px 14px;justify-content:center}.metrics::-webkit-scrollbar{display:none}
-.metric{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;cursor:pointer}
-.mc{width:58px;height:58px;border-radius:50%;border:1px solid rgba(0,0,0,0.08);box-shadow:0 0.5px 0 rgba(255,255,255,0.4),inset 0 0.5px 0 rgba(0,0,0,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:all 200ms}
-.mc.face{width:68px;height:68px;border-width:1.5px;border-color:rgba(0,0,0,0.1);box-shadow:0 0.5px 0 rgba(255,255,255,0.4),inset 0 0.5px 0 rgba(0,0,0,0.06)}
-.mc.target{background:rgba(192,152,237,0.06);border-color:rgba(192,152,237,0.2);border-width:1px}
-.mc .v{font-size:19px;font-weight:700;line-height:1}.mc.face .v{font-size:23px;font-weight:800}
-.mc .ico{width:10px;height:10px;margin-bottom:-1px;color:var(--muted)}
+/* Metrics — orbital arcs around the Score ring */
+.metrics{position:absolute;inset:0;pointer-events:none}
+.metric{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;pointer-events:auto;transform:translate(-50%,-50%)}
+.metric .ml-wrap{display:none}
+.mc{border-radius:50%;background:linear-gradient(to bottom,rgba(255,255,255,0.6),rgba(255,255,255,0.4));border:1px solid rgba(0,0,0,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),inset 0 -0.5px 0 rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.03);display:flex;align-items:center;justify-content:center;position:relative;transition:transform 220ms,box-shadow 240ms;backdrop-filter:blur(10px)}
+.mc.inner{width:50px;height:50px}
+.mc.outer{width:40px;height:40px}
+.mc.face{border-width:1.5px;border-color:rgba(0,0,0,0.12)}
+.mc.target{background:linear-gradient(to bottom,rgba(192,152,237,0.10),rgba(192,152,237,0.04));border-color:rgba(192,152,237,0.32)}
+.mc .v{font-weight:700;line-height:1;letter-spacing:-0.3px;color:var(--text);text-shadow:0 1px 0 rgba(255,255,255,0.5)}
+.mc.inner .v{font-size:17px}
+.mc.outer .v{font-size:14px;font-weight:800}
 .ml{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:-0.1px}
 .md{font-size:12px;font-weight:700;letter-spacing:-0.1px}.md.pos{color:var(--text)}.md.neg{color:var(--neg)}.md.zero{color:var(--muted)}
 .mbadge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;border-radius:50%;background:var(--neg);color:#fff;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
 
-/* Score hero — engraved ring + Tune-up vertical slider, symmetric edge insets */
-.hero-row{display:flex;align-items:center;justify-content:space-between;padding:6px 20px 14px}
-.score-hero{width:190px;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
-.score-ring{position:relative;width:190px;height:190px}
+/* Score hero — orbital metrics around the ring + Tune-up slider on the right */
+.hero-row{display:flex;align-items:flex-end;justify-content:space-between;padding:6px 20px 18px}
+.score-hero{position:relative;width:270px;height:294px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:center}
+.score-stage{position:relative;width:270px;height:270px}
+.score-ring{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:190px;height:190px}
 .score-ring .glow{position:absolute;inset:-1px;border-radius:50%;background:conic-gradient(from 220deg,rgba(15,15,15,0.12),rgba(60,60,70,0.08) 60%,rgba(200,200,210,0.02));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px),#000,transparent 100%);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px),#000,transparent 100%);opacity:0.3;filter:blur(1px)}
 .score-ring .track{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 220deg,rgba(15,15,15,0.45),rgba(60,60,70,0.25) 60%,rgba(200,200,210,0.06));mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px),#000 calc(100% - 0.5px),transparent 100%);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2px),#000 calc(100% - 1.5px),#000 calc(100% - 0.5px),transparent 100%);filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.4)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.15))}
 .score-ring .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -65,7 +70,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .ts-fill{position:absolute;left:0;right:0;top:0;height:0;background:linear-gradient(to bottom,rgba(15,15,15,0.04),rgba(15,15,15,0.10));z-index:0;border-radius:inherit;pointer-events:none;transition:height 280ms cubic-bezier(0.4,0,0.2,1)}
 .tune-slider.dragging .ts-fill{transition:none}
 .tune-slider.done .ts-fill{background:linear-gradient(to bottom,rgba(15,15,15,0.06),rgba(15,15,15,0.14))}
-.ts-thumb{position:absolute;left:4px;top:4px;width:42px;height:42px;border-radius:50%;background:linear-gradient(to bottom,#fff,rgba(255,255,255,0.92));border:1px solid rgba(0,0,0,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(0,0,0,0.06),0 4px 10px rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;color:var(--text);cursor:grab;z-index:2;transition:top 380ms cubic-bezier(0.34,1.56,0.64,1),transform 220ms ease,background 320ms,box-shadow 220ms}
+.ts-thumb{position:absolute;left:4px;top:4px;width:42px;height:42px;border-radius:50%;background:linear-gradient(to bottom,#fff,rgba(255,255,255,0.92));border:1px solid rgba(0,0,0,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(0,0,0,0.06),0 4px 10px rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;color:var(--text);cursor:grab;z-index:2;transition:top 460ms cubic-bezier(0.175,0.885,0.32,1.475),transform 220ms ease,background 320ms,box-shadow 220ms}
 .ts-thumb svg{transition:transform 320ms ease}
 .tune-slider.dragging .ts-thumb{cursor:grabbing;transform:scale(1.05);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(0,0,0,0.06),0 12px 24px rgba(0,0,0,0.16);transition:transform 220ms,box-shadow 220ms}
 .tune-slider.done .ts-thumb{background:linear-gradient(to bottom,var(--text),var(--dark));border-color:var(--dark);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),inset 0 -1px 0 rgba(0,0,0,0.4),0 4px 12px rgba(0,0,0,0.20)}
@@ -255,11 +260,13 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
     <!-- SCORE -->
     <div id="s-score" class="scr vis">
       <div class="hdr"><div class="logo">Lumina <span>Club</span></div><div class="av"></div></div>
-      <div class="metrics" id="metricsRow"></div>
       <div class="hero-row">
         <div class="score-hero">
-          <div class="score-ring"><div class="glow"></div><div class="track"></div><div class="center"><div class="sl">Score</div><div class="sn" id="scoreNum">73</div></div></div>
-          <div class="sd" id="scoreDelta">+1.5 today</div>
+          <div class="score-stage">
+            <div class="metrics" id="metricsRow"></div>
+            <div class="score-ring"><div class="glow"></div><div class="track"></div><div class="center"><div class="sl">Score</div><div class="sn" id="scoreNum">73</div></div></div>
+          </div>
+          <div class="sd" id="scoreDelta" style="position:absolute;bottom:0;left:50%;transform:translateX(-50%)">+1.5 today</div>
         </div>
         <div class="tune-slider" id="tuneSlider">
           <div class="ts-track"></div>
@@ -398,6 +405,19 @@ document.getElementById('fi3').innerHTML=FAB_ICONS.ingr.replace(/currentColor/g,
     next=Math.max(TOP,Math.min(m,next));
     setTop(next);
   }
+  function springTo(target,{overshoot=8,settle=4,stage1=180,stage2=160,stage3=200}={}){
+    // Three-stage bounce: travel→overshoot→rebound→settle
+    thumb.style.transition=`top ${stage1}ms cubic-bezier(0.32,0,0.67,0)`;
+    setTop(target+overshoot);
+    setTimeout(()=>{
+      thumb.style.transition=`top ${stage2}ms cubic-bezier(0.34,1.56,0.64,1)`;
+      setTop(target-settle);
+      setTimeout(()=>{
+        thumb.style.transition=`top ${stage3}ms cubic-bezier(0.25,0.46,0.45,0.94)`;
+        setTop(target);
+      },stage2);
+    },stage1);
+  }
   function onUp(){
     if(!dragging) return;
     dragging=false;
@@ -406,12 +426,13 @@ document.getElementById('fi3').innerHTML=FAB_ICONS.ingr.replace(/currentColor/g,
     const cur=parseFloat(thumb.style.top)||TOP;
     const frac=(cur-TOP)/(m-TOP);
     if(frac>0.82){
-      setTop(m);
       committed=true;
       slider.classList.add('done');
-      setTimeout(commitTuneUp,260);
+      springTo(m,{overshoot:6,settle:3});
+      setTimeout(commitTuneUp,420);
     } else {
-      setTop(TOP);
+      // Snap-back with subtle bounce towards the top
+      springTo(TOP,{overshoot:-5,settle:-2,stage1:200,stage2:160,stage3:200});
     }
   }
   thumb.addEventListener('pointerdown',onDown);
@@ -505,30 +526,41 @@ function closePlayer(){document.getElementById('vplayer').classList.remove('on')
 function togglePlay(){if(!curVid)return;playing=!playing;if(playing){playInt=setInterval(()=>{wd[curVid].p=Math.min(100,wd[curVid].p+2);document.getElementById('vpFill').style.width=wd[curVid].p+'%';if(wd[curVid].p>=100){clearInterval(playInt);playing=false;const k=curVid;commitCompletion(k);setTimeout(closePlayer,800)}},200)}else if(playInt)clearInterval(playInt)}
 function seekVideo(e){const r=e.currentTarget.getBoundingClientRect();wd[curVid].p=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));document.getElementById('vpFill').style.width=wd[curVid].p+'%'}
 
-// METRICS — live state, rerendered after each scan
+// METRICS — live state + orbital arc layout around the Score ring
 const metricsState={face:71,firm:68,glow:75,smooth:62,clear:80,define:58};
 const metricsDelta={face:null,firm:'+0.5',glow:'+1.0',smooth:'-0.5',clear:'+0',define:'+1.5'};
+// Two arcs around the ring. Inner = 4 component metrics (50px). Outer = Face + Define (40px, staggered between inner angles).
 const metricsConfig=[
-  {id:'face',label:'Face',isFace:true,issues:3},
-  {id:'firm',label:'Firm'},
-  {id:'glow',label:'Glow'},
-  {id:'smooth',label:'Smooth'},
-  {id:'clear',label:'Clear'},
-  {id:'define',label:'Define',isTarget:true}
+  {id:'face',label:'Face',ring:'outer',angle:-30,issues:3,isFace:true},
+  {id:'firm',label:'Firm',ring:'inner',angle:-46},
+  {id:'glow',label:'Glow',ring:'inner',angle:-15},
+  {id:'smooth',label:'Smooth',ring:'inner',angle:15},
+  {id:'clear',label:'Clear',ring:'inner',angle:46},
+  {id:'define',label:'Define',ring:'outer',angle:30,isTarget:true}
 ];
+const STAGE_W=270, STAGE_H=270, RING_R=95;
+const RING_CX=STAGE_W/2, RING_CY=STAGE_H-RING_R; // ring center: ring is bottom-anchored in stage
+const ARCS={inner:RING_R+33, outer:RING_R+63}; // outside the ring + breathing gap; outer further out
 const mr=document.getElementById('metricsRow');
 function renderMetrics(){
   mr.innerHTML='';
   metricsConfig.forEach(m=>{
     const val=metricsState[m.id], delta=metricsDelta[m.id];
-    const cls=m.isFace?'mc face':m.isTarget?'mc target':'mc';
+    const cls='mc '+m.ring+(m.isFace?' face':'')+(m.isTarget?' target':'');
     const badge=m.issues?`<div class="mbadge">${m.issues}</div>`:'';
     let dh='';
     if(delta){const p=delta.startsWith('+')&&delta!=='+0';const n=delta.startsWith('-');dh=`<div class="md ${p?'pos':n?'neg':'zero'}">${delta}</div>`}
     const el=document.createElement('div');
     el.className='metric';
     el.onclick=()=>toast(m.label+' '+val);
-    el.innerHTML=`<div class="${cls}" data-mc="${m.id}"><div class="v">${val}</div>${badge}</div><div class="ml">${m.label}</div>${dh}`;
+    el.innerHTML=`<div class="${cls}" data-mc="${m.id}"><div class="v">${val}</div>${badge}</div><div class="ml-wrap"><div class="ml">${m.label}</div>${dh}</div>`;
+    // Place on arc
+    const r=ARCS[m.ring];
+    const a=m.angle*Math.PI/180;
+    const cx=RING_CX + r*Math.sin(a);
+    const cy=RING_CY - r*Math.cos(a);
+    el.style.left=cx+'px';
+    el.style.top=cy+'px';
     mr.appendChild(el);
   });
 }
