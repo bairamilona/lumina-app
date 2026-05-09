@@ -301,6 +301,32 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .scan-result-detail{font-size:13px;color:rgba(255,255,255,0.75);text-align:center;line-height:1.5;margin-top:4px}
 .scan-result-detail strong{color:#fff;font-weight:600}
 .scan-apply{display:none;width:100%;padding:16px;border-radius:var(--r-pill);border:none;background:#fff;color:var(--dark);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:-0.1px}
+
+/* Per-sub-score impact grid (food / ingredient scan) */
+.scan-impact-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:18px 0 0}
+.scan-impact-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 4px;border-radius:var(--r-lg);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);min-height:78px}
+.scan-impact-cell .lbl{font-size:11px;color:rgba(255,255,255,0.55);font-weight:500;letter-spacing:-0.1px;text-align:center;line-height:1.1}
+.scan-impact-cell .d{font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#fff;line-height:1}
+.scan-impact-cell .d.zero{color:rgba(255,255,255,0.28)}
+.scan-impact-cell .d.neg{color:rgb(255,140,124)}
+.scan-impact-cell .hrs{font-size:10px;color:rgba(255,255,255,0.4);font-weight:500;letter-spacing:-0.1px;line-height:1}
+.scan-impact-total{display:flex;justify-content:space-between;align-items:center;padding:14px 4px 14px;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);margin:14px 0 16px}
+.scan-impact-total .lbl{font-size:13px;color:rgba(255,255,255,0.7);font-weight:600;letter-spacing:-0.1px}
+.scan-impact-total .v{font-size:20px;font-weight:800;letter-spacing:-0.4px;color:#fff;line-height:1}
+.scan-impact-total .v.neg{color:rgb(255,140,124)}
+.scan-impact-total .v.zero{color:rgba(255,255,255,0.4)}
+
+/* Pair / Compensate-now practice suggestion card */
+.scan-pair{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:var(--r-xl);background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);cursor:pointer;transition:transform var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out)}
+.scan-pair:active{transform:scale(0.985)}
+.scan-pair-thumb{width:46px;height:46px;border-radius:12px;overflow:hidden;flex-shrink:0}
+.scan-pair-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.scan-pair-info{flex:1;min-width:0}
+.scan-pair-eyebrow{font-size:13px;color:rgba(255,255,255,0.55);font-weight:500;letter-spacing:-0.1px}
+.scan-pair-title{font-size:16px;font-weight:700;letter-spacing:-0.2px;color:#fff;margin-top:2px}
+.scan-pair-meta{font-size:13px;color:rgba(255,255,255,0.55);margin-top:2px;font-weight:500;letter-spacing:-0.1px}
+.scan-pair-arrow{color:rgba(255,255,255,0.5);flex-shrink:0}
+@media (hover:hover) and (pointer:fine){.scan-pair:hover{background:rgba(255,255,255,0.09)}}
 .ai-scan.result .scan-apply{display:block}
 .ai-scan.result .scan-btn{display:none}
 
@@ -1217,12 +1243,26 @@ function generateScanResult(type){
     return {type:'face',changes,oldVals,newVals,oldFace,newFace,scoreDelta:Math.max(0.5,Math.round(overallDelta*10)/10)};
   }
   if(type==='food'){
-    // Apple → light positive on Definition + Glow (active mod, 24h)
-    return {type:'food',label:'Apple snack',verdict:'Light · alkaline',img:APPLE_IMG,scoreDelta:0.5,sub:'define',hours:24,detail:'Hydrating · low glycemic · fits luteal phase'};
+    // Per-sub-score breakdown: how this item touches each axis, with hours-to-decay
+    return {
+      type:'food',label:'Apple snack',verdict:'Light · alkaline',img:APPLE_IMG,
+      impact:{firm:0,glow:0.3,smooth:0,clear:0,define:0.5},
+      hours:{glow:18,define:24},
+      detail:'Hydrating · low glycemic · fits luteal phase',
+      pair:{key:'cheekbone-lift',verb:'Pair with',why:'pushes Definition further'}
+    };
   }
-  // Ingredient → Niacinamide on Smoothness (texture)
-  return {type:'ingr',label:'Niacinamide 5%',verdict:'Compatible',scoreDelta:0.5,sub:'smooth',hours:24,detail:'Pairs well with your <strong>Vitamin C serum</strong>. Use AM after cleanse.'};
+  // Ingredient → Niacinamide on Smoothness/Glow (texture + tone)
+  return {
+    type:'ingr',label:'Niacinamide 5%',verdict:'Compatible',
+    impact:{firm:0,glow:0.3,smooth:0.5,clear:0.2,define:0},
+    hours:{glow:24,smooth:24,clear:24},
+    detail:'Pairs well with your <strong>Vitamin C serum</strong>. Use AM after cleanse.',
+    pair:{key:'forehead-smoothing',verb:'Pair with',why:'reinforces Smoothness'}
+  };
 }
+// Helper: weighted overall Score impact from a per-sub impact map
+function impactToScore(impact){let t=0;SUB_KEYS.forEach(k=>{t+=(impact[k]||0)*SCORE_WEIGHTS[k]});return Math.round(t*10)/10}
 
 function renderScanResult(r){
   if(r.type==='face'){
@@ -1239,19 +1279,39 @@ function renderScanResult(r){
       ${rows}
       <div class="scan-metric-row total"><div class="label">Average</div><div class="vals">${r.oldFace}<span class="arrow">→</span>${r.newFace}</div><div class="delta ${fcls}">${fsign}${faceDelta}</div></div>`;
     scanApplyEl.textContent=`Apply baseline · +${r.scoreDelta.toFixed(1)} Score`;
-  } else if(r.type==='food'){
+  } else if(r.type==='food'||r.type==='ingr'){
+    const cells=[
+      ['firm','Firm'],['glow','Glow'],['smooth','Smooth'],['clear','Clear'],['define','Define']
+    ].map(([k,lbl])=>{
+      const v=r.impact[k]||0;
+      const cls=v>0?'pos':v<0?'neg':'zero';
+      const sign=v>0?'+':v<0?'':'';
+      const hrs=(r.hours&&r.hours[k])?`<span class="hrs">${r.hours[k]}h</span>`:'<span class="hrs">&nbsp;</span>';
+      return `<div class="scan-impact-cell"><span class="lbl">${lbl}</span><span class="d ${cls}">${sign}${v.toFixed(1)}</span>${hrs}</div>`;
+    }).join('');
+    const total=impactToScore(r.impact);
+    const tcls=total>0?'pos':total<0?'neg':'zero';
+    const tsign=total>0?'+':total<0?'':'';
+    const pairBlock = r.pair ? `<div class="scan-pair" id="scanPairBtn"><div class="scan-pair-thumb"><img src="${IMG[r.pair.key]}" alt=""></div><div class="scan-pair-info"><div class="scan-pair-eyebrow">${r.pair.verb}</div><div class="scan-pair-title">${VIDEO_LABEL[r.pair.key]||r.pair.key}</div><div class="scan-pair-meta">${r.pair.why}</div></div><svg class="scan-pair-arrow" width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></div>` : '';
     scanResultEl.innerHTML=`
       <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>${r.label}</h3><p>${r.verdict}</p></div>
-      <div class="scan-result-summary"><div class="big">+${r.scoreDelta.toFixed(1)}</div><div class="lbl">${SUB_LABEL[r.sub]} · ${r.hours}h</div></div>
-      <div class="scan-result-detail">${r.detail}</div>`;
-    scanApplyEl.textContent='Add to today';
-  } else {
-    scanResultEl.innerHTML=`
-      <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>${r.label}</h3><p>${r.verdict}</p></div>
-      <div class="scan-result-summary"><div class="big">+${r.scoreDelta.toFixed(1)}</div><div class="lbl">${SUB_LABEL[r.sub]} · ${r.hours}h</div></div>
-      <div class="scan-result-detail">${r.detail}</div>`;
-    scanApplyEl.textContent='Add to routine';
+      <div class="scan-impact-grid">${cells}</div>
+      <div class="scan-impact-total"><span class="lbl">Score impact · 24h</span><span class="v ${tcls}">${tsign}${total.toFixed(1)}</span></div>
+      ${pairBlock}
+      <div class="scan-result-detail" style="margin-top:14px">${r.detail}</div>`;
+    scanApplyEl.textContent = r.type==='food' ? 'Add to today' : 'Add to routine';
+    if(r.pair){
+      const pb=document.getElementById('scanPairBtn');
+      if(pb) pb.onclick=()=>takePairAction();
+    }
   }
+}
+// Pair action: log the meal/product (apply impacts) AND open the suggested practice
+function takePairAction(){
+  const r=pendingScan;if(!r||!r.pair)return;
+  const pairKey=r.pair.key;
+  applyScan(); // closes scan + applies impacts (280ms timer)
+  setTimeout(()=>openPlayer(pairKey),520);
 }
 
 function applyScan(){
@@ -1273,25 +1333,33 @@ function applyScan(){
       earned.push({action:'Re-scan',delta:r.scoreDelta,sub:null});
       renderEarned(true);
       toast(`Baseline updated · +${r.scoreDelta.toFixed(1)}`);
-    } else if(r.type==='food'){
-      // Active modifier with concept-driven decay; pos active lives full 24h
-      const idx=foodSlots.findIndex(s=>!s);
-      if(idx>=0){foodSlots[idx]={label:r.label,img:r.img};renderFoodSlots();}
-      addActiveMod(r.sub,r.scoreDelta,r.hours,r.label);
+    } else if(r.type==='food'||r.type==='ingr'){
+      // Apply EVERY non-zero per-sub impact as its own active mod with its own decay window
+      SUB_KEYS.forEach(k=>{
+        const v=r.impact[k]||0;
+        if(v!==0){
+          const h=(r.hours&&r.hours[k])||24;
+          addActiveMod(k,v,h,r.label);
+        }
+      });
+      // Visualization: slot fill, metric flash on each affected sub, recompute, chip + toast
+      if(r.type==='food'){
+        const idx=foodSlots.findIndex(s=>!s);
+        if(idx>=0){foodSlots[idx]={label:r.label,img:r.img};renderFoodSlots();}
+      } else {
+        const idx=skinSlots.findIndex(s=>!s);
+        if(idx>=0){skinSlots[idx]={label:r.label};renderSkinSlots();}
+      }
+      const affected=SUB_KEYS.filter(k=>(r.impact[k]||0)!==0);
+      affected.forEach((k,i)=>setTimeout(()=>flashMetric(k),i*60));
       recomputeAll();
-      flashMetric(r.sub);
-      earned.push({action:r.label,delta:r.scoreDelta,sub:r.sub});
+      // Top sub for chip label
+      const topSub=affected.sort((a,b)=>Math.abs(r.impact[b])-Math.abs(r.impact[a]))[0]||'define';
+      const totalDelta=impactToScore(r.impact);
+      earned.push({action:r.label,delta:totalDelta,sub:topSub});
       renderEarned(true);
-      toast(`+${r.scoreDelta.toFixed(1)} ${SUB_LABEL[r.sub]} · ${r.hours}h`);
-    } else {
-      const idx=skinSlots.findIndex(s=>!s);
-      if(idx>=0){skinSlots[idx]={label:r.label};renderSkinSlots();}
-      addActiveMod(r.sub,r.scoreDelta,r.hours,r.label);
-      recomputeAll();
-      flashMetric(r.sub);
-      earned.push({action:r.label,delta:r.scoreDelta,sub:r.sub});
-      renderEarned(true);
-      toast(`+${r.scoreDelta.toFixed(1)} ${SUB_LABEL[r.sub]} · ${r.hours}h`);
+      const sign=r.impact[topSub]>=0?'+':'';
+      toast(`${sign}${r.impact[topSub].toFixed(1)} ${SUB_LABEL[topSub]}`);
     }
   },280);
 }
