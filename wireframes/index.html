@@ -394,6 +394,66 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 /* Focus-visible rings for keyboard users — subtle accent halo */
 .pcard:focus-visible,.vcard:focus-visible,.tile:focus-visible,.ctx:focus-visible,.snav:focus-visible,.chip:focus-visible,.dy:focus-visible,.metric:focus-visible,.bnav-btn:focus-visible,.fab-main:focus-visible,.fab-ico:focus-visible,.next-move:focus-visible,.program-row:focus-visible,.earned-chip:focus-visible,.theory-copy:focus-visible,.img-prompt-copy:focus-visible,.scan-apply:focus-visible,.path-step:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+/* Progress / Re-scan — weekly before-after slider, opened by avatar tap */
+.progress-modal{position:fixed;inset:0;z-index:46;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
+.progress-modal.on{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s}
+.progress-head{padding:calc(env(safe-area-inset-top,20px) + 14px) 22px 16px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid rgba(0,0,0,0.06)}
+.progress-head h1{font-size:24px;font-weight:800;letter-spacing:-0.6px;line-height:1.1}
+.progress-head p{font-size:14px;color:var(--muted);margin-top:5px;font-weight:500;letter-spacing:-0.1px}
+.progress-close{font-size:14px;color:var(--muted);cursor:pointer;font-weight:500;flex-shrink:0;padding-top:6px}
+.progress-body{flex:1;overflow-y:auto;padding:20px 20px calc(40px + var(--safe-b))}
+
+.progress-summary{margin-bottom:20px;padding:16px;border-radius:var(--r-xl);background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.05)}
+.progress-summary-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.progress-summary-top .lbl{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:-0.1px}
+.progress-summary-top .v{font-size:14px;font-weight:700;color:var(--text)}
+.progress-summary-headline{display:flex;align-items:baseline;gap:14px;margin-bottom:14px}
+.progress-summary-headline .v-old{color:var(--muted);font-size:30px;font-weight:600;letter-spacing:-1px;text-decoration:line-through;text-decoration-color:rgba(0,0,0,0.18);text-decoration-thickness:1.5px}
+.progress-summary-headline .arrow{color:var(--muted);font-size:18px}
+.progress-summary-headline .v-new{color:var(--text);font-size:46px;font-weight:800;letter-spacing:-1.5px;line-height:0.9}
+.progress-summary-headline .v-delta{color:var(--text);font-size:18px;font-weight:700;letter-spacing:-0.3px}
+.progress-subs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.progress-sub-cell{padding:10px 4px;border-radius:var(--r-lg);background:#fff;border:1px solid rgba(0,0,0,0.06);text-align:center}
+.progress-sub-cell .l{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:-0.1px}
+.progress-sub-cell .v{font-size:17px;font-weight:800;letter-spacing:-0.3px;color:var(--text);margin-top:4px;line-height:1}
+.progress-sub-cell .d{font-size:12px;font-weight:700;margin-top:3px;letter-spacing:-0.1px}
+.progress-sub-cell .d.pos{color:var(--text)}
+.progress-sub-cell .d.zero{color:var(--muted)}
+.progress-sub-cell.target{border-color:rgba(192,152,237,0.40);background:rgba(192,152,237,0.04)}
+
+.progress-h2{font-size:20px;font-weight:800;letter-spacing:-0.5px;margin:28px 0 12px;color:var(--text)}
+
+/* Compare strip — slider when images load, side-by-side prompt cards otherwise */
+.progress-compare{position:relative;border-radius:var(--r-xl);overflow:hidden;aspect-ratio:4/5;margin-bottom:16px;background:#0a0a0a;user-select:none;-webkit-user-select:none}
+.progress-compare-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.progress-compare.has-images .progress-compare-img{display:block}
+.progress-compare.has-images .progress-compare-after{clip-path:inset(0 50% 0 0)}
+.progress-compare.has-images .progress-compare-prompt{display:none}
+.progress-compare-prompt{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:0}
+.progress-prompt-half{padding:14px 14px 50px;background:linear-gradient(160deg,#eef0f5,#dde2eb);display:flex;flex-direction:column;color:rgba(0,0,0,0.55);overflow:hidden;border-right:1px solid rgba(0,0,0,0.08);position:relative}
+.progress-prompt-half:last-child{border-right:none;background:linear-gradient(160deg,#e8eef0,#d4dde6)}
+.progress-prompt-tag{font-size:12px;font-weight:700;color:rgba(0,0,0,0.55);margin-bottom:8px;letter-spacing:-0.1px;display:flex;align-items:center;gap:6px}
+.progress-prompt-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,0.40)}
+.progress-prompt-text{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:1.4;color:rgba(0,0,0,0.62);text-shadow:0 1px 0 rgba(255,255,255,0.6);overflow:hidden;flex:1;display:-webkit-box;-webkit-line-clamp:14;-webkit-box-orient:vertical;letter-spacing:0}
+.progress-prompt-copy{position:absolute;bottom:10px;left:14px;right:14px;padding:8px 10px;border-radius:var(--r-pill);background:var(--dark);color:#fff;border:none;font:600 12px var(--font);cursor:pointer;letter-spacing:-0.1px;transition:transform var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out)}
+.progress-prompt-copy:active{transform:scale(0.97)}
+.progress-prompt-copy.copied{background:var(--text)}
+
+.progress-compare-handle{display:none;position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.95);left:50%;transform:translateX(-50%);z-index:3;cursor:ew-resize;touch-action:none;box-shadow:0 0 8px rgba(0,0,0,0.3)}
+.progress-compare.has-images .progress-compare-handle{display:block}
+.progress-compare-handle::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,0.3)}
+.progress-compare-handle::after{content:'⇆';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:800;color:var(--text);z-index:1;line-height:1}
+.progress-compare-labels{position:absolute;top:14px;left:0;right:0;padding:0 14px;display:none;justify-content:space-between;z-index:2;pointer-events:none}
+.progress-compare.has-images .progress-compare-labels{display:flex}
+.progress-compare-labels span{padding:5px 11px;border-radius:var(--r-pill);background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);color:#fff;font-size:12px;font-weight:600;letter-spacing:-0.1px}
+
+.progress-comment{padding:14px 16px;border-radius:var(--r-xl);background:rgba(192,152,237,0.08);border:1px solid rgba(192,152,237,0.18);margin-bottom:18px}
+.progress-comment .eyebrow{font-size:13px;color:var(--accent);font-weight:600;margin-bottom:5px;letter-spacing:-0.1px}
+.progress-comment .body{font-size:15px;color:var(--text);line-height:1.55;font-weight:500;letter-spacing:-0.1px}
+
+.progress-cta{display:block;width:100%;padding:16px;border-radius:var(--r-pill);background:var(--dark);color:#fff;border:none;font:600 16px var(--font);cursor:pointer;letter-spacing:-0.1px;transition:transform var(--t-fast) var(--ease-out)}
+.progress-cta:active{transform:scale(0.985)}
+
 /* Onboarding — full-screen flow: Welcome+Consent → Quick context → Face scan → Results+Rec */
 .onb-modal{position:fixed;inset:0;z-index:50;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
 .onb-modal.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity var(--t-modal) var(--ease-out),visibility 0s}
@@ -529,6 +589,56 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 
 <div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
 <div class="ai-scan" id="aiScan"><div class="ai-scan-header"><div style="color:#fff;font-size:16px;font-weight:600" id="scanTitle">AI Scan</div><div style="color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer" onclick="closeScan()">Close</div></div><div class="ai-scan-vf"><div class="ai-scan-frame"><div style="color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding:20px" id="scanHint">Position in frame</div></div></div><div class="ai-scan-result" id="scanResult"></div><div class="ai-scan-bottom"><div class="scan-btn" onclick="doScan()"></div><button class="scan-apply" id="scanApply" onclick="applyScan()">Apply to Score</button></div></div>
+
+<div class="progress-modal" id="progressModal">
+  <div class="progress-head">
+    <div>
+      <h1>Week 1 progress</h1>
+      <p>Lymph priority · Day 7 of 7</p>
+    </div>
+    <div class="progress-close" onclick="progressClose()">Close</div>
+  </div>
+  <div class="progress-body">
+    <div class="progress-summary">
+      <div class="progress-summary-top"><span class="lbl">Lumina Score</span><span class="v">+6 in 7 days</span></div>
+      <div class="progress-summary-headline"><span class="v-old">58</span><span class="arrow">→</span><span class="v-new">64</span><span class="v-delta">+6</span></div>
+      <div class="progress-subs">
+        <div class="progress-sub-cell"><div class="l">Firm</div><div class="v">63</div><div class="d pos">+3</div></div>
+        <div class="progress-sub-cell"><div class="l">Glow</div><div class="v">68</div><div class="d pos">+3</div></div>
+        <div class="progress-sub-cell"><div class="l">Smooth</div><div class="v">57</div><div class="d pos">+2</div></div>
+        <div class="progress-sub-cell"><div class="l">Clear</div><div class="v">74</div><div class="d zero">+0</div></div>
+        <div class="progress-sub-cell target"><div class="l">Define</div><div class="v">47</div><div class="d pos">+5</div></div>
+      </div>
+    </div>
+
+    <div class="progress-h2">Before · After</div>
+    <div class="progress-compare" id="progressCompare">
+      <img class="progress-compare-img progress-compare-before" src="../images/krea-generated/before.png" alt="">
+      <img class="progress-compare-img progress-compare-after" src="../images/krea-generated/after.png" alt="">
+      <div class="progress-compare-prompt">
+        <div class="progress-prompt-half">
+          <div class="progress-prompt-tag">Day 1 · Before</div>
+          <div class="progress-prompt-text">Editorial portrait, woman 35-40, soft natural morning light from left, beige cream background, no makeup, relaxed neutral expression, slight visible morning puffiness around jaw and under eyes, slightly dull skin tone, head and shoulders crop, vertical 4:5, 35mm film grain, holistic wellness aesthetic, no text, photorealistic</div>
+          <button class="progress-prompt-copy" type="button">Copy</button>
+        </div>
+        <div class="progress-prompt-half">
+          <div class="progress-prompt-tag">Day 7 · After</div>
+          <div class="progress-prompt-text">Same woman 35-40, same exact head and shoulders crop, same soft natural morning light from left, same beige cream background, same relaxed expression, no makeup, more defined jawline contour, less puffiness around eyes, subtle healthy glow, slightly more even tone, vertical 4:5, 35mm film grain, holistic wellness aesthetic, no text, photorealistic, same person seven days later</div>
+          <button class="progress-prompt-copy" type="button">Copy</button>
+        </div>
+      </div>
+      <div class="progress-compare-labels"><span>Before</span><span>After</span></div>
+      <div class="progress-compare-handle" id="progressHandle"></div>
+    </div>
+
+    <div class="progress-comment">
+      <div class="eyebrow">Why this happened</div>
+      <div class="body">Definition came up by +5 — daily lymphatic work moved the puffiness around the jaw. Glow followed because the same routine improves microcirculation. Stay with the plan; week 2 typically sees Smoothness catch up.</div>
+    </div>
+
+    <button class="progress-cta" onclick="progressClose()">Continue program</button>
+  </div>
+</div>
 
 <div class="onb-modal" id="onbModal">
   <div class="onb-head">
@@ -782,6 +892,54 @@ function commitTuneUp(){
   toast('Tune-up — recalibrating');
   setTimeout(()=>openScan('face'),420);
 }
+
+// Progress / Re-scan — weekly before-after slider opened by avatar tap
+function progressOpen(){
+  document.getElementById('progressModal').classList.add('on');
+  checkProgressImages();
+}
+function progressClose(){document.getElementById('progressModal').classList.remove('on')}
+function checkProgressImages(){
+  const compare=document.getElementById('progressCompare');
+  if(!compare)return;
+  const before=compare.querySelector('.progress-compare-before');
+  const after=compare.querySelector('.progress-compare-after');
+  let bOk=false,aOk=false;
+  function maybe(){if(bOk&&aOk){compare.classList.add('has-images');initProgressSlider();}}
+  if(before.complete&&before.naturalWidth>0)bOk=true;else before.addEventListener('load',()=>{bOk=true;maybe()},{once:true});
+  if(after.complete&&after.naturalWidth>0)aOk=true;else after.addEventListener('load',()=>{aOk=true;maybe()},{once:true});
+  before.addEventListener('error',()=>{},{once:true});
+  after.addEventListener('error',()=>{},{once:true});
+  maybe();
+}
+let _progressSliderInit=false;
+function initProgressSlider(){
+  if(_progressSliderInit)return;_progressSliderInit=true;
+  const compare=document.getElementById('progressCompare');
+  const after=compare.querySelector('.progress-compare-after');
+  const handle=document.getElementById('progressHandle');
+  if(!handle||!after)return;
+  let dragging=false;
+  function setPos(p){
+    p=Math.max(0,Math.min(100,p));
+    handle.style.left=p+'%';
+    after.style.clipPath=`inset(0 ${100-p}% 0 0)`;
+  }
+  setPos(50);
+  function onDown(e){dragging=true;handle.setPointerCapture&&handle.setPointerCapture(e.pointerId)}
+  function onMove(e){if(!dragging)return;const r=compare.getBoundingClientRect();setPos(((e.clientX-r.left)/r.width)*100)}
+  function onUp(){dragging=false}
+  handle.addEventListener('pointerdown',onDown);
+  handle.addEventListener('pointermove',onMove);
+  handle.addEventListener('pointerup',onUp);
+  handle.addEventListener('pointercancel',onUp);
+}
+// Wire copy buttons inside the progress modal
+document.querySelectorAll('#progressModal .progress-prompt-copy').forEach(b=>{
+  b.onclick=function(){const t=this.parentNode.querySelector('.progress-prompt-text');if(t)copyPrompt(t.textContent.trim(),this)};
+});
+// Tap any avatar circle to open progress
+document.querySelectorAll('.av').forEach(a=>{a.style.cursor='pointer';a.addEventListener('click',progressOpen)});
 
 // Onboarding — first-run flow: Welcome+Consent → Quick context → Face scan → Results+Rec
 const ONB_TOTAL=4;
