@@ -661,24 +661,117 @@ document.querySelectorAll('.theory-modal .img-prompt-copy').forEach(b=>{
   b.onclick=function(){const t=this.parentNode.querySelector('.img-prompt-text');if(t)copyPrompt(t.textContent.trim(),this)};
 });
 
-// Score loop state — single source of truth for the analyze→act→improve→see-result cycle
-let scoreVal=73, scoreDelta=1.5;
-const TOTAL_AVAILABLE=6;
+// ===== 3-layer Score system =====
+// Each sub-score = baseline (slow, weeks via re-scan) + practiceBonus (accumulates from
+// practices, decays in 7-10 days) + activeMods (food/sleep/stress, decay 6-48h).
+// Display = clamp(sum, FLOOR, CEIL). Overall = weighted avg. Daily volatility cap on the
+// whole, and "negative active" decays faster than positive practice.
+
+const SCORE_FLOOR=30, SCORE_CEIL=100;
+const DAILY_CAP_NEG=-8, DAILY_CAP_POS=10;
+const HOUR_MS=3600*1000;
+const SUB_KEYS=['firm','glow','smooth','clear','define'];
+const SUB_LABEL={firm:'Firmness',glow:'Glow',smooth:'Smoothness',clear:'Clarity',define:'Definition'};
+// Personalized weights — Define is the user's target zone (luteal-phase lymph priority)
+const SCORE_WEIGHTS={firm:0.175,glow:0.175,smooth:0.175,clear:0.175,define:0.300};
+const T0=Date.now();
+const subScores={
+  firm:   {baseline:73,   practiceBonus:0,   activeMods:[]},
+  glow:   {baseline:77,   practiceBonus:0.5, activeMods:[{delta:0.5,exp:T0+18*HOUR_MS,source:'Sleep 7.2h',kind:'pos'}]},
+  smooth: {baseline:70.5, practiceBonus:0,   activeMods:[{delta:-0.5,exp:T0+12*HOUR_MS,source:'Late screen time',kind:'neg'}]},
+  clear:  {baseline:82,   practiceBonus:0,   activeMods:[]},
+  define: {baseline:63.5, practiceBonus:1.0, activeMods:[{delta:0.5,exp:T0+18*HOUR_MS,source:'Apple snack',kind:'pos'}]}
+};
+function activeSum(s){const t=Date.now();return s.activeMods.filter(m=>m.exp>t).reduce((a,m)=>a+m.delta,0)}
+function subDisplay(id){const s=subScores[id];return Math.max(SCORE_FLOOR,Math.min(SCORE_CEIL,s.baseline+s.practiceBonus+activeSum(s)))}
+function overallScore(){let t=0;SUB_KEYS.forEach(k=>{t+=subDisplay(k)*SCORE_WEIGHTS[k]});return Math.max(SCORE_FLOOR,Math.min(SCORE_CEIL,t))}
+function faceScore(){return Math.round(SUB_KEYS.reduce((a,k)=>a+subDisplay(k),0)/SUB_KEYS.length)}
+let dayStartScore=overallScore()-(activeSum(subScores.glow)+activeSum(subScores.smooth)+activeSum(subScores.define))*0; // fixed at session start; recomputed below
+// Day start = overall as if today's practice + active = 0 (i.e., baseline-only weighted)
+dayStartScore=(()=>{let t=0;SUB_KEYS.forEach(k=>{t+=subScores[k].baseline*SCORE_WEIGHTS[k]});return t})();
+
+// Caps & dampening
+function clampDailyVolatility(){
+  const cur=overallScore();
+  const dd=cur-dayStartScore;
+  if(dd>DAILY_CAP_POS){
+    // Trim positive excess off the most recent practice bonus across subs (proportional)
+    const excess=dd-DAILY_CAP_POS;
+    const totalP=SUB_KEYS.reduce((a,k)=>a+Math.max(0,subScores[k].practiceBonus),0);
+    if(totalP>0){
+      SUB_KEYS.forEach(k=>{
+        if(subScores[k].practiceBonus>0){
+          const share=subScores[k].practiceBonus/totalP;
+          subScores[k].practiceBonus-=excess*share/SCORE_WEIGHTS[k];
+        }
+      });
+      return 'capped-pos';
+    }
+  } else if(dd<DAILY_CAP_NEG){
+    return 'capped-neg';
+  }
+  return null;
+}
+
+// Action APIs
+function addPracticeBonus(impact){
+  Object.keys(impact).forEach(k=>{if(subScores[k]) subScores[k].practiceBonus+=impact[k]});
+  clampDailyVolatility();
+}
+function addActiveMod(subId,delta,hours,source){
+  if(!subScores[subId])return;
+  // Concept: negative active decays faster than positive
+  const hrs=delta<0?Math.min(hours,18):hours;
+  subScores[subId].activeMods.push({delta,exp:Date.now()+hrs*HOUR_MS,source,kind:delta>=0?'pos':'neg'});
+  clampDailyVolatility();
+}
+function recalibrateBaseline(deltas){
+  // Weekly re-scan: small baseline shifts (1-3 pts/week range)
+  Object.keys(deltas).forEach(k=>{if(subScores[k]) subScores[k].baseline=Math.max(SCORE_FLOOR,Math.min(SCORE_CEIL,subScores[k].baseline+deltas[k]))});
+  // Re-scan resets the daily volatility window — baseline IS truth
+  dayStartScore=(()=>{let t=0;SUB_KEYS.forEach(k=>{t+=subScores[k].baseline*SCORE_WEIGHTS[k]});return t})();
+}
+
+// Decay tick — drop expired active mods (demo cadence 5s)
+setInterval(()=>{
+  let changed=false;const t=Date.now();
+  SUB_KEYS.forEach(k=>{const before=subScores[k].activeMods.length;subScores[k].activeMods=subScores[k].activeMods.filter(m=>m.exp>t);if(subScores[k].activeMods.length!==before)changed=true});
+  if(changed)recomputeAll();
+},5000);
+
+// ===== Earned chips + Next move =====
 const earned=[
-  {action:'Morning lymph',delta:0.5},
-  {action:'Apple snack',delta:0.5},
-  {action:'Sleep 7.2h',delta:0.5}
+  {action:'Morning lymph',delta:1.5,sub:'define'},
+  {action:'Apple snack',delta:0.5,sub:'define'},
+  {action:'Sleep 7.2h',delta:0.5,sub:'glow'}
 ];
 const MOVE_QUEUE=[
-  {key:'cheekbone-lift',title:'Buccal massage',meta:'10 min · Step 2',delta:1.0},
-  {key:'forehead-smoothing',title:'Cold splash',meta:'30s · Step 3',delta:0.5}
+  {key:'cheekbone-lift',title:'Buccal massage',meta:'10 min · Step 2'},
+  {key:'forehead-smoothing',title:'Cold splash',meta:'30 sec · Step 3'}
 ];
 let moveIdx=0;
-const VIDEO_REWARD={'neck-stretch':0.5,'cheekbone-lift':1.0,'forehead-smoothing':0.5,'morning-wakeup':0.7,'pre-event':0.8,'post-flight':0.6,'post-party':0.6,'post-workout':0.7,'pre-photoshoot':1.0,'headache-ease':0.4,'sinus-clear':0.4,'lymphatic-drainage':0.8,'jawline-sculpt':0.9,'buccal-massage':1.0};
+// Per-video impact distributed across sub-scores (concept ranges: 10-15min full session
+// gives +2-3 to 1-2 sub-scores; 3-5min short gives +1 to 1)
+const VIDEO_IMPACT={
+  'neck-stretch':{define:1.0,glow:0.5},
+  'cheekbone-lift':{define:1.5,firm:0.7},
+  'forehead-smoothing':{smooth:0.5},
+  'morning-wakeup':{glow:1.0},
+  'pre-event':{define:0.7,glow:0.7},
+  'post-flight':{define:1.2},
+  'post-party':{glow:0.6,define:0.4},
+  'post-workout':{firm:1.0,glow:0.4},
+  'pre-photoshoot':{define:1.0,glow:1.0},
+  'headache-ease':{},
+  'sinus-clear':{define:0.5},
+  'lymphatic-drainage':{define:1.5},
+  'jawline-sculpt':{firm:1.0,define:0.7},
+  'buccal-massage':{define:1.5,firm:0.7}
+};
 const VIDEO_LABEL={'neck-stretch':'Neck stretch','cheekbone-lift':'Buccal massage','forehead-smoothing':'Cold splash','morning-wakeup':'Morning wake-up','pre-event':'Pre-event glow','post-flight':'Post-flight','post-party':'Post-party','post-workout':'Post-workout','pre-photoshoot':'Pre-photoshoot','headache-ease':'Headache ease','sinus-clear':'Sinus clear','lymphatic-drainage':'Lymphatic','jawline-sculpt':'Jawline sculpt','buccal-massage':'Buccal massage'};
 
 const earnedStripEl=document.getElementById('earnedStrip');
-const earnedTotalEl=document.getElementById('earnedTotal'); // null when loop-head removed
+const earnedTotalEl=document.getElementById('earnedTotal');
 const nextMoveEl=document.getElementById('nextMove');
 const scoreNumEl=document.getElementById('scoreNum');
 const scoreDeltaEl=document.getElementById('scoreDelta');
@@ -689,24 +782,30 @@ function renderEarned(animateLast){
     const last=i===earned.length-1;
     const c=document.createElement('div');
     c.className='earned-chip'+(animateLast&&last?' new':'');
-    c.onclick=()=>toast(e.action+' · +'+e.delta.toFixed(1));
-    c.innerHTML=`<span class="ec-dot"></span><span>${e.action}</span><span class="ec-delta">+${e.delta.toFixed(1)}</span>`;
+    const subTxt=e.sub?SUB_LABEL[e.sub]:'';
+    const sign=e.delta>=0?'+':'';
+    c.onclick=()=>toast(`${e.action}${subTxt?' · '+subTxt:''} ${sign}${e.delta.toFixed(1)}`);
+    c.innerHTML=`<span class="ec-dot"></span><span>${e.action}</span><span class="ec-delta">${sign}${e.delta.toFixed(1)}</span>`;
     earnedStripEl.appendChild(c);
   });
-  if(earnedTotalEl) earnedTotalEl.textContent=earned.length+' of '+TOTAL_AVAILABLE;
   if(animateLast){requestAnimationFrame(()=>{earnedStripEl.scrollTo({left:earnedStripEl.scrollWidth,behavior:'smooth'})});}
 }
 function renderNextMove(){
   const m=MOVE_QUEUE[moveIdx];
   if(!m){
     nextMoveEl.classList.add('done');
-    nextMoveEl.innerHTML=`<div class="nm-thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><div class="nm-info"><div class="nm-eyebrow">Today complete</div><div class="nm-title">+${scoreDelta.toFixed(1)} earned</div><div class="nm-meta">See you tomorrow at 9 am</div></div>`;
+    const td=overallScore()-dayStartScore;
+    nextMoveEl.innerHTML=`<div class="nm-thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><div class="nm-info"><div class="nm-eyebrow">Today complete</div><div class="nm-title">+${td.toFixed(1)} earned</div><div class="nm-meta">See you tomorrow at 9 am</div></div>`;
     nextMoveEl.onclick=()=>toast('Tomorrow at 9 am');
     return;
   }
   nextMoveEl.classList.remove('done');
   const verb=moveIdx===0?'Continue':'Next';
-  nextMoveEl.innerHTML=`<div class="nm-thumb"><img src="${IMG[m.key]}" alt=""></div><div class="nm-info"><div class="nm-eyebrow">${verb} · ${m.meta}</div><div class="nm-title">${m.title}</div></div><div class="nm-delta"><div class="nm-plus">+${m.delta.toFixed(1)}</div><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></div>`;
+  // Show top sub-score impact in the +X delta — emotional clarity ("you'll get +1.5 Definition")
+  const impact=VIDEO_IMPACT[m.key]||{};
+  const topSub=Object.keys(impact).sort((a,b)=>impact[b]-impact[a])[0]||'define';
+  const topDelta=impact[topSub]||0.5;
+  nextMoveEl.innerHTML=`<div class="nm-thumb"><img src="${IMG[m.key]}" alt=""></div><div class="nm-info"><div class="nm-eyebrow">${verb} · ${m.meta}</div><div class="nm-title">${m.title}</div></div><div class="nm-delta"><div class="nm-plus">+${topDelta.toFixed(1)}</div><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></div>`;
   nextMoveEl.onclick=()=>openPlayer(m.key);
 }
 function animateScore(from,to){
@@ -721,17 +820,39 @@ function animateScore(from,to){
   setTimeout(()=>scoreNumEl.classList.remove('bump'),900);
   requestAnimationFrame(tick);
 }
+let lastDisplayedScore=Math.round(overallScore());
+function recomputeAll(){
+  const cur=overallScore();
+  const td=cur-dayStartScore;
+  if(Math.round(cur)!==lastDisplayedScore){
+    animateScore(lastDisplayedScore,Math.round(cur));
+  } else {
+    scoreNumEl.textContent=Math.round(cur);
+  }
+  lastDisplayedScore=Math.round(cur);
+  const sign=td>=0?'+':'';
+  scoreDeltaEl.textContent=`${sign}${td.toFixed(1)} today`;
+  scoreDeltaEl.style.color = td>0?'var(--text)' : td<0?'var(--neg)' : 'var(--muted)';
+  renderMetrics();
+}
 function commitCompletion(key){
-  const r=VIDEO_REWARD[key]||0.5;
+  const impact=VIDEO_IMPACT[key]||{define:0.5};
   const label=VIDEO_LABEL[key]||'Practice';
-  earned.push({action:label,delta:r});
-  const prev=Math.round(scoreVal);
-  scoreVal+=r;scoreDelta+=r;
-  scoreDeltaEl.textContent='+'+scoreDelta.toFixed(1)+' today';
-  animateScore(prev,Math.round(scoreVal));
+  addPracticeBonus(impact);
+  // Find the top-impacted sub for the chip + toast
+  const impKeys=Object.keys(impact);
+  if(impKeys.length===0){
+    toast('Practice logged'); // e.g., headache-ease has no Score impact
+    return;
+  }
+  const topSub=impKeys.sort((a,b)=>impact[b]-impact[a])[0];
+  const totalRaw=Object.values(impact).reduce((a,v)=>a+v,0);
+  earned.push({action:label,delta:totalRaw,sub:topSub});
+  recomputeAll();
   renderEarned(true);
+  ['firm','glow','smooth','clear','define'].forEach((k,i)=>{if(impact[k])setTimeout(()=>flashMetric(k),i*60)});
   if(MOVE_QUEUE[moveIdx]&&MOVE_QUEUE[moveIdx].key===key){moveIdx++;setTimeout(renderNextMove,500);}
-  toast('+'+r.toFixed(1)+' Score');
+  toast(`+${impact[topSub].toFixed(1)} ${SUB_LABEL[topSub]}`);
 }
 renderEarned();renderNextMove();
 
@@ -743,11 +864,9 @@ function closePlayer(){document.getElementById('vplayer').classList.remove('on')
 function togglePlay(){if(!curVid)return;playing=!playing;if(playing){playInt=setInterval(()=>{wd[curVid].p=Math.min(100,wd[curVid].p+2);document.getElementById('vpFill').style.width=wd[curVid].p+'%';if(wd[curVid].p>=100){clearInterval(playInt);playing=false;const k=curVid;commitCompletion(k);setTimeout(closePlayer,800)}},200)}else if(playInt)clearInterval(playInt)}
 function seekVideo(e){const r=e.currentTarget.getBoundingClientRect();wd[curVid].p=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));document.getElementById('vpFill').style.width=wd[curVid].p+'%'}
 
-// METRICS — live state, horizontal ribbon above the hero
-const metricsState={face:71,firm:68,glow:75,smooth:62,clear:80,define:58};
-const metricsDelta={face:null,firm:'+0.5',glow:'+1.0',smooth:'-0.5',clear:'+0',define:'+1.5'};
+// METRICS — derived from subScores 3-layer state, tap reveals breakdown
 const metricsConfig=[
-  {id:'face',label:'Face',isFace:true,issues:3},
+  {id:'face',label:'Face',isFace:true},
   {id:'firm',label:'Firm'},
   {id:'glow',label:'Glow'},
   {id:'smooth',label:'Smooth'},
@@ -755,23 +874,42 @@ const metricsConfig=[
   {id:'define',label:'Define',isTarget:true}
 ];
 const mr=document.getElementById('metricsRow');
+function fmtSigned(v){const r=Math.round(v*10)/10;if(r===0)return '+0';return (r>0?'+':'')+r.toFixed(1)}
 function renderMetrics(){
   mr.innerHTML='';
   metricsConfig.forEach(m=>{
-    const val=metricsState[m.id], delta=metricsDelta[m.id];
+    let val, delta;
+    if(m.isFace){
+      val=faceScore();
+      delta=null;
+    } else {
+      val=Math.round(subDisplay(m.id));
+      const s=subScores[m.id];
+      delta=fmtSigned(s.practiceBonus+activeSum(s));
+    }
     const cls=m.isFace?'mc face':m.isTarget?'mc target':'mc';
-    const badge=m.issues?`<div class="mbadge">${m.issues}</div>`:'';
     let dh='';
     if(delta){const p=delta.startsWith('+')&&delta!=='+0';const n=delta.startsWith('-');dh=`<div class="md ${p?'pos':n?'neg':'zero'}">${delta}</div>`}
     const el=document.createElement('div');
     el.className='metric';
-    el.onclick=()=>toast(m.label+' '+val);
-    el.innerHTML=`<div class="${cls}" data-mc="${m.id}"><div class="v">${val}</div>${badge}</div><div class="ml">${m.label}</div>${dh}`;
+    if(m.isFace){
+      el.onclick=()=>toast(`Face · average of 5 sub-scores`);
+    } else {
+      el.onclick=()=>{
+        const s=subScores[m.id];
+        const a=Math.round(activeSum(s)*10)/10;
+        const p=Math.round(s.practiceBonus*10)/10;
+        const b=Math.round(s.baseline);
+        toast(`${SUB_LABEL[m.id]} ${val} · base ${b} · practice ${fmtSigned(p)} · active ${fmtSigned(a)}`);
+      };
+    }
+    el.innerHTML=`<div class="${cls}" data-mc="${m.id}"><div class="v">${val}</div></div><div class="ml">${m.label}</div>${dh}`;
     mr.appendChild(el);
   });
 }
 renderMetrics();
 function flashMetric(id){const el=mr.querySelector(`[data-mc="${id}"]`);if(el){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');}}
+recomputeAll(); // sync displayed Score + today delta with the 3-layer state
 
 // FOOD SLOTS — live, fed by Food scan
 const foodSlots=[{label:'Apple',img:APPLE_IMG},null,null];
@@ -841,44 +979,49 @@ function doScan(){
 
 function generateScanResult(type){
   if(type==='face'){
-    const changes={firm:+2,glow:+2,smooth:+2,clear:0,define:+2};
-    const newVals={};Object.keys(changes).forEach(k=>{newVals[k]=Math.min(100,metricsState[k]+changes[k])});
-    const oldFace=metricsState.face;
-    const avgDelta=Object.values(changes).reduce((a,d)=>a+d,0)/Object.keys(changes).length;
-    const newFace=Math.min(100,oldFace+Math.round(avgDelta));
-    return {type:'face',changes,newVals,oldFace,newFace,scoreDelta:Math.max(1,newFace-oldFace)};
+    // Re-scan baseline shifts — concept range 1-3 pts/week per sub
+    const changes={firm:+1,glow:+1,smooth:+1,clear:0,define:+2};
+    const oldVals={};const newVals={};
+    SUB_KEYS.forEach(k=>{oldVals[k]=Math.round(subScores[k].baseline);newVals[k]=Math.max(SCORE_FLOOR,Math.min(SCORE_CEIL,oldVals[k]+changes[k]))});
+    const oldFace=Math.round(SUB_KEYS.reduce((a,k)=>a+oldVals[k],0)/SUB_KEYS.length);
+    const newFace=Math.round(SUB_KEYS.reduce((a,k)=>a+newVals[k],0)/SUB_KEYS.length);
+    // Overall Score impact for the apply CTA — weighted
+    let overallDelta=0;SUB_KEYS.forEach(k=>{overallDelta+=changes[k]*SCORE_WEIGHTS[k]});
+    return {type:'face',changes,oldVals,newVals,oldFace,newFace,scoreDelta:Math.max(0.5,Math.round(overallDelta*10)/10)};
   }
   if(type==='food'){
-    return {type:'food',label:'Apple snack',verdict:'Clean choice',img:APPLE_IMG,scoreDelta:0.5,detail:'Hydrating · low glycemic · fits luteal phase'};
+    // Apple → light positive on Definition + Glow (active mod, 24h)
+    return {type:'food',label:'Apple snack',verdict:'Light · alkaline',img:APPLE_IMG,scoreDelta:0.5,sub:'define',hours:24,detail:'Hydrating · low glycemic · fits luteal phase'};
   }
-  return {type:'ingr',label:'Niacinamide 5%',verdict:'Compatible',scoreDelta:0.5,detail:'Pairs well with your <strong>Vitamin C serum</strong>. Use AM after cleanse.'};
+  // Ingredient → Niacinamide on Smoothness (texture)
+  return {type:'ingr',label:'Niacinamide 5%',verdict:'Compatible',scoreDelta:0.5,sub:'smooth',hours:24,detail:'Pairs well with your <strong>Vitamin C serum</strong>. Use AM after cleanse.'};
 }
 
 function renderScanResult(r){
   if(r.type==='face'){
     const rows=[
-      ['firm','Firm'],['glow','Glow'],['smooth','Smooth'],['clear','Clear'],['define','Define']
+      ['firm','Firmness'],['glow','Glow'],['smooth','Smoothness'],['clear','Clarity'],['define','Definition']
     ].map(([k,lbl])=>{
-      const old=metricsState[k], nw=r.newVals[k], d=nw-old;
+      const old=r.oldVals[k], nw=r.newVals[k], d=nw-old;
       const cls=d>0?'pos':d<0?'neg':'zero', sign=d>0?'+':'';
       return `<div class="scan-metric-row"><div class="label">${lbl}</div><div class="vals">${old}<span class="arrow">→</span>${nw}</div><div class="delta ${cls}">${sign}${d}</div></div>`;
     }).join('');
     const faceDelta=r.newFace-r.oldFace, fcls=faceDelta>0?'pos':faceDelta<0?'neg':'zero', fsign=faceDelta>0?'+':faceDelta<0?'':'';
     scanResultEl.innerHTML=`
-      <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>Analysis complete</h3><p>5 metrics measured</p></div>
+      <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>Re-scan complete</h3><p>Baseline shifts measured</p></div>
       ${rows}
-      <div class="scan-metric-row total"><div class="label">Face Score</div><div class="vals">${r.oldFace}<span class="arrow">→</span>${r.newFace}</div><div class="delta ${fcls}">${fsign}${faceDelta}</div></div>`;
-    scanApplyEl.textContent=`Apply to Score · +${r.scoreDelta}`;
+      <div class="scan-metric-row total"><div class="label">Average</div><div class="vals">${r.oldFace}<span class="arrow">→</span>${r.newFace}</div><div class="delta ${fcls}">${fsign}${faceDelta}</div></div>`;
+    scanApplyEl.textContent=`Apply baseline · +${r.scoreDelta.toFixed(1)} Score`;
   } else if(r.type==='food'){
     scanResultEl.innerHTML=`
       <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>${r.label}</h3><p>${r.verdict}</p></div>
-      <div class="scan-result-summary"><div class="big">+${r.scoreDelta.toFixed(1)}</div><div class="lbl">Score impact</div></div>
+      <div class="scan-result-summary"><div class="big">+${r.scoreDelta.toFixed(1)}</div><div class="lbl">${SUB_LABEL[r.sub]} · ${r.hours}h</div></div>
       <div class="scan-result-detail">${r.detail}</div>`;
     scanApplyEl.textContent='Add to today';
   } else {
     scanResultEl.innerHTML=`
       <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>${r.label}</h3><p>${r.verdict}</p></div>
-      <div class="scan-result-summary"><div class="big">+${r.scoreDelta.toFixed(1)}</div><div class="lbl">Skincare match</div></div>
+      <div class="scan-result-summary"><div class="big">+${r.scoreDelta.toFixed(1)}</div><div class="lbl">${SUB_LABEL[r.sub]} · ${r.hours}h</div></div>
       <div class="scan-result-detail">${r.detail}</div>`;
     scanApplyEl.textContent='Add to routine';
   }
@@ -889,36 +1032,33 @@ function applyScan(){
   closeScan();
   setTimeout(()=>{
     if(r.type==='face'){
-      Object.keys(r.newVals).forEach(k=>{
-        const old=metricsState[k], nw=r.newVals[k], d=nw-old;
-        metricsState[k]=nw;
-        metricsDelta[k]= d===0?'+0':(d>0?'+':'')+d;
-      });
-      metricsState.face=r.newFace;
-      renderMetrics();
-      ['firm','glow','smooth','clear','define','face'].forEach((k,i)=>setTimeout(()=>flashMetric(k),i*70));
-      const prev=Math.round(scoreVal);
-      scoreVal+=r.scoreDelta;scoreDelta+=r.scoreDelta;
-      scoreDeltaEl.textContent='+'+scoreDelta.toFixed(1)+' today';
-      animateScore(prev,Math.round(scoreVal));
-      earned.push({action:'Face scan',delta:r.scoreDelta});renderEarned(true);
-      toast('Face Score +'+r.scoreDelta);
+      // Re-scan moves the BASELINE — slow, durable change. Resets the daily window.
+      recalibrateBaseline(r.changes);
+      recomputeAll();
+      ['firm','glow','smooth','clear','define'].forEach((k,i)=>setTimeout(()=>flashMetric(k),i*70));
+      setTimeout(()=>flashMetric('face'),360);
+      earned.push({action:'Re-scan',delta:r.scoreDelta,sub:null});
+      renderEarned(true);
+      toast(`Baseline updated · +${r.scoreDelta.toFixed(1)}`);
     } else if(r.type==='food'){
+      // Active modifier with concept-driven decay; pos active lives full 24h
       const idx=foodSlots.findIndex(s=>!s);
       if(idx>=0){foodSlots[idx]={label:r.label,img:r.img};renderFoodSlots();}
-      const prev=Math.round(scoreVal);scoreVal+=r.scoreDelta;scoreDelta+=r.scoreDelta;
-      scoreDeltaEl.textContent='+'+scoreDelta.toFixed(1)+' today';
-      animateScore(prev,Math.round(scoreVal));
-      earned.push({action:r.label,delta:r.scoreDelta});renderEarned(true);
-      toast('+'+r.scoreDelta.toFixed(1)+' Score');
+      addActiveMod(r.sub,r.scoreDelta,r.hours,r.label);
+      recomputeAll();
+      flashMetric(r.sub);
+      earned.push({action:r.label,delta:r.scoreDelta,sub:r.sub});
+      renderEarned(true);
+      toast(`+${r.scoreDelta.toFixed(1)} ${SUB_LABEL[r.sub]} · ${r.hours}h`);
     } else {
       const idx=skinSlots.findIndex(s=>!s);
       if(idx>=0){skinSlots[idx]={label:r.label};renderSkinSlots();}
-      const prev=Math.round(scoreVal);scoreVal+=r.scoreDelta;scoreDelta+=r.scoreDelta;
-      scoreDeltaEl.textContent='+'+scoreDelta.toFixed(1)+' today';
-      animateScore(prev,Math.round(scoreVal));
-      earned.push({action:r.label,delta:r.scoreDelta});renderEarned(true);
-      toast('+'+r.scoreDelta.toFixed(1)+' Score');
+      addActiveMod(r.sub,r.scoreDelta,r.hours,r.label);
+      recomputeAll();
+      flashMetric(r.sub);
+      earned.push({action:r.label,delta:r.scoreDelta,sub:r.sub});
+      renderEarned(true);
+      toast(`+${r.scoreDelta.toFixed(1)} ${SUB_LABEL[r.sub]} · ${r.hours}h`);
     }
   },280);
 }
