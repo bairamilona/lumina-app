@@ -351,6 +351,55 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 /* Focus-visible rings for keyboard users — subtle accent halo */
 .pcard:focus-visible,.vcard:focus-visible,.tile:focus-visible,.ctx:focus-visible,.snav:focus-visible,.chip:focus-visible,.dy:focus-visible,.metric:focus-visible,.bnav-btn:focus-visible,.fab-main:focus-visible,.fab-ico:focus-visible,.next-move:focus-visible,.program-row:focus-visible,.earned-chip:focus-visible,.theory-copy:focus-visible,.img-prompt-copy:focus-visible,.scan-apply:focus-visible,.path-step:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+/* Onboarding — full-screen flow: Welcome+Consent → Quick context → Face scan → Results+Rec */
+.onb-modal{position:fixed;inset:0;z-index:50;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transition:opacity var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
+.onb-modal.on{opacity:1;visibility:visible;pointer-events:auto;transition:opacity var(--t-modal) var(--ease-out),visibility 0s}
+.onb-head{padding:calc(env(safe-area-inset-top,20px) + 16px) 22px 10px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.onb-progress{display:flex;gap:6px;flex:1}
+.onb-dot{flex:1;height:3px;background:rgba(0,0,0,0.08);border-radius:2px;transition:background var(--t-fast) var(--ease-out)}
+.onb-dot.active{background:var(--text)}
+.onb-skip{font-size:14px;color:var(--muted);cursor:pointer;font-weight:500;flex-shrink:0;letter-spacing:-0.1px}
+.onb-body{flex:1;position:relative;overflow:hidden}
+.onb-slide{position:absolute;inset:0;padding:18px 22px calc(22px + var(--safe-b));display:flex;flex-direction:column;justify-content:space-between;gap:18px;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity var(--t-page) var(--ease-out),transform var(--t-page) var(--ease-out),visibility 0s linear var(--t-page);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.onb-slide.active{opacity:1;visibility:visible;transform:translateY(0);transition:opacity var(--t-page) var(--ease-out),transform var(--t-page) var(--ease-out),visibility 0s}
+.onb-slide-top{display:flex;flex-direction:column;gap:10px;flex:1}
+.onb-slide-bottom{flex-shrink:0}
+.onb-logo{font-size:18px;font-weight:700;letter-spacing:-0.3px;margin-bottom:24px}
+.onb-logo span{font-weight:300}
+.onb-title{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1.1;color:var(--text);margin-bottom:6px}
+.onb-eyebrow{font-size:14px;color:var(--muted);font-weight:500;letter-spacing:-0.1px;margin-bottom:4px}
+.onb-lead{font-size:16px;color:var(--sec);line-height:1.55;letter-spacing:-0.1px;font-weight:400;margin-bottom:6px}
+.onb-disclaimer{font-size:13px;color:var(--muted);line-height:1.55;letter-spacing:-0.1px;margin-bottom:18px}
+.onb-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer;font-size:14px;color:var(--text);font-weight:500;line-height:1.4;user-select:none}
+.onb-check input{width:20px;height:20px;flex-shrink:0;accent-color:var(--text);margin-top:1px}
+.onb-btn{display:block;width:100%;padding:17px;border-radius:var(--r-pill);background:var(--dark);color:#fff;border:none;font:600 16px var(--font);letter-spacing:-0.1px;cursor:pointer;transition:transform var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out);text-align:center}
+.onb-btn[disabled]{background:rgba(0,0,0,0.20);cursor:not-allowed}
+.onb-btn:active:not([disabled]){transform:scale(0.985)}
+.onb-skip-link{margin-top:14px;text-align:center;font-size:13px;color:var(--muted);cursor:pointer;font-weight:500;letter-spacing:-0.1px}
+.onb-q-label{font-size:13px;color:var(--muted);font-weight:600;margin-top:18px;margin-bottom:10px;letter-spacing:-0.1px;text-transform:none}
+.onb-chips{display:flex;flex-wrap:wrap;gap:7px}
+.onb-chip{padding:10px 15px;border-radius:var(--r-pill);border:1px solid rgba(0,0,0,0.10);background:#fff;font-size:14px;font-weight:500;color:var(--sec);cursor:pointer;letter-spacing:-0.1px;transition:all var(--t-fast) var(--ease-out)}
+.onb-chip.on{border-color:var(--text);background:var(--text);color:#fff;font-weight:600}
+.onb-illu{margin:24px auto;flex:1;display:flex;align-items:center;justify-content:center;color:rgba(0,0,0,0.18);max-width:200px}
+.onb-result-score{text-align:center;margin:14px 0 22px}
+.onb-result-num{font-size:80px;font-weight:800;letter-spacing:-3.5px;line-height:0.85;color:var(--text)}
+.onb-result-lbl{font-size:13px;color:var(--muted);margin-top:8px;font-weight:500;letter-spacing:-0.1px}
+.onb-result-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:20px}
+.onb-result-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 4px;border-radius:var(--r-lg);border:1px solid rgba(0,0,0,0.07)}
+.onb-result-cell.target{border-color:rgba(192,152,237,0.4);background:rgba(192,152,237,0.04)}
+.onb-result-cell.top{border-color:var(--text)}
+.onb-result-cell .v{font-size:20px;font-weight:800;letter-spacing:-0.4px;color:var(--text)}
+.onb-result-cell .l{font-size:10px;color:var(--muted);font-weight:600;text-align:center;letter-spacing:-0.1px}
+.onb-result-text p{font-size:15px;color:var(--sec);line-height:1.55;margin-bottom:10px;letter-spacing:-0.1px}
+.onb-result-text b{color:var(--text);font-weight:700}
+.onb-rec{display:flex;align-items:center;gap:14px;padding:12px 14px;background:linear-gradient(to bottom,rgba(255,255,255,0.85),rgba(255,255,255,0.65));border-radius:var(--r-xl);border:1px solid rgba(0,0,0,0.07);box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),0 6px 18px rgba(0,0,0,0.06);margin-bottom:14px}
+.onb-rec-img{width:56px;height:56px;border-radius:14px;overflow:hidden;flex-shrink:0}
+.onb-rec-img img{width:100%;height:100%;object-fit:cover}
+.onb-rec-info{flex:1;min-width:0}
+.onb-rec-eyebrow{font-size:13px;color:var(--accent);font-weight:600;letter-spacing:-0.1px}
+.onb-rec-title{font-size:17px;font-weight:700;letter-spacing:-0.3px;color:var(--text);margin-top:2px}
+.onb-rec-meta{font-size:13px;color:var(--muted);margin-top:3px;font-weight:500;letter-spacing:-0.1px}
+
 /* Reduced-motion fallback — keep opacity transitions, kill movement */
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{
@@ -430,6 +479,93 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 
 <div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
 <div class="ai-scan" id="aiScan"><div class="ai-scan-header"><div style="color:#fff;font-size:16px;font-weight:600" id="scanTitle">AI Scan</div><div style="color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer" onclick="closeScan()">Close</div></div><div class="ai-scan-vf"><div class="ai-scan-frame"><div style="color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding:20px" id="scanHint">Position in frame</div></div></div><div class="ai-scan-result" id="scanResult"></div><div class="ai-scan-bottom"><div class="scan-btn" onclick="doScan()"></div><button class="scan-apply" id="scanApply" onclick="applyScan()">Apply to Score</button></div></div>
+
+<div class="onb-modal" id="onbModal">
+  <div class="onb-head">
+    <div class="onb-progress" id="onbProgress">
+      <div class="onb-dot active"></div>
+      <div class="onb-dot"></div>
+      <div class="onb-dot"></div>
+      <div class="onb-dot"></div>
+    </div>
+    <div class="onb-skip" onclick="onbFinish(false)">Skip</div>
+  </div>
+  <div class="onb-body">
+    <div class="onb-slide active" data-step="0">
+      <div class="onb-slide-top">
+        <div class="onb-logo">Lumina <span>Club</span></div>
+        <h1 class="onb-title">Skin that responds to your day</h1>
+        <p class="onb-lead">Lumina turns the way you eat, sleep, move and care for your skin into a single Score that updates in real time. Calm, specific, and yours.</p>
+      </div>
+      <div class="onb-slide-bottom">
+        <div class="onb-disclaimer">Lumina analyses visual skin characteristics for wellness. It is not a medical device. Your face stays on this phone — deletable anytime in Settings.</div>
+        <label class="onb-check"><input type="checkbox" id="onbConsent"><span>I'm 18+ and I've read the above</span></label>
+        <button class="onb-btn" id="onbBtn1" disabled onclick="onbNext()">Get started</button>
+      </div>
+    </div>
+    <div class="onb-slide" data-step="1">
+      <div class="onb-slide-top">
+        <div class="onb-eyebrow">A couple of things</div>
+        <h1 class="onb-title">Where you are right now</h1>
+        <div class="onb-q-label">Cycle phase</div>
+        <div class="onb-chips" data-group="cycle">
+          <div class="onb-chip" data-v="menstrual">Menstrual</div>
+          <div class="onb-chip" data-v="follicular">Follicular</div>
+          <div class="onb-chip" data-v="ovulation">Ovulation</div>
+          <div class="onb-chip on" data-v="luteal">Luteal</div>
+          <div class="onb-chip" data-v="skip">Skip</div>
+        </div>
+        <div class="onb-q-label">Where you'd like to focus</div>
+        <div class="onb-chips" data-group="focus">
+          <div class="onb-chip" data-v="firm">Firmness</div>
+          <div class="onb-chip" data-v="glow">Glow</div>
+          <div class="onb-chip" data-v="smooth">Smoothness</div>
+          <div class="onb-chip" data-v="clear">Clarity</div>
+          <div class="onb-chip on" data-v="define">Definition</div>
+        </div>
+      </div>
+      <div class="onb-slide-bottom">
+        <button class="onb-btn" onclick="onbNext()">Continue</button>
+      </div>
+    </div>
+    <div class="onb-slide" data-step="2">
+      <div class="onb-slide-top">
+        <div class="onb-eyebrow">Step 3 of 4</div>
+        <h1 class="onb-title">Let's see your starting point</h1>
+        <p class="onb-lead">30 seconds. Five visible characteristics measured in soft natural light. Your face stays on your device.</p>
+        <div class="onb-illu">
+          <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M12 6v2M12 16v2M6 12h2M16 12h2"/></svg>
+        </div>
+      </div>
+      <div class="onb-slide-bottom">
+        <button class="onb-btn" onclick="onbStartScan()">Open camera</button>
+        <div class="onb-skip-link" onclick="onbScanSimulate()">Use sample data</div>
+      </div>
+    </div>
+    <div class="onb-slide" data-step="3">
+      <div class="onb-slide-top">
+        <div class="onb-eyebrow">Your starting point</div>
+        <div class="onb-result-score">
+          <div class="onb-result-num" id="onbResultNum">58</div>
+          <div class="onb-result-lbl">Lumina Score</div>
+        </div>
+        <div class="onb-result-grid" id="onbResultGrid"></div>
+        <div class="onb-result-text" id="onbResultText"></div>
+      </div>
+      <div class="onb-slide-bottom">
+        <div class="onb-rec">
+          <div class="onb-rec-img"><img src="../images/krea-generated/lymphatic-drainage.png" alt=""></div>
+          <div class="onb-rec-info">
+            <div class="onb-rec-eyebrow">Recommended for you</div>
+            <div class="onb-rec-title">Lymph priority</div>
+            <div class="onb-rec-meta">7 days · 3 steps + theory daily</div>
+          </div>
+        </div>
+        <button class="onb-btn" onclick="onbFinish(true)">Start program</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="program-modal" id="programModal">
   <div class="program-head">
@@ -596,6 +732,97 @@ function commitTuneUp(){
   toast('Tune-up — recalibrating');
   setTimeout(()=>openScan('face'),420);
 }
+
+// Onboarding — first-run flow: Welcome+Consent → Quick context → Face scan → Results+Rec
+const ONB_TOTAL=4;
+let onbStep=0;
+let onbCycle='luteal', onbFocus='define';
+let onbScanResult=null;
+const onbModal=document.getElementById('onbModal');
+function onbGo(i){
+  onbStep=Math.max(0,Math.min(ONB_TOTAL-1,i));
+  document.querySelectorAll('.onb-slide').forEach((s,idx)=>s.classList.toggle('active',idx===onbStep));
+  document.querySelectorAll('.onb-dot').forEach((d,idx)=>d.classList.toggle('active',idx<=onbStep));
+}
+function onbNext(){if(onbStep===2 && !onbScanResult){onbScanSimulate();return;}onbGo(onbStep+1)}
+function onbStart(){onbStep=0;onbScanResult=null;document.querySelectorAll('.onb-slide').forEach((s,i)=>s.classList.toggle('active',i===0));document.querySelectorAll('.onb-dot').forEach((d,i)=>d.classList.toggle('active',i===0));onbModal.classList.add('on')}
+function onbFinish(applyResults){
+  if(applyResults && onbScanResult){
+    // Reset home state to scan baselines — true Day 0
+    SUB_KEYS.forEach(k=>{
+      subScores[k].baseline=onbScanResult.subs[k];
+      subScores[k].practiceBonus=0;
+      subScores[k].activeMods=[];
+    });
+    earned.length=0;
+    // Reset MOVE_QUEUE so first move after onboarding is Step 1
+    MOVE_QUEUE.length=0;
+    MOVE_QUEUE.push({key:'neck-stretch',title:'Morning lymph',meta:'7 min · Step 1'});
+    MOVE_QUEUE.push({key:'cheekbone-lift',title:'Buccal massage',meta:'10 min · Step 2'});
+    MOVE_QUEUE.push({key:'forehead-smoothing',title:'Cold splash',meta:'30 sec · Step 3'});
+    moveIdx=0;
+    dayStartScore=(()=>{let t=0;SUB_KEYS.forEach(k=>{t+=subScores[k].baseline*SCORE_WEIGHTS[k]});return t})();
+    lastDisplayedScore=Math.round(overallScore());
+    renderEarned();renderNextMove();recomputeAll();
+    if(typeof renderPracticeCards==='function') renderPracticeCards('fresh');
+  }
+  onbModal.classList.remove('on');
+  try{localStorage.setItem('onbDone','1')}catch(e){}
+}
+// Consent gate
+document.getElementById('onbConsent').addEventListener('change',function(){document.getElementById('onbBtn1').disabled=!this.checked});
+// Chip groups (single-select within group)
+document.querySelectorAll('.onb-modal .onb-chips').forEach(g=>{
+  g.addEventListener('click',e=>{
+    const c=e.target.closest('.onb-chip');if(!c||!g.contains(c))return;
+    g.querySelectorAll('.onb-chip').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on');
+    if(g.dataset.group==='cycle') onbCycle=c.dataset.v;
+    else if(g.dataset.group==='focus') onbFocus=c.dataset.v;
+  });
+});
+// Face scan in onboarding mode
+let onbScanInProgress=false;
+function onbStartScan(){
+  onbScanInProgress=true;
+  openScan('face');
+}
+function onbScanSimulate(){
+  // Sample baseline values per concept's example: Score 58, Definition 42 (weak), Clarity 74 (strong)
+  onbScanResult={
+    subs:{firm:60, glow:65, smooth:55, clear:74, define:42},
+    overall:0,
+    strongest:'clear', weakest:'define'
+  };
+  // Compute weighted overall
+  let t=0;SUB_KEYS.forEach(k=>{t+=onbScanResult.subs[k]*SCORE_WEIGHTS[k]});
+  onbScanResult.overall=Math.round(t);
+  renderOnbResult();
+  onbGo(3);
+}
+function renderOnbResult(){
+  if(!onbScanResult)return;
+  document.getElementById('onbResultNum').textContent=onbScanResult.overall;
+  const grid=document.getElementById('onbResultGrid');
+  const order=['firm','glow','smooth','clear','define'];
+  const shortLabel={firm:'Firm',glow:'Glow',smooth:'Smooth',clear:'Clear',define:'Define'};
+  grid.innerHTML=order.map(k=>{
+    const cls=k===onbScanResult.weakest?'target':k===onbScanResult.strongest?'top':'';
+    return `<div class="onb-result-cell ${cls}"><div class="v">${onbScanResult.subs[k]}</div><div class="l">${shortLabel[k]}</div></div>`;
+  }).join('');
+  const txt=document.getElementById('onbResultText');
+  const cycleLine = onbCycle==='luteal' ? ' Common in luteal phase, and lymphatic drainage moves it.' : '';
+  txt.innerHTML=`
+    <p><b>Strongest is ${SUB_LABEL[onbScanResult.strongest]} (${onbScanResult.subs[onbScanResult.strongest]}).</b> Skin reads even and clean here.</p>
+    <p><b>Zone for focus is ${SUB_LABEL[onbScanResult.weakest]} (${onbScanResult.subs[onbScanResult.weakest]}).</b> We see light puffiness around the jaw.${cycleLine}</p>`;
+}
+// Hook the regular AI Face Scan apply: if onboarding flag is on, jump to onb step 4 instead of mutating home state
+const _origApplyScan = window.applyScan; // not yet defined here; we'll wrap after definition below.
+
+// Show onboarding on first load
+try{if(!localStorage.getItem('onbDone'))setTimeout(onbStart,400)}catch(e){}
+// Tap on "Lumina Club" header re-runs onboarding (dev affordance)
+document.querySelectorAll('.hdr .logo').forEach(l=>l.addEventListener('click',()=>onbStart()));
 
 // Theory page — educational article opened by the Theory pcard
 function theoryOpen(){document.getElementById('theoryModal').classList.add('on')}
@@ -1031,6 +1258,12 @@ function applyScan(){
   const r=pendingScan;if(!r)return;
   closeScan();
   setTimeout(()=>{
+    // In onboarding, the face scan is the FIRST measurement — set absolute baselines, not deltas
+    if(onbScanInProgress && r.type==='face'){
+      onbScanInProgress=false;
+      onbScanSimulate();
+      return;
+    }
     if(r.type==='face'){
       // Re-scan moves the BASELINE — slow, durable change. Resets the daily window.
       recalibrateBaseline(r.changes);
@@ -1077,14 +1310,20 @@ const ctxRow=document.getElementById('ctxRow');
 // Food slot
 {const _fs=document.getElementById('foodSlot1');if(_fs)_fs.innerHTML=`<img src="${APPLE_IMG}" alt="">`;}
 
-// Practice cards (Theory step prepended)
+// Practice cards (Theory step prepended) — wrapped so onboarding can reset to fresh state
 const THEORY_PROMPT=`Schematic 3D model of facial lymphatic system viewed from the front, white studio background, gradient violet-to-blue highlights on lymph nodes and pathways, soft volumetric lighting, precise vector linework overlay, scientific medical illustration, isometric depth, vertical 4:5, no text`;
 const pr=document.getElementById('practiceRow');
-[{isTheory:true,step:'Theory',t:'Lymph priority intro',dur:'3m read'},
+const PRACTICE_DEFAULT=[{isTheory:true,step:'Theory',t:'Lymph priority intro',dur:'3m read'},
 {key:'neck-stretch',step:'Step 1',t:'Morning lymph',dur:'7m',status:'done',prog:100,timeLeft:''},
 {key:'cheekbone-lift',step:'Step 2',t:'Buccal massage',dur:'10m',status:'now',prog:40,timeLeft:'3:30 left'},
-{key:'forehead-smoothing',step:'Step 3',t:'Cold splash',dur:'30s',status:'locked',prog:0,timeLeft:''}
-].forEach(c=>{
+{key:'forehead-smoothing',step:'Step 3',t:'Cold splash',dur:'30s',status:'locked',prog:0,timeLeft:''}];
+const PRACTICE_FRESH=[{isTheory:true,step:'Theory',t:'Lymph priority intro',dur:'3m read'},
+{key:'neck-stretch',step:'Step 1',t:'Morning lymph',dur:'7m',status:'now',prog:0,timeLeft:''},
+{key:'cheekbone-lift',step:'Step 2',t:'Buccal massage',dur:'10m',status:'locked',prog:0,timeLeft:''},
+{key:'forehead-smoothing',step:'Step 3',t:'Cold splash',dur:'30s',status:'locked',prog:0,timeLeft:''}];
+function renderPracticeCards(mode){
+  pr.innerHTML='';
+  (mode==='fresh'?PRACTICE_FRESH:PRACTICE_DEFAULT).forEach(c=>{
   if(c.isTheory){
     const d=document.createElement('div');d.className='pcard theory';
     d.innerHTML=`<div class="pcard-img"><img src="../images/krea-generated/theory.png" alt=""><div class="grad"></div><div class="pcard-dur">${c.dur}</div><div class="pcard-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 012-2h6.5v18H6a2 2 0 01-2-2V5z"/><path d="M20 5a2 2 0 00-2-2h-5.5v18H18a2 2 0 002-2V5z"/></svg></div></div><div class="pcard-info"><div class="pcard-step">${c.step}</div><div class="pcard-title">${c.t}</div></div>`;
@@ -1100,7 +1339,9 @@ const pr=document.getElementById('practiceRow');
   if(c.status!=='locked')d.onclick=()=>openPlayer(c.key);
   d.insertAdjacentHTML('beforeend',mkHashtag(c.key));
   pr.appendChild(d);
-});
+  });
+}
+renderPracticeCards();
 
 // Challenge
 const ds=document.getElementById('ds');
