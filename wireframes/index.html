@@ -287,10 +287,25 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .ai-scan.on{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s}
 .ai-scan-header{padding:calc(env(safe-area-inset-top,20px) + 12px) 20px 16px;display:flex;justify-content:space-between;align-items:center}
 .ai-scan-vf{flex:1;display:flex;align-items:center;justify-content:center}
-.ai-scan-frame{width:240px;height:240px;border:2px solid rgba(255,255,255,0.2);border-radius:var(--r-xxl);position:relative;display:flex;align-items:center;justify-content:center}
-.ai-scan-frame::before,.ai-scan-frame::after{content:'';position:absolute;width:28px;height:28px;border-color:var(--accent);border-style:solid}
+.ai-scan-frame{width:280px;height:340px;border:1px solid rgba(255,255,255,0.16);border-radius:var(--r-xxl);position:relative;overflow:hidden;background:#0a0a0a}
+.ai-scan-frame::before,.ai-scan-frame::after{content:'';position:absolute;width:30px;height:30px;border-color:var(--accent);border-style:solid;z-index:6;pointer-events:none}
 .ai-scan-frame::before{top:-1px;left:-1px;border-width:3px 0 0 3px;border-radius:8px 0 0 0}
 .ai-scan-frame::after{bottom:-1px;right:-1px;border-width:0 3px 3px 0;border-radius:0 0 8px 0}
+#scanVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);background:#0f0f0f;display:block}
+#scanHint{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:13px;font-weight:500;color:rgba(255,255,255,0.78);letter-spacing:-0.1px;text-shadow:0 1px 4px rgba(0,0,0,0.6);z-index:5;padding:0 16px;transition:opacity var(--t-fast) var(--ease-out)}
+.scan-frame-glow{position:absolute;inset:-1px;border-radius:inherit;border:1.5px solid var(--accent);opacity:0;pointer-events:none;z-index:2;transition:opacity var(--t-fast) var(--ease-out)}
+.ai-scan.scanning .scan-frame-glow{opacity:1;animation:scanFramePulse 1.8s ease-in-out infinite}
+@keyframes scanFramePulse{0%,100%{opacity:0.4;box-shadow:0 0 6px rgba(192,152,237,0.30),inset 0 0 14px rgba(192,152,237,0.10)}50%{opacity:0.95;box-shadow:0 0 26px rgba(192,152,237,0.60),inset 0 0 24px rgba(192,152,237,0.18)}}
+.scan-sweep{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(to bottom,transparent,rgba(192,152,237,0.95),transparent);box-shadow:0 0 14px rgba(192,152,237,0.7),0 0 4px rgba(255,255,255,0.4);opacity:0;pointer-events:none;z-index:3}
+.ai-scan.scanning .scan-sweep{opacity:1;animation:scanSweep 1.6s cubic-bezier(0.55,0.05,0.45,0.95) infinite}
+@keyframes scanSweep{0%{top:-2px}50%{top:calc(100% - 2px)}100%{top:-2px}}
+.scan-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(192,152,237,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(192,152,237,0.06) 1px,transparent 1px);background-size:32px 32px;opacity:0;z-index:1;pointer-events:none;transition:opacity 320ms ease-out}
+.ai-scan.scanning .scan-grid{opacity:1}
+.scan-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px rgba(192,152,237,0.85),0 0 2px rgba(255,255,255,0.6);opacity:0;transform:translate(-50%,-50%) scale(0.3);z-index:4;pointer-events:none;transition:opacity 280ms ease-out,transform 360ms cubic-bezier(0.34,1.56,0.64,1)}
+.scan-dot.on{opacity:0.92;transform:translate(-50%,-50%) scale(1)}
+.scan-dot::after{content:'';position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;border:1px solid rgba(192,152,237,0.55);opacity:0;animation:scanDotRing 1.4s ease-out infinite}
+.scan-dot.on::after{opacity:1}
+@keyframes scanDotRing{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0.7}100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
 .ai-scan-bottom{padding:20px 20px calc(20px + var(--safe-b));text-align:center}
 .scan-btn{width:64px;height:64px;border-radius:50%;border:3px solid #fff;background:transparent;cursor:pointer;position:relative;display:inline-block}
 .scan-btn::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff}
@@ -624,7 +639,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 </div>
 
 <div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
-<div class="ai-scan" id="aiScan"><div class="ai-scan-header"><div style="color:#fff;font-size:16px;font-weight:600" id="scanTitle">AI Scan</div><div style="color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer" onclick="closeScan()">Close</div></div><div class="ai-scan-vf"><div class="ai-scan-frame"><div style="color:rgba(255,255,255,0.4);font-size:13px;text-align:center;padding:20px" id="scanHint">Position in frame</div></div></div><div class="ai-scan-result" id="scanResult"></div><div class="ai-scan-bottom"><div class="scan-btn" onclick="doScan()"></div><button class="scan-apply" id="scanApply" onclick="applyScan()">Apply to Score</button></div></div>
+<div class="ai-scan" id="aiScan"><div class="ai-scan-header"><div style="color:#fff;font-size:16px;font-weight:600" id="scanTitle">AI Scan</div><div style="color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer" onclick="closeScan()">Close</div></div><div class="ai-scan-vf"><div class="ai-scan-frame" id="scanFrame"><video id="scanVideo" autoplay muted playsinline></video><div class="scan-grid"></div><div class="scan-frame-glow"></div><div class="scan-sweep"></div><div class="scan-dot" data-d="0" style="left:50%;top:18%"></div><div class="scan-dot" data-d="1" style="left:32%;top:36%"></div><div class="scan-dot" data-d="2" style="left:68%;top:36%"></div><div class="scan-dot" data-d="3" style="left:50%;top:48%"></div><div class="scan-dot" data-d="4" style="left:30%;top:58%"></div><div class="scan-dot" data-d="5" style="left:70%;top:58%"></div><div class="scan-dot" data-d="6" style="left:28%;top:74%"></div><div class="scan-dot" data-d="7" style="left:72%;top:74%"></div><div class="scan-dot" data-d="8" style="left:50%;top:84%"></div><div id="scanHint">Position in frame</div></div></div><div class="ai-scan-result" id="scanResult"></div><div class="ai-scan-bottom"><div class="scan-btn" onclick="doScan()"></div><button class="scan-apply" id="scanApply" onclick="applyScan()">Apply to Score</button></div></div>
 
 <div class="progress-modal" id="progressModal">
   <div class="progress-head">
@@ -1585,29 +1600,81 @@ const scanHintEl=document.getElementById('scanHint');
 const scanResultEl=document.getElementById('scanResult');
 const scanApplyEl=document.getElementById('scanApply');
 
+// Camera lifecycle (face scan only — getUserMedia, graceful fallback if denied)
+let scanStream=null;
+async function openCamera(){
+  if(scanStream)return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;
+  try{
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:540},height:{ideal:680}},audio:false});
+    const v=document.getElementById('scanVideo');
+    if(v){v.srcObject=scanStream;await v.play().catch(()=>{})}
+  }catch(e){/* permission denied / no camera — frame stays dark, scan still works on sample data */}
+}
+function closeCamera(){
+  if(!scanStream)return;
+  try{scanStream.getTracks().forEach(t=>t.stop())}catch(e){}
+  scanStream=null;
+  const v=document.getElementById('scanVideo');
+  if(v)v.srcObject=null;
+}
+
 function openScan(t){
   closeFab();
   const titles={face:'AI Face Scan',food:'AI Food Scan',ingr:'AI Ingredients'};
-  const hints={face:'Position your face',food:'Point at food',ingr:'Scan product label'};
+  const hints={face:'Position your face in frame',food:'Point at food',ingr:'Scan product label'};
   document.getElementById('scanTitle').textContent=titles[t];
   scanHintEl.textContent=hints[t];
   scanEl.dataset.type=t;
-  scanEl.classList.remove('result');
+  scanEl.classList.remove('result','scanning');
   scanResultEl.innerHTML='';
   pendingScan=null;
+  document.querySelectorAll('.scan-dot').forEach(d=>d.classList.remove('on'));
   scanEl.classList.add('on');
+  if(t==='face') openCamera();
 }
-function closeScan(){scanEl.classList.remove('on','result');pendingScan=null}
+function closeScan(){
+  scanEl.classList.remove('on','result','scanning');
+  document.querySelectorAll('.scan-dot').forEach(d=>d.classList.remove('on'));
+  closeCamera();
+  pendingScan=null;
+}
+
+// Animated analyze sequence: sweep + frame pulse + feature dots lighting up + status text
+function runFaceAnalysis(done){
+  scanEl.classList.add('scanning');
+  scanHintEl.textContent='Detecting features…';
+  const dots=document.querySelectorAll('.scan-dot');
+  // Stagger the 9 dots on/off
+  dots.forEach((d,i)=>setTimeout(()=>d.classList.add('on'),200+i*110));
+  setTimeout(()=>{scanHintEl.textContent='Measuring 5 axes…'},1400);
+  setTimeout(()=>{scanHintEl.textContent='Scoring…'},2300);
+  setTimeout(()=>{
+    dots.forEach(d=>d.classList.remove('on'));
+    scanEl.classList.remove('scanning');
+    done();
+  },2800);
+}
 
 function doScan(){
   const type=scanEl.dataset.type;
-  scanHintEl.textContent='Analyzing...';
-  setTimeout(()=>{
-    const r=generateScanResult(type);
-    pendingScan=r;
-    renderScanResult(r);
-    scanEl.classList.add('result');
-  },1200);
+  if(type==='face'){
+    runFaceAnalysis(()=>{
+      const r=generateScanResult(type);
+      pendingScan=r;renderScanResult(r);
+      scanEl.classList.add('result');
+      closeCamera(); // free camera once analysis is done
+    });
+  } else {
+    scanEl.classList.add('scanning');
+    scanHintEl.textContent='Analyzing…';
+    setTimeout(()=>{
+      const r=generateScanResult(type);
+      pendingScan=r;renderScanResult(r);
+      scanEl.classList.add('result');
+      scanEl.classList.remove('scanning');
+    },1400);
+  }
 }
 
 function generateScanResult(type){
