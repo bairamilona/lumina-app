@@ -394,6 +394,42 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 /* Focus-visible rings for keyboard users — subtle accent halo */
 .pcard:focus-visible,.vcard:focus-visible,.tile:focus-visible,.ctx:focus-visible,.snav:focus-visible,.chip:focus-visible,.dy:focus-visible,.metric:focus-visible,.bnav-btn:focus-visible,.fab-main:focus-visible,.fab-ico:focus-visible,.next-move:focus-visible,.program-row:focus-visible,.earned-chip:focus-visible,.theory-copy:focus-visible,.img-prompt-copy:focus-visible,.scan-apply:focus-visible,.path-step:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
+/* Onboarding toggle (used for ED screening + Settings) */
+.onb-toggle,.set-toggle{display:flex;align-items:flex-start;gap:14px;cursor:pointer;padding:14px;border-radius:var(--r-xl);background:rgba(0,0,0,0.025);border:1px solid rgba(0,0,0,0.07);user-select:none;-webkit-user-select:none;transition:background var(--t-fast) var(--ease-out)}
+.onb-toggle input,.set-toggle input{position:absolute;opacity:0;pointer-events:none;width:0;height:0}
+.onb-toggle-track,.set-toggle-track{width:46px;height:28px;border-radius:14px;background:rgba(0,0,0,0.18);position:relative;flex-shrink:0;transition:background var(--t-fast) var(--ease-out);margin-top:1px}
+.onb-toggle-track::before,.set-toggle-track::before{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.18);transition:transform var(--t-fast) var(--ease-out)}
+.onb-toggle input:checked + .onb-toggle-track,.set-toggle input:checked + .set-toggle-track{background:var(--text)}
+.onb-toggle input:checked + .onb-toggle-track::before,.set-toggle input:checked + .set-toggle-track::before{transform:translateX(18px)}
+.onb-toggle-text,.set-toggle-text{flex:1;font-size:14px;color:var(--text);font-weight:500;line-height:1.45;letter-spacing:-0.1px}
+.onb-toggle-text strong,.set-toggle-text strong{font-weight:700;display:block;margin-bottom:3px;font-size:15px}
+.onb-toggle-text .hint,.set-toggle-text .hint{display:block;color:var(--muted);font-weight:500;margin-top:3px;font-size:13px}
+
+/* Settings · Privacy modal */
+.settings-modal{position:fixed;inset:0;z-index:47;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
+.settings-modal.on{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s}
+.settings-head{padding:calc(env(safe-area-inset-top,20px) + 14px) 22px 16px;display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid rgba(0,0,0,0.06)}
+.settings-head h1{font-size:24px;font-weight:800;letter-spacing:-0.6px;line-height:1.1}
+.settings-head p{font-size:14px;color:var(--muted);margin-top:5px;font-weight:500;letter-spacing:-0.1px}
+.settings-close{font-size:14px;color:var(--muted);cursor:pointer;font-weight:500;flex-shrink:0;padding-top:6px}
+.settings-body{flex:1;overflow-y:auto;padding:18px 20px calc(40px + var(--safe-b))}
+.settings-section{margin-bottom:24px}
+.settings-section-title{font-size:13px;color:var(--muted);font-weight:600;letter-spacing:-0.1px;margin-bottom:10px;padding-left:2px}
+.settings-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r-xl);background:#fff;border:1px solid rgba(0,0,0,0.07);box-shadow:inset 0 1px 0 rgba(255,255,255,0.6),0 2px 6px rgba(0,0,0,0.03);cursor:pointer;transition:transform var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out)}
+.settings-row:active{transform:scale(0.985)}
+.settings-row + .settings-row{margin-top:10px}
+.settings-row-info{flex:1;min-width:0}
+.settings-row-title{font-size:15px;font-weight:700;letter-spacing:-0.2px;color:var(--text);line-height:1.2}
+.settings-row-meta{font-size:13px;color:var(--muted);margin-top:3px;font-weight:500;letter-spacing:-0.1px;line-height:1.35}
+.settings-row-arrow{color:var(--light);flex-shrink:0}
+.settings-row.danger .settings-row-title{color:var(--neg)}
+.settings-disclaimer{margin-top:6px;padding:14px 16px;border-radius:var(--r-xl);background:rgba(0,0,0,0.025);border:1px solid rgba(0,0,0,0.05);font-size:13px;color:var(--muted);line-height:1.55;letter-spacing:-0.1px}
+.settings-disclaimer strong{color:var(--text);font-weight:600}
+
+/* Progress modal — link to Settings under the Continue CTA */
+.progress-settings-link{display:block;text-align:center;margin-top:14px;font-size:14px;color:var(--muted);font-weight:500;letter-spacing:-0.1px;cursor:pointer;padding:6px}
+.progress-settings-link:active{opacity:0.6}
+
 /* Progress / Re-scan — weekly before-after slider, opened by avatar tap */
 .progress-modal{position:fixed;inset:0;z-index:46;background:#fff;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
 .progress-modal.on{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s}
@@ -637,6 +673,60 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
     </div>
 
     <button class="progress-cta" onclick="progressClose()">Continue program</button>
+    <a class="progress-settings-link" onclick="settingsOpen()">Settings · Privacy</a>
+  </div>
+</div>
+
+<div class="settings-modal" id="settingsModal">
+  <div class="settings-head">
+    <div>
+      <h1>Settings · Privacy</h1>
+      <p>Your data, your control.</p>
+    </div>
+    <div class="settings-close" onclick="settingsClose()">Close</div>
+  </div>
+  <div class="settings-body">
+    <div class="settings-section">
+      <div class="settings-section-title">Your data</div>
+      <div class="settings-row danger" onclick="settingsDeleteFaceData()">
+        <div class="settings-row-info">
+          <div class="settings-row-title">Delete face baseline data</div>
+          <div class="settings-row-meta">Removes scan results from this device. The next time you open Lumina, onboarding will start fresh.</div>
+        </div>
+        <svg class="settings-row-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Food scanner</div>
+      <label class="set-toggle">
+        <input type="checkbox" id="setSoftMode">
+        <span class="set-toggle-track"></span>
+        <span class="set-toggle-text"><strong>Soften tracking</strong><span class="hint">Skip negative modifiers in the food scanner. Useful if you have a complicated relationship with food or body.</span></span>
+      </label>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Information</div>
+      <div class="settings-row" onclick="toast('Terms of Use')">
+        <div class="settings-row-info"><div class="settings-row-title">Terms of Use</div></div>
+        <svg class="settings-row-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>
+      </div>
+      <div class="settings-row" onclick="toast('Privacy Policy')">
+        <div class="settings-row-info"><div class="settings-row-title">Privacy Policy</div></div>
+        <svg class="settings-row-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>
+      </div>
+      <div class="settings-row" onclick="toast('About Lumina Score')">
+        <div class="settings-row-info"><div class="settings-row-title">About the Lumina Score</div></div>
+        <svg class="settings-row-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>
+      </div>
+      <div class="settings-row" onclick="settingsReplayOnboarding()">
+        <div class="settings-row-info"><div class="settings-row-title">Replay onboarding</div></div>
+        <svg class="settings-row-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>
+      </div>
+    </div>
+
+    <div class="settings-disclaimer"><strong>What Lumina is.</strong> Lumina analyses visual skin characteristics for wellness. It is not a medical device and does not diagnose, treat, or prevent disease. The Lumina Score is a composite measure of visible characteristics, not a clinical assessment. Information is educational; consult a qualified professional before changes to nutrition, skincare, or activity.</div>
   </div>
 </div>
 
@@ -658,8 +748,9 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
         <p class="onb-lead">Lumina turns the way you eat, sleep, move and care for your skin into a single Score that updates in real time. Calm, specific, and yours.</p>
       </div>
       <div class="onb-slide-bottom">
-        <div class="onb-disclaimer">Lumina analyses visual skin characteristics for wellness. It is not a medical device. Your face stays on this phone — deletable anytime in Settings.</div>
-        <label class="onb-check"><input type="checkbox" id="onbConsent"><span>I'm 18+ and I've read the above</span></label>
+        <div class="onb-disclaimer"><strong style="color:var(--text);font-weight:600">A note on what this is.</strong> Lumina analyses visual skin characteristics for wellness. It is not a medical device and does not diagnose, treat, or prevent conditions. Your face stays on this phone, deletable anytime in Settings. Information is educational, not a substitute for professional advice.</div>
+        <label class="onb-check"><input type="checkbox" id="onbConsentAge"><span>I'm 18 or older.</span></label>
+        <label class="onb-check"><input type="checkbox" id="onbConsentBio"><span>I understand my face data is analysed on this device for wellness, kept private, and can be deleted at any time.</span></label>
         <button class="onb-btn" id="onbBtn1" disabled onclick="onbNext()">Get started</button>
       </div>
     </div>
@@ -683,6 +774,12 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
           <div class="onb-chip" data-v="clear">Clarity</div>
           <div class="onb-chip on" data-v="define">Definition</div>
         </div>
+        <div class="onb-q-label" style="margin-top:24px">Sensitive · optional</div>
+        <label class="onb-toggle">
+          <input type="checkbox" id="onbSoftMode">
+          <span class="onb-toggle-track"></span>
+          <span class="onb-toggle-text"><strong>Soften food tracking</strong>If you've had a complicated relationship with food or body, we'll skip negative modifiers in the food scanner. Your wellbeing matters more than data. <span class="hint">This stays private and can be changed in Settings later.</span></span>
+        </label>
       </div>
       <div class="onb-slide-bottom">
         <button class="onb-btn" onclick="onbNext()">Continue</button>
@@ -893,6 +990,40 @@ function commitTuneUp(){
   setTimeout(()=>openScan('face'),420);
 }
 
+// Settings · Privacy modal
+function settingsOpen(){
+  document.getElementById('settingsModal').classList.add('on');
+  // Sync the soft-mode toggle with current state
+  const s=document.getElementById('setSoftMode');if(s)s.checked=softFoodScanner;
+}
+function settingsClose(){document.getElementById('settingsModal').classList.remove('on')}
+function settingsDeleteFaceData(){
+  if(!confirm('Delete all face baseline data and restart onboarding?'))return;
+  try{localStorage.removeItem('onbDone');localStorage.removeItem('lumSoftMode')}catch(e){}
+  // Clear in-memory state to a neutral pre-scan baseline
+  SUB_KEYS.forEach(k=>{subScores[k].baseline=50;subScores[k].practiceBonus=0;subScores[k].activeMods=[]});
+  earned.length=0;
+  dayStartScore=computeDayStart();
+  lastDisplayedScore=Math.round(overallScore());
+  renderEarned();renderNextMove();recomputeAll();
+  settingsClose();progressClose();
+  setTimeout(onbStart,260);
+}
+function settingsReplayOnboarding(){
+  try{localStorage.removeItem('onbDone')}catch(e){}
+  settingsClose();progressClose();
+  setTimeout(onbStart,260);
+}
+const _setSoftEl=document.getElementById('setSoftMode');
+if(_setSoftEl){
+  _setSoftEl.addEventListener('change',function(){
+    softFoodScanner=this.checked;
+    try{localStorage.setItem('lumSoftMode',this.checked?'1':'0')}catch(e){}
+    const o=document.getElementById('onbSoftMode');if(o)o.checked=this.checked;
+    toast(this.checked?'Soft mode on · positive impacts only':'Soft mode off');
+  });
+}
+
 // Progress / Re-scan — weekly before-after slider opened by avatar tap
 function progressOpen(){
   document.getElementById('progressModal').classList.add('on');
@@ -946,6 +1077,9 @@ const ONB_TOTAL=4;
 let onbStep=0;
 let onbCycle='luteal', onbFocus='define';
 let onbScanResult=null;
+// Soft mode: ED-screening result. When true, food scanner clamps negative active mods to 0.
+let softFoodScanner=false;
+try{softFoodScanner=localStorage.getItem('lumSoftMode')==='1'}catch(e){}
 const onbModal=document.getElementById('onbModal');
 function onbGo(i){
   onbStep=Math.max(0,Math.min(ONB_TOTAL-1,i));
@@ -977,8 +1111,21 @@ function onbFinish(applyResults){
   onbModal.classList.remove('on');
   try{localStorage.setItem('onbDone','1')}catch(e){}
 }
-// Consent gate
-document.getElementById('onbConsent').addEventListener('change',function(){document.getElementById('onbBtn1').disabled=!this.checked});
+// Consent gate — both checkboxes required (age + biometric)
+function _onbConsentCheck(){
+  const a=document.getElementById('onbConsentAge');
+  const b=document.getElementById('onbConsentBio');
+  document.getElementById('onbBtn1').disabled = !(a&&b&&a.checked&&b.checked);
+}
+document.getElementById('onbConsentAge').addEventListener('change',_onbConsentCheck);
+document.getElementById('onbConsentBio').addEventListener('change',_onbConsentCheck);
+// ED screening capture
+document.getElementById('onbSoftMode').addEventListener('change',function(){
+  softFoodScanner=this.checked;
+  try{localStorage.setItem('lumSoftMode',this.checked?'1':'0')}catch(e){}
+  // Sync the Settings toggle if open
+  const s=document.getElementById('setSoftMode');if(s)s.checked=this.checked;
+});
 // Chip groups (single-select within group)
 document.querySelectorAll('.onb-modal .onb-chips').forEach(g=>{
   g.addEventListener('click',e=>{
@@ -1477,13 +1624,19 @@ function generateScanResult(type){
   }
   if(type==='food'){
     // Per-sub-score breakdown: how this item touches each axis, with hours-to-decay
-    return {
+    const r={
       type:'food',label:'Apple snack',verdict:'Light · alkaline',img:APPLE_IMG,
       impact:{firm:0,glow:0.3,smooth:0,clear:0,define:0.5},
       hours:{glow:18,define:24},
       detail:'Hydrating · low glycemic · fits luteal phase',
       pair:{key:'cheekbone-lift',verb:'Pair with',why:'pushes Definition further'}
     };
+    if(softFoodScanner){
+      // Soften: clamp every negative impact to 0; positives untouched
+      Object.keys(r.impact).forEach(k=>{if(r.impact[k]<0)r.impact[k]=0});
+      r.softMode=true;
+    }
+    return r;
   }
   // Ingredient → Niacinamide on Smoothness/Glow (texture + tone)
   return {
@@ -1526,8 +1679,10 @@ function renderScanResult(r){
     const tcls=total>0?'pos':total<0?'neg':'zero';
     const tsign=total>0?'+':total<0?'':'';
     const pairBlock = r.pair ? `<div class="scan-pair" id="scanPairBtn"><div class="scan-pair-thumb"><img src="${IMG[r.pair.key]}" alt=""></div><div class="scan-pair-info"><div class="scan-pair-eyebrow">${r.pair.verb}</div><div class="scan-pair-title">${VIDEO_LABEL[r.pair.key]||r.pair.key}</div><div class="scan-pair-meta">${r.pair.why}</div></div><svg class="scan-pair-arrow" width="16" height="16" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg></div>` : '';
+    const softNote = r.softMode ? '<div class="scan-result-detail" style="margin-top:0;margin-bottom:10px;color:rgba(192,152,237,0.85);font-size:12px;text-align:center">Soft mode · only positive impacts shown</div>' : '';
     scanResultEl.innerHTML=`
       <div class="scan-result-head"><div class="scan-check"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg></div><h3>${r.label}</h3><p>${r.verdict}</p></div>
+      ${softNote}
       <div class="scan-impact-grid">${cells}</div>
       <div class="scan-impact-total"><span class="lbl">Score impact · 24h</span><span class="v ${tcls}">${tsign}${total.toFixed(1)}</span></div>
       ${pairBlock}
