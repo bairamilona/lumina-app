@@ -92,8 +92,8 @@ img{display:block;max-width:100%}
 .vc-orbit{position:absolute;inset:6%;pointer-events:none;z-index:3;opacity:0}
 .stage.play .vc-orbit{animation:vcOrbit 3500ms var(--ease) forwards}
 .vc-orbit svg{width:100%;height:100%;display:block;transform:rotate(-90deg);overflow:visible}
-.vc-orbit circle.track{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:0.6;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.18)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.22))}
-.vc-orbit circle.fill{fill:none;stroke:rgba(255,255,255,0.62);stroke-width:0.7;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.55)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.55)) drop-shadow(0 0 3px rgba(192,152,237,0.25))}
+.vc-orbit circle.track{fill:none;stroke:rgba(255,255,255,0.18);stroke-width:0.5;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.22)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.24))}
+.vc-orbit circle.fill{fill:none;stroke:rgba(255,255,255,0.78);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.55)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.55)) drop-shadow(0 0 2px rgba(192,152,237,0.20))}
 .stage.play .vc-orbit circle.fill{animation:engraveDraw 2400ms 300ms forwards}
 @keyframes vcOrbit{0%{opacity:0}12%{opacity:1}90%{opacity:1}100%{opacity:0}}
 
@@ -156,7 +156,7 @@ img{display:block;max-width:100%}
 /* ============== Variant 4 — Contour Whisper ============== */
 .v4-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;opacity:0}
 .stage.play .v4-svg{animation:v4Show 3200ms var(--ease) forwards}
-.v4-svg path{fill:none;stroke:rgba(255,255,255,0.85);stroke-width:1;stroke-linecap:round;stroke-dasharray:180;stroke-dashoffset:180;filter:drop-shadow(0 0 4px rgba(192,152,237,0.5))}
+.v4-svg path{fill:none;stroke:rgba(255,255,255,0.85);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:180;stroke-dashoffset:180;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.45)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.45)) drop-shadow(0 0 2px rgba(192,152,237,0.30))}
 .stage.play .v4-svg path{animation:v4Draw 1900ms var(--ease) forwards}
 .stage.play .v4-svg path:nth-child(2){animation-delay:140ms}
 .stage.play .v4-svg path:nth-child(3){animation-delay:280ms}
@@ -185,8 +185,8 @@ img{display:block;max-width:100%}
 .v6-orbit{position:absolute;inset:8%;pointer-events:none;z-index:3;opacity:0}
 .stage.play .v6-orbit{animation:v6Show 3400ms var(--ease) forwards}
 .v6-orbit svg{width:100%;height:100%;display:block;transform:rotate(-90deg);overflow:visible}
-.v6-orbit circle.track{fill:none;stroke:rgba(255,255,255,0.08);stroke-width:0.6;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.18)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.22))}
-.v6-orbit circle.fill{fill:none;stroke:rgba(255,255,255,0.62);stroke-width:0.7;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.55)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.55)) drop-shadow(0 0 3px rgba(192,152,237,0.22))}
+.v6-orbit circle.track{fill:none;stroke:rgba(255,255,255,0.18);stroke-width:0.5;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.22)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.24))}
+.v6-orbit circle.fill{fill:none;stroke:rgba(255,255,255,0.78);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.55)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.55)) drop-shadow(0 0 2px rgba(192,152,237,0.18))}
 .stage.play .v6-orbit circle.fill{animation:engraveDraw 2800ms forwards}
 .v6-tick{position:absolute;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.85);box-shadow:0 0.5px 0 rgba(255,255,255,0.45),0 -0.5px 0 rgba(0,0,0,0.45),0 0 4px rgba(192,152,237,0.28);opacity:0;transform:translate(-50%,-50%) scale(0.4)}
 .v6-tick.t1{top:10%;left:50%;animation-delay:400ms}
@@ -208,7 +208,7 @@ img{display:block;max-width:100%}
 /* ============== Variant 7 — Neural Silk ============== */
 .v7-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;opacity:0}
 .stage.play .v7-svg{animation:v7Show 3300ms var(--ease) forwards}
-.v7-svg path{fill:none;stroke:rgba(255,255,255,0.55);stroke-width:0.6;stroke-linecap:round;stroke-dasharray:600;stroke-dashoffset:600;filter:drop-shadow(0 0 3px rgba(255,255,255,0.4))}
+.v7-svg path{fill:none;stroke:rgba(255,255,255,0.65);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:600;stroke-dashoffset:600;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.35)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.35)) drop-shadow(0 0 2px rgba(255,255,255,0.25))}
 .stage.play .v7-svg path{animation:v7Draw 2200ms var(--ease) forwards}
 .stage.play .v7-svg path:nth-child(2){animation-delay:120ms}
 .stage.play .v7-svg path:nth-child(3){animation-delay:240ms}
