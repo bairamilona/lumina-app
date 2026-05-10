@@ -69,22 +69,22 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .sl{font-size:13px;color:var(--muted);font-weight:500;margin-top:4px;letter-spacing:-0.1px}
 .sd{font-size:15px;font-weight:700;margin-top:10px;color:var(--text);letter-spacing:-0.2px}
 
-/* Tune-up slider — compact glass pill, engraved, swipe-down to commit */
-.tune-slider{position:relative;width:60px;height:148px;border-radius:30px;background:linear-gradient(to bottom,rgba(255,255,255,0.55),rgba(255,255,255,0.35));backdrop-filter:blur(14px);border:1px solid rgba(0,0,0,0.07);box-shadow:inset 0 2px 0 rgba(255,255,255,0.85),inset 0 -1.5px 0 rgba(0,0,0,0.10),inset 0 0 0 1px rgba(0,0,0,0.03),0 1px 0 rgba(255,255,255,0.7),0 4px 14px rgba(0,0,0,0.06);flex-shrink:0;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+/* Tune-up slider — wider glass pill (matches ring height), engraved, swipe to commit */
+.tune-slider{position:relative;width:80px;height:190px;border-radius:40px;background:linear-gradient(to bottom,rgba(255,255,255,0.55),rgba(255,255,255,0.35));backdrop-filter:blur(14px);border:1px solid rgba(0,0,0,0.07);box-shadow:inset 0 2px 0 rgba(255,255,255,0.85),inset 0 -1.5px 0 rgba(0,0,0,0.10),inset 0 0 0 1px rgba(0,0,0,0.03),0 1px 0 rgba(255,255,255,0.7),0 4px 14px rgba(0,0,0,0.06);flex-shrink:0;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
 .ts-track{position:absolute;inset:0;border-radius:inherit;z-index:0;pointer-events:none}
-.ts-track::after{content:'';position:absolute;left:50%;top:60px;bottom:36px;width:1.5px;margin-left:-0.75px;background-image:repeating-linear-gradient(to bottom,rgba(15,15,15,0.22) 0 2px,transparent 2px 7px);border-radius:1px;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.7))}
-.ts-label{position:absolute;bottom:32px;left:0;right:0;text-align:center;font-size:12px;font-weight:600;letter-spacing:-0.1px;color:rgba(0,0,0,0.5);text-shadow:0 1px 0 rgba(255,255,255,0.85);z-index:1;pointer-events:none;transition:opacity 320ms ease}
+.ts-track::after{content:'';position:absolute;left:50%;top:34px;bottom:108px;width:1.5px;margin-left:-0.75px;background-image:repeating-linear-gradient(to bottom,rgba(15,15,15,0.22) 0 2px,transparent 2px 8px);border-radius:1px;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.7))}
+.ts-label{position:absolute;top:30px;left:0;right:0;text-align:center;font-size:14px;font-weight:600;letter-spacing:-0.1px;color:rgba(0,0,0,0.45);text-shadow:0 1.5px 0 rgba(255,255,255,0.85);z-index:1;pointer-events:none;transition:opacity 320ms ease}
 .tune-slider.dragging .ts-label{opacity:0}
 .tune-slider.done .ts-label{opacity:0}
-.ts-eta{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:12px;font-weight:600;color:rgba(0,0,0,0.42);text-shadow:0 1px 0 rgba(255,255,255,0.85);z-index:1;pointer-events:none;transition:opacity 320ms;letter-spacing:-0.1px}
+.ts-eta{position:absolute;top:54px;left:0;right:0;text-align:center;font-size:13px;font-weight:600;color:rgba(0,0,0,0.42);text-shadow:0 1.5px 0 rgba(255,255,255,0.85);z-index:1;pointer-events:none;transition:opacity 320ms;letter-spacing:-0.1px}
 .tune-slider.dragging .ts-eta{opacity:0}
 .tune-slider.done .ts-eta{opacity:0}
-.ts-fill{position:absolute;left:0;right:0;top:0;bottom:auto;height:0;background:linear-gradient(to bottom,rgba(15,15,15,0.04),rgba(15,15,15,0.10));z-index:0;border-radius:inherit;pointer-events:none;transition:height 280ms cubic-bezier(0.4,0,0.2,1)}
+.ts-fill{position:absolute;left:0;right:0;bottom:0;top:auto;height:0;background:linear-gradient(to top,rgba(15,15,15,0.10),rgba(15,15,15,0.04));z-index:0;border-radius:inherit;pointer-events:none;transition:height 280ms cubic-bezier(0.4,0,0.2,1)}
 .tune-slider.dragging .ts-fill{transition:none}
-.tune-slider.done .ts-fill{background:linear-gradient(to bottom,rgba(15,15,15,0.06),rgba(15,15,15,0.14))}
-.ts-thumb{position:absolute;left:4px;top:4px;width:52px;height:52px;border-radius:50%;background:linear-gradient(to bottom,#fff,rgba(255,255,255,0.92));border:1px solid rgba(0,0,0,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(0,0,0,0.06),0 4px 10px rgba(0,0,0,0.10);display:flex;align-items:center;justify-content:center;color:var(--text);cursor:grab;z-index:2;transition:top 460ms cubic-bezier(0.175,0.885,0.32,1.475),transform 220ms ease,background 320ms,box-shadow 220ms}
-.ts-thumb svg{transition:transform 320ms ease;transform:translateY(-1px)}
-.tune-slider.dragging .ts-thumb{cursor:grabbing;transform:scale(1.05);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(0,0,0,0.06),0 10px 20px rgba(0,0,0,0.14);transition:transform 220ms,box-shadow 220ms}
+.tune-slider.done .ts-fill{background:linear-gradient(to top,rgba(15,15,15,0.14),rgba(15,15,15,0.06))}
+.ts-thumb{position:absolute;left:4px;top:4px;width:72px;height:72px;border-radius:50%;background:linear-gradient(to bottom,#fff,rgba(255,255,255,0.92));border:1px solid rgba(0,0,0,0.08);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;color:var(--text);cursor:grab;z-index:2;transition:top 460ms cubic-bezier(0.175,0.885,0.32,1.475),transform 220ms ease,background 320ms,box-shadow 220ms}
+.ts-thumb svg{transition:transform 320ms ease}
+.tune-slider.dragging .ts-thumb{cursor:grabbing;transform:scale(1.05);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(0,0,0,0.06),0 12px 24px rgba(0,0,0,0.16);transition:transform 220ms,box-shadow 220ms}
 .tune-slider.done .ts-thumb{background:linear-gradient(to bottom,#fff,rgba(255,255,255,0.92));border-color:rgba(0,0,0,0.12);box-shadow:inset 0 1px 0 rgba(255,255,255,1),inset 0 -1px 0 rgba(0,0,0,0.06),inset 0 0 0 1px rgba(0,0,0,0.04),0 6px 16px rgba(0,0,0,0.10)}
 .ts-chevron{transition:transform 320ms ease,opacity 220ms}
 .ts-check{position:absolute;opacity:0;transform:scale(0.4) rotate(-12deg);transition:opacity 220ms 80ms,transform 360ms cubic-bezier(0.34,1.56,0.64,1) 80ms}
@@ -583,16 +583,6 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
           <div class="score-ring"><div class="glow"></div><div class="track"></div><div class="center"><div class="sl">Score</div><div class="sn" id="scoreNum">73</div></div></div>
           <div class="sd" id="scoreDelta">+1.5 today</div>
         </div>
-        <div class="tune-slider" id="tuneSlider">
-          <div class="ts-track"></div>
-          <div class="ts-fill" id="tsFill"></div>
-          <div class="ts-label">Tune up</div>
-          <div class="ts-eta" id="tsEta">in 4h</div>
-          <div class="ts-thumb" id="tsThumb">
-            <svg class="ts-chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10l5 4 5-4"/></svg>
-            <svg class="ts-check" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg>
-          </div>
-        </div>
       </div>
       <div class="health-banner" id="healthBanner">
         <div class="health-banner-info">
@@ -943,7 +933,7 @@ document.getElementById('fi1').innerHTML=FAB_ICONS.face.replace(/currentColor/g,
 document.getElementById('fi2').innerHTML=FAB_ICONS.food.replace(/currentColor/g,'var(--fab-food)');
 document.getElementById('fi3').innerHTML=FAB_ICONS.ingr.replace(/currentColor/g,'var(--fab-ingr)');
 
-// Tune-up slider — vertical glass pill, swipe-DOWN to commit. Thumb starts at top, drags down. Snap-back if released early, settle to bottom + commit when threshold crossed.
+// Tune-up slider — vertical glass pill, swipe-UP-to-commit. Thumb starts at bottom, drags up. Snap-back if released early, settle to top + commit when threshold crossed.
 (function(){
   const slider=document.getElementById('tuneSlider');
   const thumb=document.getElementById('tsThumb');
@@ -951,18 +941,18 @@ document.getElementById('fi3').innerHTML=FAB_ICONS.ingr.replace(/currentColor/g,
   if(!slider||!thumb||!fill) return;
   const TOP=4, BOT_INSET=4;
   function maxTop(){return slider.offsetHeight - thumb.offsetHeight - BOT_INSET}
-  let dragging=false, startY=0, startTop=TOP, committed=false;
+  let dragging=false, startY=0, startTop=0, committed=false;
   function setTop(px){
     thumb.style.top=px+'px';
-    // Fill is top-anchored, grows downward as thumb moves down
-    fill.style.height=(px+thumb.offsetHeight/2)+'px';
+    // Fill is bottom-anchored, grows upward as thumb moves up
+    fill.style.height=(slider.offsetHeight - px - thumb.offsetHeight/2)+'px';
   }
-  setTop(TOP); // start at top
+  setTop(maxTop()); // start at bottom
   function onDown(e){
     if(committed) return;
     dragging=true;
     startY=e.clientY;
-    startTop=parseFloat(thumb.style.top)||TOP;
+    startTop=parseFloat(thumb.style.top)||maxTop();
     slider.classList.add('dragging');
     thumb.setPointerCapture(e.pointerId);
   }
@@ -974,6 +964,7 @@ document.getElementById('fi3').innerHTML=FAB_ICONS.ingr.replace(/currentColor/g,
     setTop(next);
   }
   function springTo(target,{overshoot=8,settle=4,stage1=180,stage2=160,stage3=200}={}){
+    // Three-stage bounce: travel→overshoot→rebound→settle
     thumb.style.transition=`top ${stage1}ms cubic-bezier(0.32,0,0.67,0)`;
     setTop(target+overshoot);
     setTimeout(()=>{
@@ -990,16 +981,18 @@ document.getElementById('fi3').innerHTML=FAB_ICONS.ingr.replace(/currentColor/g,
     dragging=false;
     slider.classList.remove('dragging');
     const m=maxTop();
-    const cur=parseFloat(thumb.style.top)||TOP;
-    // Fraction of DOWNWARD travel: 0 at top (TOP), 1 at bottom (m)
-    const frac=(cur-TOP)/(m-TOP);
+    const cur=parseFloat(thumb.style.top)||m;
+    // Fraction of UPWARD travel: 0 at bottom (m), 1 at top (TOP)
+    const frac=(m-cur)/(m-TOP);
     if(frac>0.82){
+      // Commit: settle at TOP with a small overshoot above (negative direction = up)
       committed=true;
       slider.classList.add('done');
-      springTo(m,{overshoot:6,settle:3});
+      springTo(TOP,{overshoot:-6,settle:-3});
       setTimeout(commitTuneUp,420);
     } else {
-      springTo(TOP,{overshoot:-5,settle:-2,stage1:200,stage2:160,stage3:200});
+      // Snap-back DOWN to bottom with subtle bounce
+      springTo(m,{overshoot:5,settle:2,stage1:200,stage2:160,stage3:200});
     }
   }
   thumb.addEventListener('pointerdown',onDown);
