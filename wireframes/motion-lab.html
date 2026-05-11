@@ -23,7 +23,7 @@
   --r-pill:999px;
   --ease:cubic-bezier(0.2,0,0,1);
   --ease-soft:cubic-bezier(0.32,0.72,0.32,1);
-  --portrait:url('../images/krea-generated/lymphatic-drainage.png');
+  --portrait:url('../images/krea-generated/motion-lab-portrait.png'),url('../images/krea-generated/lymphatic-drainage.png');
 }
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;line-height:1.5;letter-spacing:-0.01em}
 img{display:block;max-width:100%}
@@ -99,30 +99,26 @@ img{display:block;max-width:100%}
    The band is a thin horizontal stripe that travels top→bottom across the portrait,
    blurring + slightly desaturating whatever passes beneath it, while soft colored
    blobs inside drift to create a fluorescent backlight wash. */
-.vc-scanner{position:absolute;left:-8%;right:-8%;height:84px;top:-84px;overflow:hidden;pointer-events:none;z-index:2;backdrop-filter:blur(5px) saturate(1.35) brightness(1.04);-webkit-backdrop-filter:blur(5px) saturate(1.35) brightness(1.04);background:linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.14) 50%,rgba(255,255,255,0.06));box-shadow:0 0 0 1px rgba(255,255,255,0.10),0 6px 22px rgba(0,0,0,0.06)}
-.vc-scanner::before,.vc-scanner::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.45),transparent)}
-.vc-scanner::before{top:0}
-.vc-scanner::after{bottom:0}
-.stage.play .vc-scanner{animation:vcScan 4200ms cubic-bezier(0.45,0.05,0.5,0.95) infinite}
+.vc-scanner{position:absolute;left:-8%;right:-8%;height:120px;top:0;overflow:visible;pointer-events:none;z-index:2;backdrop-filter:blur(6px) saturate(1.35) brightness(1.04);-webkit-backdrop-filter:blur(6px) saturate(1.35) brightness(1.04);background:radial-gradient(ellipse 60% 100% at 50% 50%,rgba(255,255,255,0.16),rgba(255,255,255,0.06) 60%,transparent 90%);mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.6) 22%,#000 45%,#000 55%,rgba(0,0,0,0.6) 78%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.6) 22%,#000 45%,#000 55%,rgba(0,0,0,0.6) 78%,transparent 100%)}
+/* Loops down then up while analysis runs — alternate direction. */
+.stage.play .vc-scanner{animation:vcScan 4400ms cubic-bezier(0.45,0.05,0.5,0.95) infinite alternate}
 @keyframes vcScan{
-  0%   {top:-90px;opacity:0}
-  10%  {opacity:1}
-  88%  {opacity:1}
-  100% {top:100%;opacity:0}
+  0%   {top:-30px}
+  100% {top:calc(100% - 90px)}
 }
-.vc-blob{position:absolute;border-radius:50%;filter:blur(26px);opacity:0.85;mix-blend-mode:screen;pointer-events:none}
-.vc-blob.b1{width:130px;height:130px;background:radial-gradient(circle,rgba(242,160,176,0.95),transparent 62%);top:-30px;left:-30px}
-.vc-blob.b2{width:160px;height:160px;background:radial-gradient(circle,rgba(192,152,237,0.95),transparent 62%);top:-40px;left:32%}
-.vc-blob.b3{width:140px;height:140px;background:radial-gradient(circle,rgba(139,184,224,0.95),transparent 62%);top:-30px;right:8%}
-.vc-blob.b4{width:110px;height:110px;background:radial-gradient(circle,rgba(240,214,120,0.85),transparent 60%);top:-22px;right:38%}
-.stage.play .vc-blob{animation:vcBlobShift 3200ms ease-in-out infinite alternate}
+.vc-blob{position:absolute;border-radius:50%;filter:blur(30px);opacity:0.85;mix-blend-mode:screen;pointer-events:none}
+.vc-blob.b1{width:150px;height:150px;background:radial-gradient(circle,rgba(242,160,176,0.95),transparent 62%);top:-20px;left:-30px}
+.vc-blob.b2{width:180px;height:180px;background:radial-gradient(circle,rgba(192,152,237,0.95),transparent 62%);top:-30px;left:30%}
+.vc-blob.b3{width:160px;height:160px;background:radial-gradient(circle,rgba(139,184,224,0.95),transparent 62%);top:-25px;right:6%}
+.vc-blob.b4{width:130px;height:130px;background:radial-gradient(circle,rgba(240,214,120,0.85),transparent 60%);top:-15px;right:36%}
+.stage.play .vc-blob{animation:vcBlobShift 3600ms ease-in-out infinite alternate}
 .stage.play .vc-blob.b1{animation-delay:0ms}
 .stage.play .vc-blob.b2{animation-delay:-1200ms}
 .stage.play .vc-blob.b3{animation-delay:-2400ms}
 .stage.play .vc-blob.b4{animation-delay:-600ms}
 @keyframes vcBlobShift{
   0%{transform:translate(0,0) scale(1)}
-  100%{transform:translate(-22px,8px) scale(1.12)}
+  100%{transform:translate(-28px,14px) scale(1.18)}
 }
 
 /* Engraved orbit — two stacked sub-pixel strokes (highlight + groove) for true engraved feel */
