@@ -79,42 +79,46 @@ img{display:block;max-width:100%}
 .feat-desc{font-size:15px;color:var(--ink-2);line-height:1.55;letter-spacing:-0.05px;max-width:460px}
 .feat-replay{align-self:flex-start;margin-top:8px}
 
-/* Combined choreography — depth stack (200-3000ms) + engraved orbit (300-2300ms)
-   + insight cards (700-2900ms) + ticks (2200-2900ms) over 3500ms total */
-.vc-layer{position:absolute;inset:0;background-image:var(--portrait);background-size:cover;background-position:center 30%;opacity:0;pointer-events:none;z-index:1}
-.vc-layer.l1{transform:translate(0,0);filter:blur(0)}
-.vc-layer.l2{transform:translate(0,0);filter:blur(0)}
-.stage.play .vc-layer.l1{animation:vcL1 3500ms var(--ease) forwards}
-.stage.play .vc-layer.l2{animation:vcL2 3500ms var(--ease) forwards}
-@keyframes vcL1{0%{opacity:0;transform:translate(0,0);filter:blur(0)}25%{opacity:0.42;transform:translate(-9px,-6px);filter:blur(2.5px)}72%{opacity:0.42;transform:translate(-9px,-6px);filter:blur(2.5px)}100%{opacity:0;transform:translate(0,0);filter:blur(0)}}
-@keyframes vcL2{0%{opacity:0;transform:translate(0,0);filter:blur(0)}25%{opacity:0.42;transform:translate(9px,5px);filter:blur(2.5px)}72%{opacity:0.42;transform:translate(9px,5px);filter:blur(2.5px)}100%{opacity:0;transform:translate(0,0);filter:blur(0)}}
+/* Combined choreography — focus stack PULSES (loop), engraved orbit draws once,
+   floating cards cycle in/out with rotating content + typewriter reveal */
 
+/* Focus stack — gentle infinite breathing pulse */
+.vc-layer{position:absolute;inset:0;background-image:var(--portrait);background-size:cover;background-position:center 30%;opacity:0;pointer-events:none;z-index:1}
+.stage.play .vc-layer.l1{animation:vcPulse1 4200ms var(--ease-soft) infinite}
+.stage.play .vc-layer.l2{animation:vcPulse2 4200ms var(--ease-soft) infinite}
+@keyframes vcPulse1{
+  0%,100%{opacity:0;transform:translate(0,0);filter:blur(0)}
+  50%{opacity:0.34;transform:translate(-7px,-4px);filter:blur(2px)}
+}
+@keyframes vcPulse2{
+  0%,100%{opacity:0;transform:translate(0,0);filter:blur(0)}
+  50%{opacity:0.34;transform:translate(7px,4px);filter:blur(2px)}
+}
+
+/* Engraved orbit — two stacked sub-pixel strokes (highlight + groove) for true engraved feel */
 .vc-orbit{position:absolute;inset:6%;pointer-events:none;z-index:3;opacity:0}
 .stage.play .vc-orbit{animation:vcOrbit 3500ms var(--ease) forwards}
 .vc-orbit svg{width:100%;height:100%;display:block;transform:rotate(-90deg);overflow:visible}
-.vc-orbit circle.track{fill:none;stroke:rgba(255,255,255,0.18);stroke-width:0.5;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.22)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.24))}
-.vc-orbit circle.fill{fill:none;stroke:rgba(255,255,255,0.78);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;filter:drop-shadow(0 0.5px 0 rgba(255,255,255,0.55)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.55)) drop-shadow(0 0 2px rgba(192,152,237,0.20))}
-.stage.play .vc-orbit circle.fill{animation:engraveDraw 2400ms 300ms forwards}
+.vc-orbit circle.track-hi{fill:none;stroke:rgba(255,255,255,0.35);stroke-width:0.5;vector-effect:non-scaling-stroke;transform:translate(0,-0.4px);transform-origin:center;transform-box:fill-box}
+.vc-orbit circle.track-lo{fill:none;stroke:rgba(0,0,0,0.32);stroke-width:0.5;vector-effect:non-scaling-stroke;transform:translate(0,0.4px);transform-origin:center;transform-box:fill-box}
+.vc-orbit circle.fill-hi{fill:none;stroke:rgba(255,255,255,0.95);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;transform:translate(0,-0.4px);transform-origin:center;transform-box:fill-box}
+.vc-orbit circle.fill-lo{fill:none;stroke:rgba(0,0,0,0.55);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;transform:translate(0,0.4px);transform-origin:center;transform-box:fill-box}
+.stage.play .vc-orbit circle.fill-hi,.stage.play .vc-orbit circle.fill-lo{animation:engraveDraw 2400ms 300ms forwards}
 @keyframes vcOrbit{0%{opacity:0}12%{opacity:1}90%{opacity:1}100%{opacity:0}}
 
-.vc-tick{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.95);box-shadow:0 0.5px 0 rgba(0,0,0,0.4),0 -0.5px 0 rgba(255,255,255,0.5),0 0 5px rgba(192,152,237,0.4);opacity:0;transform:translate(-50%,-50%) scale(0.4);z-index:4}
-.vc-tick.t1{top:8%;left:50%;animation-delay:2200ms}
-.vc-tick.t2{top:31%;left:91%;animation-delay:2340ms}
-.vc-tick.t3{top:80%;left:78%;animation-delay:2480ms}
-.vc-tick.t4{top:80%;left:22%;animation-delay:2620ms}
-.vc-tick.t5{top:31%;left:9%;animation-delay:2760ms}
-.stage.play .vc-tick{animation:vcTick 700ms var(--ease) forwards}
-@keyframes vcTick{0%{opacity:0;transform:translate(-50%,-50%) scale(0.4)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}90%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0.85;transform:translate(-50%,-50%) scale(1)}}
-
-.vc-card{position:absolute;padding:9px 13px;border-radius:var(--r-pill);background:rgba(255,255,255,0.85);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.6);box-shadow:0 8px 28px rgba(0,0,0,0.10);font-size:12px;font-weight:500;color:var(--ink);letter-spacing:-0.1px;opacity:0;transform:translateY(8px) scale(0.96);pointer-events:none;z-index:5;white-space:nowrap}
+/* Insight cards — cycling in/out with typewriter reveal */
+.vc-card{position:absolute;padding:9px 13px;border-radius:var(--r-pill);background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.6);box-shadow:0 8px 28px rgba(0,0,0,0.10);font-size:12px;font-weight:500;color:var(--ink);letter-spacing:-0.1px;opacity:0;transform:translateY(8px) scale(0.96);pointer-events:none;z-index:5;white-space:nowrap}
 .vc-card em{font-style:normal;color:var(--muted);margin-right:5px}
 .vc-card strong{font-weight:700}
-.vc-card.c1{top:14%;left:6%;animation-delay:700ms}
-.vc-card.c2{top:36%;right:5%;animation-delay:920ms}
-.vc-card.c3{top:62%;left:8%;animation-delay:1140ms}
-.vc-card.c4{bottom:12%;right:9%;animation-delay:1360ms}
-.stage.play .vc-card{animation:vcCard 2200ms var(--ease) forwards}
-@keyframes vcCard{0%{opacity:0;transform:translateY(10px) scale(0.96)}18%{opacity:1;transform:translateY(0) scale(1)}80%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-6px) scale(0.98)}}
+.vc-card .typing{display:inline-block;overflow:hidden;white-space:nowrap;clip-path:inset(0 100% 0 0);animation:none}
+.vc-card.c1{top:14%;left:6%}
+.vc-card.c2{top:36%;right:5%}
+.vc-card.c3{top:62%;left:8%}
+.vc-card.c4{bottom:12%;right:9%}
+.vc-card.show{animation:vcCardShow 2400ms var(--ease) forwards}
+.vc-card.show .typing{animation:vcType 900ms steps(22,end) 180ms forwards}
+@keyframes vcCardShow{0%{opacity:0;transform:translateY(10px) scale(0.96)}14%{opacity:1;transform:translateY(0) scale(1)}82%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-5px) scale(0.98)}}
+@keyframes vcType{to{clip-path:inset(0 0 0 0)}}
 
 /* ============== Variant 1 — Soft Light Sweep ============== */
 .v1-light{position:absolute;inset:0;background:linear-gradient(115deg,transparent 28%,rgba(255,255,255,0.0) 40%,rgba(255,255,255,0.42) 50%,rgba(255,255,255,0.0) 60%,transparent 72%);transform:translateX(-110%);opacity:0;mix-blend-mode:soft-light;pointer-events:none;z-index:2}
@@ -284,19 +288,16 @@ img{display:block;max-width:100%}
         <div class="vc-layer l2"></div>
         <div class="vc-orbit">
           <svg viewBox="0 0 100 100">
-            <circle class="track" cx="50" cy="50" r="48"/>
-            <circle class="fill" cx="50" cy="50" r="48" pathLength="1000"/>
+            <circle class="track-hi" cx="50" cy="50" r="48"/>
+            <circle class="track-lo" cx="50" cy="50" r="48"/>
+            <circle class="fill-lo" cx="50" cy="50" r="48" pathLength="1000"/>
+            <circle class="fill-hi" cx="50" cy="50" r="48" pathLength="1000"/>
           </svg>
-          <div class="vc-tick t1"></div>
-          <div class="vc-tick t2"></div>
-          <div class="vc-tick t3"></div>
-          <div class="vc-tick t4"></div>
-          <div class="vc-tick t5"></div>
         </div>
-        <div class="vc-card c1"><em>tone</em><strong>even</strong></div>
-        <div class="vc-card c2"><em>hydration</em><strong>soft</strong></div>
-        <div class="vc-card c3"><em>lift</em><strong>holding</strong></div>
-        <div class="vc-card c4"><em>glow</em><strong>rising</strong></div>
+        <div class="vc-card c1"><span class="typing"><em>tone</em><strong>even</strong></span></div>
+        <div class="vc-card c2"><span class="typing"><em>hydration</em><strong>soft</strong></span></div>
+        <div class="vc-card c3"><span class="typing"><em>lift</em><strong>holding</strong></span></div>
+        <div class="vc-card c4"><span class="typing"><em>glow</em><strong>rising</strong></span></div>
       </div>
       <div class="feat-meta">
         <div style="display:flex;align-items:center;gap:14px"><span class="feat-num">00</span><span class="feat-tag">Recommended direction</span></div>
@@ -526,7 +527,47 @@ function replayAll(){
 // Auto-play once shortly after load — gentle stagger, no blocking
 window.addEventListener('load', ()=>{
   setTimeout(replayAll, 380);
+  startCombinedCardCycle();
 });
+
+// Cosmos Combined — cycle insight card content while .play is active
+const CARD_POOL=[
+  {l:'tone',v:'even'},
+  {l:'hydration',v:'soft'},
+  {l:'lift',v:'holding'},
+  {l:'glow',v:'rising'},
+  {l:'texture',v:'smooth'},
+  {l:'definition',v:'sharp'},
+  {l:'puffiness',v:'easing'},
+  {l:'clarity',v:'clear'},
+  {l:'firmness',v:'steady'},
+  {l:'undertone',v:'warm'},
+  {l:'jawline',v:'lifted'},
+  {l:'flow',v:'open'}
+];
+function pickPair(){return CARD_POOL[Math.floor(Math.random()*CARD_POOL.length)]}
+function showCard(card){
+  const p=pickPair();
+  const span=card.querySelector('.typing');
+  if(span) span.innerHTML=`<em>${p.l}</em><strong>${p.v}</strong>`;
+  card.classList.remove('show');
+  void card.offsetWidth;
+  card.classList.add('show');
+}
+function startCombinedCardCycle(){
+  const stage=document.querySelector('.stage[data-v="vc"]');
+  if(!stage) return;
+  const cards=stage.querySelectorAll('.vc-card');
+  // Stagger the first appearance per card, then loop each independently
+  const delays=[600,1050,1500,1950];
+  const cycleMs=2900; // matches vcCardShow duration so each cycle starts fresh
+  cards.forEach((card,i)=>{
+    setTimeout(()=>{
+      showCard(card);
+      setInterval(()=>showCard(card),cycleMs);
+    },delays[i]);
+  });
+}
 </script>
 </body>
 </html>
