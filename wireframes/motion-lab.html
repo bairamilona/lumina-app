@@ -133,10 +133,10 @@ img{display:block;max-width:100%}
 @keyframes vcOrbit{0%{opacity:0}12%{opacity:1}90%{opacity:1}100%{opacity:0}}
 
 /* Insight cards — cycling in/out with typewriter reveal */
-.vc-card{position:absolute;padding:9px 13px;border-radius:var(--r-pill);background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.6);box-shadow:0 8px 28px rgba(0,0,0,0.10);font-size:12px;font-weight:500;color:var(--ink);letter-spacing:-0.1px;opacity:0;transform:translateY(8px) scale(0.96);pointer-events:none;z-index:5;white-space:nowrap}
-.vc-card em{font-style:normal;color:var(--muted);margin-right:5px}
-.vc-card strong{font-weight:700}
-.vc-card .typing{display:inline-block;overflow:hidden;white-space:nowrap;clip-path:inset(0 100% 0 0);animation:none}
+.vc-card{position:absolute;display:inline-flex;align-items:center;padding:10px 14px;border-radius:var(--r-pill);background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.6);box-shadow:0 8px 28px rgba(0,0,0,0.10);font-size:12px;font-weight:500;line-height:1;color:var(--ink);letter-spacing:-0.1px;opacity:0;transform:translateY(8px) scale(0.96);pointer-events:none;z-index:5;white-space:nowrap}
+.vc-card em{font-style:normal;color:var(--muted);margin-right:5px;line-height:1}
+.vc-card strong{font-weight:700;line-height:1}
+.vc-card .typing{display:inline-flex;align-items:center;overflow:hidden;white-space:nowrap;clip-path:inset(0 100% 0 0);line-height:1;animation:none}
 .vc-card.c1{top:14%;left:6%}
 .vc-card.c2{top:36%;right:5%}
 .vc-card.c3{top:62%;left:8%}
