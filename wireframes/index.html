@@ -301,19 +301,48 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .ai-scan-frame::after{content:'';position:absolute;left:0;right:0;bottom:0;top:auto;height:42%;width:auto;background:linear-gradient(180deg,transparent 0%,rgba(10,10,14,0.5) 45%,rgba(10,10,14,0.92) 100%);z-index:4;pointer-events:none;border:none;border-radius:0;display:block}
 #scanVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);background:#0a0c14;display:block}
 #scanHint{display:none}
-.scan-frame-glow{position:absolute;inset:-1px;border-radius:inherit;border:1.5px solid var(--accent);opacity:0;pointer-events:none;z-index:2;transition:opacity var(--t-fast) var(--ease-out)}
-.ai-scan.scanning .scan-frame-glow{opacity:1;animation:scanFramePulse 1.8s ease-in-out infinite}
-@keyframes scanFramePulse{0%,100%{opacity:0.4;box-shadow:0 0 6px rgba(192,152,237,0.30),inset 0 0 14px rgba(192,152,237,0.10)}50%{opacity:0.95;box-shadow:0 0 26px rgba(192,152,237,0.60),inset 0 0 24px rgba(192,152,237,0.18)}}
-.scan-sweep{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(to bottom,transparent,rgba(192,152,237,0.95),transparent);box-shadow:0 0 14px rgba(192,152,237,0.7),0 0 4px rgba(255,255,255,0.4);opacity:0;pointer-events:none;z-index:3}
-.ai-scan.scanning .scan-sweep{opacity:1;animation:scanSweep 1.6s cubic-bezier(0.55,0.05,0.45,0.95) infinite}
-@keyframes scanSweep{0%{top:-2px}50%{top:calc(100% - 2px)}100%{top:-2px}}
-.scan-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(192,152,237,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(192,152,237,0.06) 1px,transparent 1px);background-size:32px 32px;opacity:0;z-index:1;pointer-events:none;transition:opacity 320ms ease-out}
-.ai-scan.scanning .scan-grid{opacity:1}
-.scan-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px rgba(192,152,237,0.85),0 0 2px rgba(255,255,255,0.6);opacity:0;transform:translate(-50%,-50%) scale(0.3);z-index:4;pointer-events:none;transition:opacity 280ms ease-out,transform 360ms cubic-bezier(0.34,1.56,0.64,1)}
-.scan-dot.on{opacity:0.92;transform:translate(-50%,-50%) scale(1)}
-.scan-dot::after{content:'';position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;border:1px solid rgba(192,152,237,0.55);opacity:0;animation:scanDotRing 1.4s ease-out infinite}
-.scan-dot.on::after{opacity:1}
-@keyframes scanDotRing{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0.7}100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
+/* Scan overlays — Cosmos Combined choreography: scanner band, engraved orbit, cycling insight cards */
+/* Scanner band — feathered glass strip with fluorescent blobs traveling up-down */
+.scan-band{position:absolute;left:-8%;right:-8%;height:120px;top:0;overflow:visible;pointer-events:none;z-index:3;backdrop-filter:blur(6px) saturate(1.35) brightness(1.04);-webkit-backdrop-filter:blur(6px) saturate(1.35) brightness(1.04);background:radial-gradient(ellipse 60% 100% at 50% 50%,rgba(255,255,255,0.16),rgba(255,255,255,0.06) 60%,transparent 90%);mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.6) 22%,#000 45%,#000 55%,rgba(0,0,0,0.6) 78%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.6) 22%,#000 45%,#000 55%,rgba(0,0,0,0.6) 78%,transparent 100%);opacity:0}
+.ai-scan.scanning .scan-band{opacity:1;animation:scanBandTravel 4400ms cubic-bezier(0.45,0.05,0.5,0.95) infinite alternate}
+@keyframes scanBandTravel{0%{top:-30px}100%{top:calc(100% - 90px)}}
+.scan-blob{position:absolute;border-radius:50%;filter:blur(30px);opacity:0.85;mix-blend-mode:screen;pointer-events:none}
+.scan-blob.b1{width:150px;height:150px;background:radial-gradient(circle,rgba(242,160,176,0.95),transparent 62%);top:-20px;left:-30px}
+.scan-blob.b2{width:180px;height:180px;background:radial-gradient(circle,rgba(192,152,237,0.95),transparent 62%);top:-30px;left:30%}
+.scan-blob.b3{width:160px;height:160px;background:radial-gradient(circle,rgba(139,184,224,0.95),transparent 62%);top:-25px;right:6%}
+.scan-blob.b4{width:130px;height:130px;background:radial-gradient(circle,rgba(240,214,120,0.85),transparent 60%);top:-15px;right:36%}
+.ai-scan.scanning .scan-blob{animation:scanBlobDrift 3600ms ease-in-out infinite alternate}
+.ai-scan.scanning .scan-blob.b1{animation-delay:0ms}
+.ai-scan.scanning .scan-blob.b2{animation-delay:-1200ms}
+.ai-scan.scanning .scan-blob.b3{animation-delay:-2400ms}
+.ai-scan.scanning .scan-blob.b4{animation-delay:-600ms}
+@keyframes scanBlobDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-28px,14px) scale(1.18)}}
+
+/* Engraved orbit — centered ring framing the face area, dual sub-pixel strokes for true engraved feel */
+.scan-orbit{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:280px;height:280px;pointer-events:none;z-index:4;opacity:0}
+.ai-scan.scanning .scan-orbit{animation:scanOrbitShow 3500ms var(--ease-out) forwards}
+.scan-orbit svg{width:100%;height:100%;display:block;transform:rotate(-90deg);overflow:visible}
+.scan-orbit circle.track-hi{fill:none;stroke:rgba(255,255,255,0.35);stroke-width:0.5;vector-effect:non-scaling-stroke;transform:translate(0,-0.4px);transform-origin:center;transform-box:fill-box}
+.scan-orbit circle.track-lo{fill:none;stroke:rgba(0,0,0,0.32);stroke-width:0.5;vector-effect:non-scaling-stroke;transform:translate(0,0.4px);transform-origin:center;transform-box:fill-box}
+.scan-orbit circle.fill-hi{fill:none;stroke:rgba(255,255,255,0.95);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;transform:translate(0,-0.4px);transform-origin:center;transform-box:fill-box}
+.scan-orbit circle.fill-lo{fill:none;stroke:rgba(0,0,0,0.55);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;transform:translate(0,0.4px);transform-origin:center;transform-box:fill-box}
+.ai-scan.scanning .scan-orbit circle.fill-hi,.ai-scan.scanning .scan-orbit circle.fill-lo{animation:scanOrbitDraw 2400ms 300ms forwards}
+@keyframes scanOrbitShow{0%{opacity:0}12%{opacity:1}100%{opacity:1}}
+@keyframes scanOrbitDraw{0%{stroke-dashoffset:1000;animation-timing-function:cubic-bezier(0.16,1,0.3,1)}42%{stroke-dashoffset:520;animation-timing-function:cubic-bezier(0.4,0,0.6,1)}62%{stroke-dashoffset:430;animation-timing-function:cubic-bezier(0.2,0,0,1)}100%{stroke-dashoffset:0}}
+
+/* Cycling insight cards with typewriter reveal */
+.scan-insight{position:absolute;display:inline-flex;align-items:center;padding:10px 14px;border-radius:var(--r-pill);background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.6);box-shadow:0 8px 28px rgba(0,0,0,0.20);font-size:12px;font-weight:500;line-height:1;color:var(--text);letter-spacing:-0.1px;opacity:0;transform:translateY(8px) scale(0.96);pointer-events:none;z-index:5;white-space:nowrap}
+.scan-insight em{font-style:normal;color:var(--muted);margin-right:5px;line-height:1}
+.scan-insight strong{font-weight:700;line-height:1}
+.scan-insight .typing{display:inline-flex;align-items:center;overflow:hidden;white-space:nowrap;clip-path:inset(0 100% 0 0);line-height:1}
+.scan-insight.c1{top:14%;left:6%}
+.scan-insight.c2{top:30%;right:5%}
+.scan-insight.c3{top:50%;left:7%}
+.scan-insight.c4{top:60%;right:8%}
+.scan-insight.show{animation:scanInsightShow 2400ms var(--ease-out) forwards}
+.scan-insight.show .typing{animation:scanInsightType 900ms steps(22,end) 180ms forwards}
+@keyframes scanInsightShow{0%{opacity:0;transform:translateY(10px) scale(0.96)}14%{opacity:1;transform:translateY(0) scale(1)}82%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-5px) scale(0.98)}}
+@keyframes scanInsightType{to{clip-path:inset(0 0 0 0)}}
 /* Bottom glass card — title / sub / action stack on heavy frosted backdrop */
 .ai-scan-bottom{position:relative;padding:24px 22px calc(22px + var(--safe-b));text-align:center;background:rgba(255,255,255,0.08);backdrop-filter:blur(40px) saturate(1.4);-webkit-backdrop-filter:blur(40px) saturate(1.4);border-top:1px solid rgba(255,255,255,0.10);border-radius:24px 24px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),0 -10px 30px rgba(0,0,0,0.20);z-index:5;min-height:160px;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px}
 .ai-scan-card-title{font-size:28px;font-weight:800;letter-spacing:-0.7px;color:#fff;line-height:1.1;text-align:left}
@@ -665,18 +694,24 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
   <div class="ai-scan-vf">
     <div class="ai-scan-frame" id="scanFrame">
       <video id="scanVideo" autoplay muted playsinline></video>
-      <div class="scan-grid"></div>
-      <div class="scan-frame-glow"></div>
-      <div class="scan-sweep"></div>
-      <div class="scan-dot" data-d="0" style="left:50%;top:18%"></div>
-      <div class="scan-dot" data-d="1" style="left:32%;top:36%"></div>
-      <div class="scan-dot" data-d="2" style="left:68%;top:36%"></div>
-      <div class="scan-dot" data-d="3" style="left:50%;top:48%"></div>
-      <div class="scan-dot" data-d="4" style="left:30%;top:58%"></div>
-      <div class="scan-dot" data-d="5" style="left:70%;top:58%"></div>
-      <div class="scan-dot" data-d="6" style="left:28%;top:74%"></div>
-      <div class="scan-dot" data-d="7" style="left:72%;top:74%"></div>
-      <div class="scan-dot" data-d="8" style="left:50%;top:84%"></div>
+      <div class="scan-band">
+        <div class="scan-blob b1"></div>
+        <div class="scan-blob b2"></div>
+        <div class="scan-blob b3"></div>
+        <div class="scan-blob b4"></div>
+      </div>
+      <div class="scan-orbit">
+        <svg viewBox="0 0 100 100">
+          <circle class="track-hi" cx="50" cy="50" r="48"/>
+          <circle class="track-lo" cx="50" cy="50" r="48"/>
+          <circle class="fill-lo" cx="50" cy="50" r="48" pathLength="1000"/>
+          <circle class="fill-hi" cx="50" cy="50" r="48" pathLength="1000"/>
+        </svg>
+      </div>
+      <div class="scan-insight c1"><span class="typing"><em>tone</em><strong>even</strong></span></div>
+      <div class="scan-insight c2"><span class="typing"><em>hydration</em><strong>soft</strong></span></div>
+      <div class="scan-insight c3"><span class="typing"><em>lift</em><strong>holding</strong></span></div>
+      <div class="scan-insight c4"><span class="typing"><em>glow</em><strong>rising</strong></span></div>
       <div id="scanHint">Position in frame</div>
     </div>
   </div>
@@ -1686,28 +1721,60 @@ function openScan(t){
   scanEl.classList.remove('result','scanning');
   scanResultEl.innerHTML='';
   pendingScan=null;
-  document.querySelectorAll('.scan-dot').forEach(d=>d.classList.remove('on'));
+  if(typeof stopScanInsightCycle==='function') stopScanInsightCycle();
   scanEl.classList.add('on');
   if(t==='face') openCamera();
 }
 function closeScan(){
   scanEl.classList.remove('on','result','scanning');
-  document.querySelectorAll('.scan-dot').forEach(d=>d.classList.remove('on'));
+  if(typeof stopScanInsightCycle==='function') stopScanInsightCycle();
   closeCamera();
   pendingScan=null;
 }
 
-// Status text now lives in the bottom card sub-line (visible to user) instead of inside the frame
+// Status text in bottom card sub-line; insight cards cycle with typewriter; scanner band + orbit run via CSS
 const scanSubEl=document.getElementById('scanSub');
+const SCAN_INSIGHT_POOL=[
+  {l:'tone',v:'even'},{l:'hydration',v:'soft'},{l:'lift',v:'holding'},{l:'glow',v:'rising'},
+  {l:'texture',v:'smooth'},{l:'definition',v:'sharp'},{l:'puffiness',v:'easing'},{l:'clarity',v:'clear'},
+  {l:'firmness',v:'steady'},{l:'undertone',v:'warm'},{l:'jawline',v:'lifted'},{l:'flow',v:'open'}
+];
+let _scanInsightTimers=[];
+function showScanInsight(card){
+  const p=SCAN_INSIGHT_POOL[Math.floor(Math.random()*SCAN_INSIGHT_POOL.length)];
+  const span=card.querySelector('.typing');
+  if(span) span.innerHTML=`<em>${p.l}</em><strong>${p.v}</strong>`;
+  card.classList.remove('show');
+  void card.offsetWidth;
+  card.classList.add('show');
+}
+function startScanInsightCycle(){
+  stopScanInsightCycle();
+  const cards=document.querySelectorAll('.scan-insight');
+  const delays=[300,650,1000,1350];
+  const cycleMs=2600;
+  cards.forEach((card,i)=>{
+    const tStart=setTimeout(()=>{
+      showScanInsight(card);
+      const tCycle=setInterval(()=>showScanInsight(card),cycleMs);
+      _scanInsightTimers.push(tCycle);
+    },delays[i]);
+    _scanInsightTimers.push(tStart);
+  });
+}
+function stopScanInsightCycle(){
+  _scanInsightTimers.forEach(t=>{clearTimeout(t);clearInterval(t)});
+  _scanInsightTimers=[];
+  document.querySelectorAll('.scan-insight').forEach(c=>c.classList.remove('show'));
+}
 function runFaceAnalysis(done){
   scanEl.classList.add('scanning');
   scanSubEl.textContent='Detecting features…';
-  const dots=document.querySelectorAll('.scan-dot');
-  dots.forEach((d,i)=>setTimeout(()=>d.classList.add('on'),200+i*110));
+  startScanInsightCycle();
   setTimeout(()=>{scanSubEl.textContent='Measuring 5 axes…'},1400);
   setTimeout(()=>{scanSubEl.textContent='Scoring…'},2300);
   setTimeout(()=>{
-    dots.forEach(d=>d.classList.remove('on'));
+    stopScanInsightCycle();
     scanEl.classList.remove('scanning');
     done();
   },2800);
