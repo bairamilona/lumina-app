@@ -283,16 +283,24 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .vplayer-close{position:absolute;top:calc(env(safe-area-inset-top,20px) + 12px);left:20px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;color:#fff;font-size:18px}
 
 /* AI Scan */
-.ai-scan{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:#0a0a0a;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
+/* AI Scan — cinematic backdrop + bottom glass card (talk-it-out vibe) */
+.ai-scan{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:radial-gradient(ellipse 70% 55% at 50% 100%,rgba(242,160,176,0.10),transparent 65%),radial-gradient(ellipse 90% 60% at 50% 0%,rgba(139,184,224,0.06),transparent 65%),linear-gradient(180deg,#0a0c14 0%,#0c0a0e 60%,#1a1014 100%);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s linear var(--t-modal)}
 .ai-scan.on{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition:opacity var(--t-modal) var(--ease-out),transform var(--t-modal) var(--ease-out),visibility 0s}
-.ai-scan-header{padding:calc(env(safe-area-inset-top,20px) + 12px) 20px 16px;display:flex;justify-content:space-between;align-items:center}
-.ai-scan-vf{flex:1;display:flex;align-items:center;justify-content:center}
-.ai-scan-frame{width:280px;height:340px;border:1px solid rgba(255,255,255,0.16);border-radius:var(--r-xxl);position:relative;overflow:hidden;background:#0a0a0a}
-.ai-scan-frame::before,.ai-scan-frame::after{content:'';position:absolute;width:30px;height:30px;border-color:var(--accent);border-style:solid;z-index:6;pointer-events:none}
-.ai-scan-frame::before{top:-1px;left:-1px;border-width:3px 0 0 3px;border-radius:8px 0 0 0}
-.ai-scan-frame::after{bottom:-1px;right:-1px;border-width:0 3px 3px 0;border-radius:0 0 8px 0}
-#scanVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);background:#0f0f0f;display:block}
-#scanHint{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:13px;font-weight:500;color:rgba(255,255,255,0.78);letter-spacing:-0.1px;text-shadow:0 1px 4px rgba(0,0,0,0.6);z-index:5;padding:0 16px;transition:opacity var(--t-fast) var(--ease-out)}
+/* Top chrome — minimal handle + close */
+.ai-scan-header{position:absolute;top:0;left:0;right:0;padding:calc(env(safe-area-inset-top,20px) + 14px) 20px 0;display:flex;justify-content:space-between;align-items:center;z-index:8;pointer-events:none}
+.ai-scan-handle{display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,0.65);font-weight:500;letter-spacing:-0.1px;pointer-events:auto}
+.ai-scan-handle-mark{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,0.10);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;color:#fff}
+.ai-scan-handle-mark svg{width:13px;height:13px}
+.ai-scan-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.10);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:300;cursor:pointer;pointer-events:auto;transition:background var(--t-fast) var(--ease-out),transform var(--t-fast) var(--ease-out)}
+.ai-scan-close:hover{background:rgba(255,255,255,0.16)}
+.ai-scan-close:active{transform:scale(0.94)}
+/* Stage — camera fills upper region, soft fade to dark at bottom */
+.ai-scan-vf{flex:1;display:flex;align-items:stretch;justify-content:center;padding:0;position:relative;overflow:hidden}
+.ai-scan-frame{flex:1;width:100%;height:100%;border:none;border-radius:0;position:relative;overflow:hidden;background:transparent}
+.ai-scan-frame::before{display:none}
+.ai-scan-frame::after{content:'';position:absolute;left:0;right:0;bottom:0;top:auto;height:42%;width:auto;background:linear-gradient(180deg,transparent 0%,rgba(10,10,14,0.5) 45%,rgba(10,10,14,0.92) 100%);z-index:4;pointer-events:none;border:none;border-radius:0;display:block}
+#scanVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);background:#0a0c14;display:block}
+#scanHint{display:none}
 .scan-frame-glow{position:absolute;inset:-1px;border-radius:inherit;border:1.5px solid var(--accent);opacity:0;pointer-events:none;z-index:2;transition:opacity var(--t-fast) var(--ease-out)}
 .ai-scan.scanning .scan-frame-glow{opacity:1;animation:scanFramePulse 1.8s ease-in-out infinite}
 @keyframes scanFramePulse{0%,100%{opacity:0.4;box-shadow:0 0 6px rgba(192,152,237,0.30),inset 0 0 14px rgba(192,152,237,0.10)}50%{opacity:0.95;box-shadow:0 0 26px rgba(192,152,237,0.60),inset 0 0 24px rgba(192,152,237,0.18)}}
@@ -306,14 +314,21 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .scan-dot::after{content:'';position:absolute;left:50%;top:50%;width:18px;height:18px;border-radius:50%;border:1px solid rgba(192,152,237,0.55);opacity:0;animation:scanDotRing 1.4s ease-out infinite}
 .scan-dot.on::after{opacity:1}
 @keyframes scanDotRing{0%{transform:translate(-50%,-50%) scale(0.5);opacity:0.7}100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
-.ai-scan-bottom{padding:20px 20px calc(20px + var(--safe-b));text-align:center}
-.scan-btn{width:64px;height:64px;border-radius:50%;border:3px solid #fff;background:transparent;cursor:pointer;position:relative;display:inline-block}
+/* Bottom glass card — title / sub / action stack on heavy frosted backdrop */
+.ai-scan-bottom{position:relative;padding:24px 22px calc(22px + var(--safe-b));text-align:center;background:rgba(255,255,255,0.08);backdrop-filter:blur(40px) saturate(1.4);-webkit-backdrop-filter:blur(40px) saturate(1.4);border-top:1px solid rgba(255,255,255,0.10);border-radius:24px 24px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.12),0 -10px 30px rgba(0,0,0,0.20);z-index:5;min-height:160px;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:14px}
+.ai-scan-card-title{font-size:28px;font-weight:800;letter-spacing:-0.7px;color:#fff;line-height:1.1;text-align:left}
+.ai-scan-card-sub{font-size:14px;color:rgba(255,255,255,0.62);font-weight:500;letter-spacing:-0.1px;line-height:1.4;text-align:left;margin-top:-8px}
+.ai-scan-card-actions{display:flex;justify-content:center;align-items:center;margin-top:6px}
+.scan-btn{width:64px;height:64px;border-radius:50%;border:3px solid #fff;background:transparent;cursor:pointer;position:relative;display:inline-block;box-shadow:0 6px 22px rgba(0,0,0,0.30)}
 .scan-btn::after{content:'';position:absolute;inset:4px;border-radius:50%;background:#fff}
 
-/* Scan result panel — closes the scan→Score loop */
-.ai-scan.result .ai-scan-vf{display:none}
-.ai-scan-result{display:none;flex:1;flex-direction:column;justify-content:center;padding:24px 24px 8px;color:#fff;overflow-y:auto}
+/* Scan result panel — renders inside the bottom glass card when in result state */
+.ai-scan.result .ai-scan-vf{flex:0 0 22%}
+.ai-scan.result .ai-scan-card-title,.ai-scan.result .ai-scan-card-sub{display:none}
+.ai-scan-result{display:none;flex-direction:column;padding:0;color:#fff;overflow-y:auto;flex:1}
 .ai-scan.result .ai-scan-result{display:flex}
+.ai-scan.result .ai-scan-bottom{flex:1;justify-content:flex-start;padding-top:20px;gap:16px}
+.ai-scan.result .ai-scan-card-actions{margin-top:auto}
 .scan-result-head{text-align:center;margin-bottom:20px}
 .scan-check{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.25);display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-bottom:12px}
 .scan-result-head h3{font-size:18px;font-weight:600;letter-spacing:-0.2px}
@@ -332,7 +347,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .scan-result-summary .lbl{font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1.4px;font-weight:600;margin-top:8px}
 .scan-result-detail{font-size:13px;color:rgba(255,255,255,0.75);text-align:center;line-height:1.5;margin-top:4px}
 .scan-result-detail strong{color:#fff;font-weight:600}
-.scan-apply{display:none;width:100%;padding:16px;border-radius:var(--r-pill);border:none;background:#fff;color:var(--dark);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:-0.1px}
+.scan-apply{display:none;width:100%;padding:15px 18px;border-radius:var(--r-pill);border:none;background:#fff;color:var(--dark);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-0.2px;box-shadow:0 6px 20px rgba(0,0,0,0.25)}
 
 /* Per-sub-score impact grid (food / ingredient scan) */
 .scan-impact-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:18px 0 0}
@@ -639,7 +654,42 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 </div>
 
 <div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
-<div class="ai-scan" id="aiScan"><div class="ai-scan-header"><div style="color:#fff;font-size:16px;font-weight:600" id="scanTitle">AI Scan</div><div style="color:rgba(255,255,255,0.5);font-size:14px;cursor:pointer" onclick="closeScan()">Close</div></div><div class="ai-scan-vf"><div class="ai-scan-frame" id="scanFrame"><video id="scanVideo" autoplay muted playsinline></video><div class="scan-grid"></div><div class="scan-frame-glow"></div><div class="scan-sweep"></div><div class="scan-dot" data-d="0" style="left:50%;top:18%"></div><div class="scan-dot" data-d="1" style="left:32%;top:36%"></div><div class="scan-dot" data-d="2" style="left:68%;top:36%"></div><div class="scan-dot" data-d="3" style="left:50%;top:48%"></div><div class="scan-dot" data-d="4" style="left:30%;top:58%"></div><div class="scan-dot" data-d="5" style="left:70%;top:58%"></div><div class="scan-dot" data-d="6" style="left:28%;top:74%"></div><div class="scan-dot" data-d="7" style="left:72%;top:74%"></div><div class="scan-dot" data-d="8" style="left:50%;top:84%"></div><div id="scanHint">Position in frame</div></div></div><div class="ai-scan-result" id="scanResult"></div><div class="ai-scan-bottom"><div class="scan-btn" onclick="doScan()"></div><button class="scan-apply" id="scanApply" onclick="applyScan()">Apply to Score</button></div></div>
+<div class="ai-scan" id="aiScan">
+  <div class="ai-scan-header">
+    <div class="ai-scan-handle">
+      <div class="ai-scan-handle-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+      <span id="scanHandleLabel">lumina · face</span>
+    </div>
+    <div class="ai-scan-close" onclick="closeScan()">×</div>
+  </div>
+  <div class="ai-scan-vf">
+    <div class="ai-scan-frame" id="scanFrame">
+      <video id="scanVideo" autoplay muted playsinline></video>
+      <div class="scan-grid"></div>
+      <div class="scan-frame-glow"></div>
+      <div class="scan-sweep"></div>
+      <div class="scan-dot" data-d="0" style="left:50%;top:18%"></div>
+      <div class="scan-dot" data-d="1" style="left:32%;top:36%"></div>
+      <div class="scan-dot" data-d="2" style="left:68%;top:36%"></div>
+      <div class="scan-dot" data-d="3" style="left:50%;top:48%"></div>
+      <div class="scan-dot" data-d="4" style="left:30%;top:58%"></div>
+      <div class="scan-dot" data-d="5" style="left:70%;top:58%"></div>
+      <div class="scan-dot" data-d="6" style="left:28%;top:74%"></div>
+      <div class="scan-dot" data-d="7" style="left:72%;top:74%"></div>
+      <div class="scan-dot" data-d="8" style="left:50%;top:84%"></div>
+      <div id="scanHint">Position in frame</div>
+    </div>
+  </div>
+  <div class="ai-scan-bottom">
+    <div class="ai-scan-card-title" id="scanTitle">Let's see your face</div>
+    <div class="ai-scan-card-sub" id="scanSub">30 seconds. Five visible characteristics. Your face stays on your device.</div>
+    <div class="ai-scan-result" id="scanResult"></div>
+    <div class="ai-scan-card-actions">
+      <div class="scan-btn" onclick="doScan()"></div>
+      <button class="scan-apply" id="scanApply" onclick="applyScan()">Apply to Score</button>
+    </div>
+  </div>
+</div>
 
 <div class="progress-modal" id="progressModal">
   <div class="progress-head">
@@ -1621,10 +1671,17 @@ function closeCamera(){
 
 function openScan(t){
   closeFab();
-  const titles={face:'AI Face Scan',food:'AI Food Scan',ingr:'AI Ingredients'};
-  const hints={face:'Position your face in frame',food:'Point at food',ingr:'Scan product label'};
+  const titles={face:"Let's see your face",food:'Scan this meal',ingr:'Scan this product'};
+  const subs={
+    face:'30 seconds. Five visible characteristics. Your face stays on your device.',
+    food:'Point at the food to read its visible impact.',
+    ingr:'Point at the label to read its ingredients.'
+  };
+  const handles={face:'lumina · face',food:'lumina · food',ingr:'lumina · ingredients'};
   document.getElementById('scanTitle').textContent=titles[t];
-  scanHintEl.textContent=hints[t];
+  document.getElementById('scanSub').textContent=subs[t];
+  document.getElementById('scanHandleLabel').textContent=handles[t];
+  scanHintEl.textContent='';
   scanEl.dataset.type=t;
   scanEl.classList.remove('result','scanning');
   scanResultEl.innerHTML='';
@@ -1640,15 +1697,15 @@ function closeScan(){
   pendingScan=null;
 }
 
-// Animated analyze sequence: sweep + frame pulse + feature dots lighting up + status text
+// Status text now lives in the bottom card sub-line (visible to user) instead of inside the frame
+const scanSubEl=document.getElementById('scanSub');
 function runFaceAnalysis(done){
   scanEl.classList.add('scanning');
-  scanHintEl.textContent='Detecting features…';
+  scanSubEl.textContent='Detecting features…';
   const dots=document.querySelectorAll('.scan-dot');
-  // Stagger the 9 dots on/off
   dots.forEach((d,i)=>setTimeout(()=>d.classList.add('on'),200+i*110));
-  setTimeout(()=>{scanHintEl.textContent='Measuring 5 axes…'},1400);
-  setTimeout(()=>{scanHintEl.textContent='Scoring…'},2300);
+  setTimeout(()=>{scanSubEl.textContent='Measuring 5 axes…'},1400);
+  setTimeout(()=>{scanSubEl.textContent='Scoring…'},2300);
   setTimeout(()=>{
     dots.forEach(d=>d.classList.remove('on'));
     scanEl.classList.remove('scanning');
@@ -1663,11 +1720,11 @@ function doScan(){
       const r=generateScanResult(type);
       pendingScan=r;renderScanResult(r);
       scanEl.classList.add('result');
-      closeCamera(); // free camera once analysis is done
+      closeCamera();
     });
   } else {
     scanEl.classList.add('scanning');
-    scanHintEl.textContent='Analyzing…';
+    scanSubEl.textContent='Analyzing…';
     setTimeout(()=>{
       const r=generateScanResult(type);
       pendingScan=r;renderScanResult(r);
