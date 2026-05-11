@@ -318,17 +318,10 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .ai-scan.scanning .scan-blob.b4{animation-delay:-600ms}
 @keyframes scanBlobDrift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-28px,14px) scale(1.18)}}
 
-/* Engraved orbit — centered ring framing the face area, dual sub-pixel strokes for true engraved feel */
-.scan-orbit{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);width:280px;height:280px;pointer-events:none;z-index:4;opacity:0}
-.ai-scan.scanning .scan-orbit{animation:scanOrbitShow 3500ms var(--ease-out) forwards}
-.scan-orbit svg{width:100%;height:100%;display:block;transform:rotate(-90deg);overflow:visible}
-.scan-orbit circle.track-hi{fill:none;stroke:rgba(255,255,255,0.35);stroke-width:0.5;vector-effect:non-scaling-stroke;transform:translate(0,-0.4px);transform-origin:center;transform-box:fill-box}
-.scan-orbit circle.track-lo{fill:none;stroke:rgba(0,0,0,0.32);stroke-width:0.5;vector-effect:non-scaling-stroke;transform:translate(0,0.4px);transform-origin:center;transform-box:fill-box}
-.scan-orbit circle.fill-hi{fill:none;stroke:rgba(255,255,255,0.95);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;transform:translate(0,-0.4px);transform-origin:center;transform-box:fill-box}
-.scan-orbit circle.fill-lo{fill:none;stroke:rgba(0,0,0,0.55);stroke-width:0.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000;transform:translate(0,0.4px);transform-origin:center;transform-box:fill-box}
-.ai-scan.scanning .scan-orbit circle.fill-hi,.ai-scan.scanning .scan-orbit circle.fill-lo{animation:scanOrbitDraw 2400ms 300ms forwards}
-@keyframes scanOrbitShow{0%{opacity:0}12%{opacity:1}100%{opacity:1}}
-@keyframes scanOrbitDraw{0%{stroke-dashoffset:1000;animation-timing-function:cubic-bezier(0.16,1,0.3,1)}42%{stroke-dashoffset:520;animation-timing-function:cubic-bezier(0.4,0,0.6,1)}62%{stroke-dashoffset:430;animation-timing-function:cubic-bezier(0.2,0,0,1)}100%{stroke-dashoffset:0}}
+/* Linear progress bar — single thin track + fill at top of the stage during scan */
+.scan-progress{position:absolute;top:calc(env(safe-area-inset-top,20px) + 56px);left:20px;right:20px;height:2px;border-radius:2px;background:rgba(255,255,255,0.16);z-index:7;opacity:0;pointer-events:none;overflow:hidden;transition:opacity var(--t-fast) var(--ease-out)}
+.ai-scan.scanning .scan-progress{opacity:1}
+.scan-progress-fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:rgba(255,255,255,0.95);border-radius:2px;box-shadow:0 0 6px rgba(255,255,255,0.45);transition:width 180ms cubic-bezier(0.4,0,0.2,1)}
 
 /* Cycling insight cards with typewriter reveal */
 .scan-insight{position:absolute;display:inline-flex;align-items:center;padding:10px 14px;border-radius:var(--r-pill);background:rgba(255,255,255,0.88);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.6);box-shadow:0 8px 28px rgba(0,0,0,0.20);font-size:12px;font-weight:500;line-height:1;color:var(--text);letter-spacing:-0.1px;opacity:0;transform:translateY(8px) scale(0.96);pointer-events:none;z-index:5;white-space:nowrap}
@@ -700,14 +693,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
         <div class="scan-blob b3"></div>
         <div class="scan-blob b4"></div>
       </div>
-      <div class="scan-orbit">
-        <svg viewBox="0 0 100 100">
-          <circle class="track-hi" cx="50" cy="50" r="48"/>
-          <circle class="track-lo" cx="50" cy="50" r="48"/>
-          <circle class="fill-lo" cx="50" cy="50" r="48" pathLength="1000"/>
-          <circle class="fill-hi" cx="50" cy="50" r="48" pathLength="1000"/>
-        </svg>
-      </div>
+      <div class="scan-progress"><div class="scan-progress-fill" id="scanProgressFill"></div></div>
       <div class="scan-insight c1"><span class="typing"><em>tone</em><strong>even</strong></span></div>
       <div class="scan-insight c2"><span class="typing"><em>hydration</em><strong>soft</strong></span></div>
       <div class="scan-insight c3"><span class="typing"><em>lift</em><strong>holding</strong></span></div>
@@ -1728,6 +1714,7 @@ function openScan(t){
 function closeScan(){
   scanEl.classList.remove('on','result','scanning');
   if(typeof stopScanInsightCycle==='function') stopScanInsightCycle();
+  if(typeof stopScanProgress==='function') stopScanProgress();
   closeCamera();
   pendingScan=null;
 }
@@ -1767,14 +1754,40 @@ function stopScanInsightCycle(){
   _scanInsightTimers=[];
   document.querySelectorAll('.scan-insight').forEach(c=>c.classList.remove('show'));
 }
+// Linear progress + percentage counter — drives both the top progress fill and the bottom sub-line text
+let _scanProgressTimer=null,_scanProgressStart=0;
+function startScanProgress(durationMs){
+  const fill=document.getElementById('scanProgressFill');
+  if(!fill||!scanSubEl) return;
+  fill.style.width='0%';
+  _scanProgressStart=Date.now();
+  if(_scanProgressTimer) clearInterval(_scanProgressTimer);
+  // Status label changes at thresholds, percentage runs continuously
+  function labelFor(pct){
+    if(pct<35) return 'Detecting features';
+    if(pct<75) return 'Measuring 5 axes';
+    return 'Scoring';
+  }
+  _scanProgressTimer=setInterval(()=>{
+    const elapsed=Date.now()-_scanProgressStart;
+    const pct=Math.min(100,Math.round((elapsed/durationMs)*100));
+    fill.style.width=pct+'%';
+    scanSubEl.textContent=`${labelFor(pct)} · ${pct}%`;
+    if(pct>=100){clearInterval(_scanProgressTimer);_scanProgressTimer=null}
+  },50);
+}
+function stopScanProgress(){
+  if(_scanProgressTimer){clearInterval(_scanProgressTimer);_scanProgressTimer=null}
+  const fill=document.getElementById('scanProgressFill');
+  if(fill) fill.style.width='0%';
+}
 function runFaceAnalysis(done){
   scanEl.classList.add('scanning');
-  scanSubEl.textContent='Detecting features…';
   startScanInsightCycle();
-  setTimeout(()=>{scanSubEl.textContent='Measuring 5 axes…'},1400);
-  setTimeout(()=>{scanSubEl.textContent='Scoring…'},2300);
+  startScanProgress(2800);
   setTimeout(()=>{
     stopScanInsightCycle();
+    stopScanProgress();
     scanEl.classList.remove('scanning');
     done();
   },2800);
@@ -1791,8 +1804,9 @@ function doScan(){
     });
   } else {
     scanEl.classList.add('scanning');
-    scanSubEl.textContent='Analyzing…';
+    startScanProgress(1400);
     setTimeout(()=>{
+      stopScanProgress();
       const r=generateScanResult(type);
       pendingScan=r;renderScanResult(r);
       scanEl.classList.add('result');
