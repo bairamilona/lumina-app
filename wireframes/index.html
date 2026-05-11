@@ -279,6 +279,13 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .vplayer-controls{position:absolute;bottom:0;left:0;right:0;padding:20px 20px calc(20px + var(--safe-b));background:linear-gradient(transparent,rgba(0,0,0,0.7))}
 .vplayer-bar{width:100%;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin-bottom:12px;cursor:pointer}
 .vplayer-bar-fill{height:100%;background:#fff;border-radius:2px}
+/* Step segments — Instagram-stories style at top of player, one segment per DAY_PLAN step */
+.vplayer-steps{position:absolute;top:calc(env(safe-area-inset-top,20px) + 12px);left:20px;right:64px;display:flex;gap:4px;z-index:3;pointer-events:none;display:none}
+.vplayer-steps.on{display:flex}
+.vplayer-step{flex:1;height:2.5px;border-radius:2px;background:rgba(255,255,255,0.22);overflow:hidden;position:relative}
+.vplayer-step .fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:rgba(255,255,255,0.95);border-radius:inherit;transition:width 200ms linear;box-shadow:0 0 4px rgba(255,255,255,0.35)}
+.vplayer-step.done .fill{width:100%}
+@media (prefers-reduced-motion: reduce){.vplayer-step .fill{transition:none}}
 .vplayer-btns{display:flex;justify-content:space-between;align-items:center;color:#fff}
 .vplayer-close{position:absolute;top:calc(env(safe-area-inset-top,20px) + 12px);left:20px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;color:#fff;font-size:18px}
 
@@ -675,7 +682,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
   </div>
 </div>
 
-<div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
+<div class="vplayer" id="vplayer"><div class="vplayer-close" onclick="closePlayer()">&#10005;</div><div class="vplayer-steps" id="vpSteps"></div><img id="vpImg" src="" alt=""><div class="vplayer-controls"><div class="vplayer-bar" onclick="seekVideo(event)"><div class="vplayer-bar-fill" id="vpFill" style="width:0%"></div></div><div class="vplayer-btns"><span id="vpTime" style="font-size:12px;opacity:0.6">0:00</span><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" style="cursor:pointer" onclick="togglePlay()"><path d="M6 4l14 8-14 8V4z"/></svg><span style="font-size:12px;opacity:0.6">1x</span></div></div></div>
 <div class="ai-scan" id="aiScan">
   <div class="ai-scan-header">
     <div class="ai-scan-handle">
@@ -1578,10 +1585,63 @@ renderEarned();renderNextMove();renderStreak();renderHealthBanner();
 // Video player
 let curVid=null,playing=false,playInt=null;
 const wd={};Object.keys(IMG).forEach(k=>{wd[k]={p:0}});
-function openPlayer(k){curVid=k;document.getElementById('vpImg').src=IMG[k];document.getElementById('vpFill').style.width=wd[k].p+'%';document.getElementById('vplayer').classList.add('on');playing=false}
+// Fixed order of today's program steps — segments derive from index of active video
+const DAY_STEPS=['neck-stretch','cheekbone-lift','forehead-smoothing'];
+// Render Instagram-stories style step segments — one per DAY_STEPS step.
+// Hidden when the playing video isn't part of the day plan (Library / Express videos).
+function renderPlayerSteps(activeKey){
+  const row=document.getElementById('vpSteps');if(!row)return;
+  const idx=DAY_STEPS.indexOf(activeKey);
+  if(idx<0){row.classList.remove('on');row.innerHTML='';return}
+  row.innerHTML='';
+  DAY_STEPS.forEach((key,i)=>{
+    const seg=document.createElement('div');
+    seg.className='vplayer-step'+(i<idx?' done':i===idx?' current':'');
+    const fill=document.createElement('div');fill.className='fill';
+    if(i<idx) fill.style.width='100%';
+    else fill.style.width='0%';
+    seg.appendChild(fill);
+    row.appendChild(seg);
+  });
+  row.classList.add('on');
+}
+function updatePlayerStepFill(pct){
+  const cur=document.querySelector('.vplayer-step.current .fill');
+  if(cur) cur.style.width=pct+'%';
+}
+function openPlayer(k){
+  curVid=k;
+  document.getElementById('vpImg').src=IMG[k];
+  document.getElementById('vpFill').style.width=wd[k].p+'%';
+  renderPlayerSteps(k);
+  updatePlayerStepFill(wd[k].p);
+  document.getElementById('vplayer').classList.add('on');
+  playing=false;
+}
 function closePlayer(){document.getElementById('vplayer').classList.remove('on');if(playInt)clearInterval(playInt);playing=false}
-function togglePlay(){if(!curVid)return;playing=!playing;if(playing){playInt=setInterval(()=>{wd[curVid].p=Math.min(100,wd[curVid].p+2);document.getElementById('vpFill').style.width=wd[curVid].p+'%';if(wd[curVid].p>=100){clearInterval(playInt);playing=false;const k=curVid;commitCompletion(k);setTimeout(closePlayer,800)}},200)}else if(playInt)clearInterval(playInt)}
-function seekVideo(e){const r=e.currentTarget.getBoundingClientRect();wd[curVid].p=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));document.getElementById('vpFill').style.width=wd[curVid].p+'%'}
+function togglePlay(){
+  if(!curVid)return;
+  playing=!playing;
+  if(playing){
+    playInt=setInterval(()=>{
+      wd[curVid].p=Math.min(100,wd[curVid].p+2);
+      document.getElementById('vpFill').style.width=wd[curVid].p+'%';
+      updatePlayerStepFill(wd[curVid].p);
+      if(wd[curVid].p>=100){
+        clearInterval(playInt);playing=false;
+        const k=curVid;
+        commitCompletion(k);
+        setTimeout(closePlayer,800);
+      }
+    },200);
+  } else if(playInt) clearInterval(playInt);
+}
+function seekVideo(e){
+  const r=e.currentTarget.getBoundingClientRect();
+  wd[curVid].p=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));
+  document.getElementById('vpFill').style.width=wd[curVid].p+'%';
+  updatePlayerStepFill(wd[curVid].p);
+}
 
 // METRICS — derived from subScores 3-layer state, tap reveals breakdown
 const metricsConfig=[
