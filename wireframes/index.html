@@ -28,6 +28,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .bnav-bar{display:flex;background:rgba(15,15,15,0.92);backdrop-filter:blur(24px);border-radius:var(--r-pill);padding:5px;gap:3px;border:1px solid rgba(255,255,255,0.05);box-shadow:inset 0 1px 0 rgba(255,255,255,0.10),inset 0 -1px 0 rgba(0,0,0,0.5),0 1px 0 rgba(255,255,255,0.5),0 10px 30px rgba(0,0,0,0.18)}
 .bnav-btn{width:62px;height:54px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid transparent;color:rgba(255,255,255,0.30);transition:color 320ms var(--ease-out),background 320ms var(--ease-out),box-shadow 320ms var(--ease-out),transform 200ms var(--ease-out);position:relative}
 .bnav-btn svg{transition:transform 360ms cubic-bezier(0.2,0,0,1)}
+.bnav-fab-slot{width:60px;height:54px;flex-shrink:0;pointer-events:none}
 .bnav-btn.on{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.95);box-shadow:inset 0 1px 1px rgba(0,0,0,0.40),inset 0 -0.5px 0 rgba(255,255,255,0.10),inset 0 0 10px rgba(0,0,0,0.18)}
 .bnav-btn.on svg{transform:scale(1.06)}
 .bnav-btn:active{transform:scale(0.94)}
@@ -262,15 +263,15 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .dy.on{border-color:var(--text);color:var(--text);font-weight:700}
 
 /* FAB SYSTEM — metaball, juggling labels, matte plastic */
-.fab-wrap{position:fixed;bottom:calc(22px + var(--safe-b));right:calc(50% - 215px + 16px);z-index:26;width:60px;height:60px;pointer-events:none}
-@media(max-width:430px){.fab-wrap{right:16px}}
+.fab-wrap{position:fixed;bottom:calc(var(--safe-b) + 11px);left:0;z-index:26;width:60px;height:60px;pointer-events:none}
 /* Blob layer — SVG filter creates metaball merge/split */
-.fab-blobs{position:absolute;right:0;bottom:0;width:60px;height:60px;filter:url(#mbf);overflow:visible;pointer-events:none}
+.fab-blobs{position:absolute;right:0;bottom:0;width:60px;height:60px;-webkit-filter:url(#mbf);filter:url(#mbf);overflow:visible;pointer-events:none}
 .fblob{position:absolute;right:0;bottom:0;width:60px;height:60px;border-radius:50%;background:#1c1c1e;transform:translateY(0);transition:transform 580ms cubic-bezier(0.34,1.15,0.64,1)}
 .fblob-main{position:absolute;right:0;bottom:0;width:60px;height:60px;border-radius:50%;background:#1c1c1e}
 /* Icon + label layer — crisp, not filtered */
 .fab-ico-layer{position:absolute;right:0;bottom:0;overflow:visible;pointer-events:none}
-.fab-row{touch-action:manipulation;position:absolute;right:0;bottom:0;display:flex;align-items:center;pointer-events:none;opacity:0;transform:translateY(0)}
+.fab-main{pointer-events:auto !important}
+.fab-row{touch-action:manipulation;cursor:pointer;position:absolute;right:0;bottom:0;display:flex;align-items:center;pointer-events:none;opacity:0;transform:translateY(0)}
 .fab-row.show{pointer-events:auto}
 .fab-row-ico{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:box-shadow 280ms ease;position:relative;overflow:visible}
 @keyframes icoPress{
@@ -729,7 +730,7 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 
 <div class="bnav"><div class="bnav-bar" id="bnav"></div></div>
 <!-- SVG metaball filter — alpha-channel blur+contrast, works on transparent bg -->
-<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+<svg style="position:absolute;width:0;height:0" aria-hidden="true">
   <defs>
     <filter id="mbf" color-interpolation-filters="sRGB" x="-200%" y="-200%" width="500%" height="500%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur"/>
@@ -1079,6 +1080,16 @@ const navCfg=[
 ];
 const bnav=document.getElementById('bnav');
 navCfg.forEach((n,i)=>{const b=document.createElement('div');b.className='bnav-btn'+(i===0?' on':'');b.dataset.tab=n.id;b.innerHTML=n.svg;b.onclick=()=>switchTo(n.id);bnav.appendChild(b)});
+const bnavSlot=document.createElement('div');bnavSlot.className='bnav-fab-slot';bnavSlot.id='bnavFabSlot';bnav.appendChild(bnavSlot);
+function alignFab(){
+  const slot=document.getElementById('bnavFabSlot');
+  const wrap=document.getElementById('fabWrap');
+  if(!slot||!wrap)return;
+  const r=slot.getBoundingClientRect();
+  wrap.style.left=(r.left+r.width/2-30)+'px';
+}
+window.addEventListener('resize',alignFab);
+setTimeout(alignFab,0);
 function switchTo(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('vis'));document.getElementById('s-'+id).classList.add('vis');document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('on'));document.querySelector(`[data-tab="${id}"]`).classList.add('on');if(id==='score'){bgE.style.backgroundImage=`url(${IMG['lymphatic-drainage']})`;bgE.classList.add('on')}
   else if(id==='challenge'){bgE.style.backgroundImage=`url(${IMG['neck-stretch']})`;bgE.classList.add('on')}
   else{bgE.classList.remove('on')}
@@ -1954,11 +1965,12 @@ const scanApplyEl=document.getElementById('scanApply');
 
 // Camera lifecycle (face scan only — getUserMedia, graceful fallback if denied)
 let scanStream=null;
-async function openCamera(){
+async function openCamera(type){
   if(scanStream)return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;
+  const facing=type==='face'?'user':{ideal:'environment'};
   try{
-    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:540},height:{ideal:680}},audio:false});
+    scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:540},height:{ideal:680}},audio:false});
     const v=document.getElementById('scanVideo');
     if(v){v.srcObject=scanStream;await v.play().catch(()=>{})}
   }catch(e){/* permission denied / no camera — frame stays dark, scan still works on sample data */}
@@ -1990,7 +2002,7 @@ function openScan(t){
   pendingScan=null;
   if(typeof stopScanInsightCycle==='function') stopScanInsightCycle();
   scanEl.classList.add('on');
-  openCamera();
+  openCamera(t);
 }
 function closeScan(){
   scanEl.classList.remove('on','result','scanning');
@@ -2065,13 +2077,13 @@ function stopScanProgress(){
 function runFaceAnalysis(done){
   scanEl.classList.add('scanning');
   startScanInsightCycle();
-  startScanProgress(2800);
+  startScanProgress(6000);
   setTimeout(()=>{
     stopScanInsightCycle();
     stopScanProgress();
     scanEl.classList.remove('scanning');
     done();
-  },2800);
+  },6000);
 }
 
 function doScan(){
@@ -2085,14 +2097,15 @@ function doScan(){
     });
   } else {
     scanEl.classList.add('scanning');
-    startScanProgress(1400);
+    startScanProgress(5000);
     setTimeout(()=>{
       stopScanProgress();
+      closeCamera();
       const r=generateScanResult(type);
       pendingScan=r;renderScanResult(r);
       scanEl.classList.add('result');
       scanEl.classList.remove('scanning');
-    },1400);
+    },5000);
   }
 }
 
