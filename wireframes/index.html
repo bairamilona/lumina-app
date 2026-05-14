@@ -6,10 +6,10 @@
 <title>Lumina Club</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<!-- Favicon: bubble as primary (save as bubble-favicon.png at project root), SVG fallbacks behind it -->
-<link rel="icon" type="image/png" sizes="any" href="../bubble-favicon.png">
+<!-- Favicon: bubble as primary, dark SVG fallback behind it -->
+<link rel="icon" type="image/png" sizes="any" href="../favicon-bubble.png">
 <link rel="icon" type="image/svg+xml" href="../favicon-dark.svg">
-<link rel="apple-touch-icon" href="../bubble-favicon.png">
+<link rel="apple-touch-icon" href="../favicon-bubble.png">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -24,11 +24,10 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .ps{position:relative;z-index:2;height:100%;overflow-y:auto;overflow-x:clip;-webkit-overflow-scrolling:touch}.ps::-webkit-scrollbar{display:none}
 
 /* Nav */
-.bnav{position:fixed;bottom:0;left:0;right:0;margin:0 auto;width:100%;max-width:430px;z-index:25;padding:6px 20px calc(14px + var(--safe-b));display:flex;justify-content:center;background:linear-gradient(transparent,rgba(247,250,252,0.8) 30%)}
+.bnav{position:fixed;bottom:0;left:0;right:0;margin:0 auto;width:100%;max-width:430px;z-index:25;padding:6px 20px calc(14px + var(--safe-b));display:flex;justify-content:flex-start;background:linear-gradient(transparent,rgba(247,250,252,0.8) 30%)}
 .bnav-bar{display:flex;background:rgba(15,15,15,0.92);backdrop-filter:blur(24px);border-radius:var(--r-pill);padding:5px;gap:3px;border:1px solid rgba(255,255,255,0.05);box-shadow:inset 0 1px 0 rgba(255,255,255,0.10),inset 0 -1px 0 rgba(0,0,0,0.5),0 1px 0 rgba(255,255,255,0.5),0 10px 30px rgba(0,0,0,0.18)}
 .bnav-btn{width:62px;height:54px;border-radius:var(--r-pill);display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid transparent;color:rgba(255,255,255,0.30);transition:color 320ms var(--ease-out),background 320ms var(--ease-out),box-shadow 320ms var(--ease-out),transform 200ms var(--ease-out);position:relative}
 .bnav-btn svg{transition:transform 360ms cubic-bezier(0.2,0,0,1)}
-.bnav-fab-slot{width:60px;height:54px;flex-shrink:0;pointer-events:none}
 .bnav-btn.on{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.95);box-shadow:inset 0 1px 1px rgba(0,0,0,0.40),inset 0 -0.5px 0 rgba(255,255,255,0.10),inset 0 0 10px rgba(0,0,0,0.18)}
 .bnav-btn.on svg{transform:scale(1.06)}
 .bnav-btn:active{transform:scale(0.94)}
@@ -263,7 +262,8 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 .dy.on{border-color:var(--text);color:var(--text);font-weight:700}
 
 /* FAB SYSTEM — metaball, juggling labels, matte plastic */
-.fab-wrap{position:fixed;bottom:calc(var(--safe-b) + 11px);left:0;z-index:26;width:60px;height:60px;pointer-events:none}
+.fab-wrap{position:fixed;bottom:calc(var(--safe-b) + 11px);right:calc(50% - 215px + 18px);z-index:26;width:60px;height:60px;pointer-events:none}
+@media(max-width:430px){.fab-wrap{right:18px}}
 /* Blob layer — SVG filter creates metaball merge/split */
 .fab-blobs{position:absolute;right:0;bottom:0;width:60px;height:60px;-webkit-filter:url(#mbf);filter:url(#mbf);overflow:visible;pointer-events:none}
 .fblob{position:absolute;right:0;bottom:0;width:60px;height:60px;border-radius:50%;background:#1c1c1e;transform:translateY(0);transition:transform 580ms cubic-bezier(0.34,1.15,0.64,1)}
@@ -1054,16 +1054,6 @@ const navCfg=[
 ];
 const bnav=document.getElementById('bnav');
 navCfg.forEach((n,i)=>{const b=document.createElement('div');b.className='bnav-btn'+(i===0?' on':'');b.dataset.tab=n.id;b.innerHTML=n.svg;b.onclick=()=>switchTo(n.id);bnav.appendChild(b)});
-const bnavSlot=document.createElement('div');bnavSlot.className='bnav-fab-slot';bnavSlot.id='bnavFabSlot';bnav.appendChild(bnavSlot);
-function alignFab(){
-  const slot=document.getElementById('bnavFabSlot');
-  const wrap=document.getElementById('fabWrap');
-  if(!slot||!wrap)return;
-  const r=slot.getBoundingClientRect();
-  wrap.style.left=(r.left+r.width/2-30)+'px';
-}
-window.addEventListener('resize',alignFab);
-setTimeout(alignFab,0);
 function switchTo(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('vis'));document.getElementById('s-'+id).classList.add('vis');document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('on'));document.querySelector(`[data-tab="${id}"]`).classList.add('on');if(id==='score'){bgE.style.backgroundImage=`url(${IMG['lymphatic-drainage']})`;bgE.classList.add('on')}
   else if(id==='challenge'){bgE.style.backgroundImage=`url(${IMG['neck-stretch']})`;bgE.classList.add('on')}
   else{bgE.classList.remove('on')}
