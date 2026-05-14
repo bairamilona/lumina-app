@@ -578,26 +578,12 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 
 /* Compare strip — slider when images load, side-by-side prompt cards otherwise */
 .progress-compare{position:relative;border-radius:var(--r-xl);overflow:hidden;aspect-ratio:4/5;margin-bottom:16px;background:#0a0a0a;user-select:none;-webkit-user-select:none}
-.progress-compare-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
-.progress-compare.has-images .progress-compare-img{display:block}
-.progress-compare.has-images .progress-compare-after{clip-path:inset(0 50% 0 0)}
-.progress-compare.has-images .progress-compare-prompt{display:none}
-.progress-compare-prompt{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:0}
-.progress-prompt-half{padding:14px 14px 50px;background:linear-gradient(160deg,#eef0f5,#dde2eb);display:flex;flex-direction:column;color:rgba(0,0,0,0.55);overflow:hidden;border-right:1px solid rgba(0,0,0,0.08);position:relative}
-.progress-prompt-half:last-child{border-right:none;background:linear-gradient(160deg,#e8eef0,#d4dde6)}
-.progress-prompt-tag{font-size:12px;font-weight:700;color:rgba(0,0,0,0.55);margin-bottom:8px;letter-spacing:-0.1px;display:flex;align-items:center;gap:6px}
-.progress-prompt-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:rgba(0,0,0,0.40)}
-.progress-prompt-text{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;line-height:1.4;color:rgba(0,0,0,0.62);text-shadow:0 1px 0 rgba(255,255,255,0.6);overflow:hidden;flex:1;display:-webkit-box;-webkit-line-clamp:14;-webkit-box-orient:vertical;letter-spacing:0}
-.progress-prompt-copy{position:absolute;bottom:10px;left:14px;right:14px;padding:8px 10px;border-radius:var(--r-pill);background:var(--dark);color:#fff;border:none;font:600 12px var(--font);cursor:pointer;letter-spacing:-0.1px;transition:transform var(--t-fast) var(--ease-out),background var(--t-fast) var(--ease-out)}
-.progress-prompt-copy:active{transform:scale(0.97)}
-.progress-prompt-copy.copied{background:var(--text)}
-
-.progress-compare-handle{display:none;position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.95);left:50%;transform:translateX(-50%);z-index:3;cursor:ew-resize;touch-action:none;box-shadow:0 0 8px rgba(0,0,0,0.3)}
-.progress-compare.has-images .progress-compare-handle{display:block}
+.progress-compare-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.progress-compare-after{clip-path:inset(0 50% 0 0)}
+.progress-compare-handle{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.95);left:50%;transform:translateX(-50%);z-index:3;cursor:ew-resize;touch-action:none;box-shadow:0 0 8px rgba(0,0,0,0.3)}
 .progress-compare-handle::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,0.3)}
 .progress-compare-handle::after{content:'⇆';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:16px;font-weight:800;color:var(--text);z-index:1;line-height:1}
-.progress-compare-labels{position:absolute;top:14px;left:0;right:0;padding:0 14px;display:none;justify-content:space-between;z-index:2;pointer-events:none}
-.progress-compare.has-images .progress-compare-labels{display:flex}
+.progress-compare-labels{position:absolute;top:14px;left:0;right:0;padding:0 14px;display:flex;justify-content:space-between;z-index:2;pointer-events:none}
 .progress-compare-labels span{padding:5px 11px;border-radius:var(--r-pill);background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);color:#fff;font-size:12px;font-weight:600;letter-spacing:-0.1px}
 
 .progress-comment{padding:14px 16px;border-radius:var(--r-xl);background:rgba(192,152,237,0.08);border:1px solid rgba(192,152,237,0.18);margin-bottom:18px}
@@ -827,21 +813,9 @@ html,body{font-family:var(--font);background:var(--bg);color:var(--text);height:
 
     <div class="progress-h2">Before · After</div>
     <div class="progress-compare" id="progressCompare">
-      <img class="progress-compare-img progress-compare-before" src="../images/krea-generated/before.png" alt="">
-      <img class="progress-compare-img progress-compare-after" src="../images/krea-generated/after.png" alt="">
-      <div class="progress-compare-prompt">
-        <div class="progress-prompt-half">
-          <div class="progress-prompt-tag">Day 1 · Before</div>
-          <div class="progress-prompt-text">Editorial portrait, woman 35-40, soft natural morning light from left, beige cream background, no makeup, relaxed neutral expression, slight visible morning puffiness around jaw and under eyes, slightly dull skin tone, head and shoulders crop, vertical 4:5, 35mm film grain, holistic wellness aesthetic, no text, photorealistic</div>
-          <button class="progress-prompt-copy" type="button">Copy</button>
-        </div>
-        <div class="progress-prompt-half">
-          <div class="progress-prompt-tag">Day 7 · After</div>
-          <div class="progress-prompt-text">Same woman 35-40, same exact head and shoulders crop, same soft natural morning light from left, same beige cream background, same relaxed expression, no makeup, more defined jawline contour, less puffiness around eyes, subtle healthy glow, slightly more even tone, vertical 4:5, 35mm film grain, holistic wellness aesthetic, no text, photorealistic, same person seven days later</div>
-          <button class="progress-prompt-copy" type="button">Copy</button>
-        </div>
-      </div>
-      <div class="progress-compare-labels"><span>Before</span><span>After</span></div>
+      <img class="progress-compare-img progress-compare-before" src="../images/krea-generated/before.png" alt="Day 1">
+      <img class="progress-compare-img progress-compare-after" src="../images/krea-generated/after.png" alt="Day 7">
+      <div class="progress-compare-labels"><span>Day 1</span><span>Day 7</span></div>
       <div class="progress-compare-handle" id="progressHandle"></div>
     </div>
 
@@ -1352,22 +1326,9 @@ if(_setSoftEl){
 // Progress / Re-scan — weekly before-after slider opened by avatar tap
 function progressOpen(){
   document.getElementById('progressModal').classList.add('on');
-  checkProgressImages();
+  initProgressSlider();
 }
 function progressClose(){document.getElementById('progressModal').classList.remove('on')}
-function checkProgressImages(){
-  const compare=document.getElementById('progressCompare');
-  if(!compare)return;
-  const before=compare.querySelector('.progress-compare-before');
-  const after=compare.querySelector('.progress-compare-after');
-  let bOk=false,aOk=false;
-  function maybe(){if(bOk&&aOk){compare.classList.add('has-images');initProgressSlider();}}
-  if(before.complete&&before.naturalWidth>0)bOk=true;else before.addEventListener('load',()=>{bOk=true;maybe()},{once:true});
-  if(after.complete&&after.naturalWidth>0)aOk=true;else after.addEventListener('load',()=>{aOk=true;maybe()},{once:true});
-  before.addEventListener('error',()=>{},{once:true});
-  after.addEventListener('error',()=>{},{once:true});
-  maybe();
-}
 let _progressSliderInit=false;
 function initProgressSlider(){
   if(_progressSliderInit)return;_progressSliderInit=true;
@@ -1390,10 +1351,6 @@ function initProgressSlider(){
   handle.addEventListener('pointerup',onUp);
   handle.addEventListener('pointercancel',onUp);
 }
-// Wire copy buttons inside the progress modal
-document.querySelectorAll('#progressModal .progress-prompt-copy').forEach(b=>{
-  b.onclick=function(){const t=this.parentNode.querySelector('.progress-prompt-text');if(t)copyPrompt(t.textContent.trim(),this)};
-});
 // Tap any avatar circle to open progress
 document.querySelectorAll('.av').forEach(a=>{a.style.cursor='pointer';a.addEventListener('click',progressOpen)});
 
